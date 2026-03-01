@@ -5,4 +5,4 @@ import { isMobile } from 'react-device-detect';
 // React elements have the property _self defined, whereas in production mode that property is not defined.
 const deviceDomain = isMobile ? 'http://192.168.86.206:3001/api' : 'http://localhost:3001/api';
 
-export const url = '_self' in React.createElement('div') ? deviceDomain : 'https://uprophet.com/api';
+export const url = '_self' in React.createElement('div') ? deviceDomain : 'https://api.uprophet.com';
