@@ -2,7 +2,7 @@
 
 **Uprophet** is a social networking platform designed to empower users to express themselves freely by creating and sharing personal quotes with their friends. 
 
-By focusing on minimalism and impactful text, uProphet provides a streamlined space for sharing wisdom, humor, or daily thoughts.
+By focusing on minimalism and impactful text, Uprophet provides a streamlined space for sharing wisdom, humor, or daily thoughts.
 
 ---
 
