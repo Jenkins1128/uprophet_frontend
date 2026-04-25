@@ -1,36 +1,37 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { url } from '../../../domain';
 import Loading from '../../presentationals/Loading/Loading';
 import CheckEmailForm from './CheckEmailForm/CheckEmailForm';
 import { forgotPasswordAsync } from './redux/forgotPasswordThunk';
+import { AppDispatch } from '../../../app/store';
 
-function ForgotPassword() {
-	const dispatch = useDispatch();
+const ForgotPassword: React.FC = () => {
+	const dispatch = useDispatch<AppDispatch>();
 
-	const [username, setUsername] = useState('');
-	const [email, setEmail] = useState('');
-	const [checkEmailForm, setCheckEmailForm] = useState(false);
-	const [isLoading, setLoading] = useState(false);
-	const [isIncorrectError, setIsIncorrectError] = useState(false);
-	const [isEmptyError, setIsEmptyError] = useState(false);
+	const [username, setUsername] = useState<string>('');
+	const [email, setEmail] = useState<string>('');
+	const [checkEmailForm, setCheckEmailForm] = useState<boolean>(false);
+	const [isLoading, setLoading] = useState<boolean>(false);
+	const [isIncorrectError, setIsIncorrectError] = useState<boolean>(false);
+	const [isEmptyError, setIsEmptyError] = useState<boolean>(false);
 
-	const handleUsernameOnchange = (event) => {
+	const handleUsernameOnchange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const { value } = event.target;
 		setUsername(value);
 	};
 
-	const handleEmailOnchange = (event) => {
+	const handleEmailOnchange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const { value } = event.target;
 		setEmail(value);
 	};
 
-	const initCheckEmailForm = (event) => {
+	const initCheckEmailForm = (event: React.MouseEvent<HTMLButtonElement>) => {
 		event.preventDefault();
 		if (username && email) {
 			setLoading(true);
-			dispatch(forgotPasswordAsync({ url: `${url}/forgotPassword`, username, email })).then((res) => {
+			dispatch((forgotPasswordAsync as any)({ url: `${url}/forgotPassword`, username, email })).then((res: any) => {
 				setLoading(false);
 				if (res.meta.requestStatus === 'fulfilled') {
 					setCheckEmailForm(true);
@@ -63,10 +64,10 @@ function ForgotPassword() {
 					<form className='measure center pa3 black-80'>
 						<fieldset id='change_password_signin' className='ba b--transparent ph0 mh0'>
 							<div className='mt3'>
-								<input className='pa2 input-reset ba br4 bg-transparent w-75' placeholder='Username' type='text' maxLength='20' onChange={handleUsernameOnchange} />
+								<input className='pa2 input-reset ba br4 bg-transparent w-75' placeholder='Username' type='text' maxLength={20} onChange={handleUsernameOnchange} />
 							</div>
 							<div className='mv3'>
-								<input className='b pa2 input-reset ba br4 bg-transparent w-75' placeholder='Email' type='text' maxLength='100' onChange={handleEmailOnchange} />
+								<input className='b pa2 input-reset ba br4 bg-transparent w-75' placeholder='Email' type='text' maxLength={100} onChange={handleEmailOnchange} />
 							</div>
 						</fieldset>
 						<div className='lh-copy mt1'>
@@ -81,6 +82,6 @@ function ForgotPassword() {
 			)}
 		</section>
 	);
-}
+};
 
 export default ForgotPassword;

@@ -1,49 +1,50 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { changePasswordAsync, changePasswordSignInAsync } from './redux/changePasswordThunk';
 import ChangePasswordForm from './ChangePasswordForm/ChangePasswordForm';
 import { url } from '../../../domain';
+import { AppDispatch } from '../../../app/store';
 
-function ChangePassword() {
-	const dispatch = useDispatch();
+const ChangePassword: React.FC = () => {
+	const dispatch = useDispatch<AppDispatch>();
 	const history = useHistory();
 
-	const [username, setUsername] = useState('');
-	const [password, setPassword] = useState('');
-	const [newPassword, setNewPassword] = useState('');
-	const [verifyPassword, setVerifyPassword] = useState('');
-	const [changePasswordForm, setChangePasswordForm] = useState(false);
+	const [username, setUsername] = useState<string>('');
+	const [password, setPassword] = useState<string>('');
+	const [newPassword, setNewPassword] = useState<string>('');
+	const [verifyPassword, setVerifyPassword] = useState<string>('');
+	const [changePasswordForm, setChangePasswordForm] = useState<boolean>(false);
 
-	const [isIncorrectError, setIsIncorrectError] = useState(false);
-	const [isIncorrectVerifyError, setIsIncorrectVerifyError] = useState(false);
-	const [isEmptyError1, setIsEmptyError1] = useState(false);
-	const [isEmptyError2, setIsEmptyError2] = useState(false);
+	const [isIncorrectError, setIsIncorrectError] = useState<boolean>(false);
+	const [isIncorrectVerifyError, setIsIncorrectVerifyError] = useState<boolean>(false);
+	const [isEmptyError1, setIsEmptyError1] = useState<boolean>(false);
+	const [isEmptyError2, setIsEmptyError2] = useState<boolean>(false);
 
-	const handleUsernameOnchange = (event) => {
+	const handleUsernameOnchange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const { value } = event.target;
 		setUsername(value);
 	};
 
-	const handlePasswordOnchange = (event) => {
+	const handlePasswordOnchange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const { value } = event.target;
 		setPassword(value);
 	};
 
-	const handleNewPasswordOnchange = (event) => {
+	const handleNewPasswordOnchange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const { value } = event.target;
 		setNewPassword(value);
 	};
 
-	const handleVerifyPasswordOnchange = (event) => {
+	const handleVerifyPasswordOnchange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const { value } = event.target;
 		setVerifyPassword(value);
 	};
 
-	const initChangePasswordForm = (event) => {
+	const initChangePasswordForm = (event: React.MouseEvent<HTMLButtonElement>) => {
 		event.preventDefault();
 		if (username && password) {
-			dispatch(changePasswordSignInAsync({ url: `${url}/changePasswordSignIn`, username, password })).then((res) => {
+			dispatch((changePasswordSignInAsync as any)({ url: `${url}/changePasswordSignIn`, username, password })).then((res: any) => {
 				if (res.meta.requestStatus === 'fulfilled') {
 					setChangePasswordForm(true);
 				} else {
@@ -55,11 +56,11 @@ function ChangePassword() {
 		}
 	};
 
-	const changePassword = (event) => {
+	const changePassword = (event: React.MouseEvent<HTMLButtonElement>) => {
 		event.preventDefault();
 		if (newPassword && verifyPassword) {
 			if (newPassword === verifyPassword) {
-				dispatch(changePasswordAsync({ url: `${url}/changePassword`, username, newPassword })).then((res) => {
+				dispatch((changePasswordAsync as any)({ url: `${url}/changePassword`, username, newPassword })).then((res: any) => {
 					if (res.meta.requestStatus === 'fulfilled') {
 						history.push('/signin');
 					}
@@ -90,10 +91,10 @@ function ChangePassword() {
 					<form className='measure center pa3 black-80'>
 						<fieldset id='change_password_signin' className='ba b--transparent ph0 mh0'>
 							<div className='mt3'>
-								<input className='pa2 input-reset ba br4 bg-transparent w-75' placeholder='Username' type='text' maxLength='20' onChange={handleUsernameOnchange} />
+								<input className='pa2 input-reset ba br4 bg-transparent w-75' placeholder='Username' type='text' maxLength={20} onChange={handleUsernameOnchange} />
 							</div>
 							<div className='mv3'>
-								<input className='b pa2 input-reset ba br4 bg-transparent w-75' placeholder='Password' type='password' maxLength='128' onChange={handlePasswordOnchange} />
+								<input className='b pa2 input-reset ba br4 bg-transparent w-75' placeholder='Password' type='password' maxLength={128} onChange={handlePasswordOnchange} />
 							</div>
 						</fieldset>
 						<div className='lh-copy mt1'>
@@ -114,6 +115,6 @@ function ChangePassword() {
 			)}
 		</section>
 	);
-}
+};
 
 export default ChangePassword;

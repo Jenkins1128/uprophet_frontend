@@ -1,4 +1,14 @@
-const ChangePasswordForm = ({ handleNewPasswordOnchange, handleVerifyPasswordOnchange, isIncorrectVerifyError, isEmptyError2, changePassword }) => {
+import React from 'react';
+
+interface ChangePasswordFormProps {
+	handleNewPasswordOnchange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+	handleVerifyPasswordOnchange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+	isIncorrectVerifyError: boolean;
+	isEmptyError2: boolean;
+	changePassword: (event: React.MouseEvent<HTMLButtonElement>) => void;
+}
+
+const ChangePasswordForm: React.FC<ChangePasswordFormProps> = ({ handleNewPasswordOnchange, handleVerifyPasswordOnchange, isIncorrectVerifyError, isEmptyError2, changePassword }) => {
 	return (
 		<article className=' br2 ba pa5-l pa4-m pa3-ns black-80 dark-gray b--black-10 br4 w-75 mw6 shadow-5 center'>
 			{isIncorrectVerifyError && (

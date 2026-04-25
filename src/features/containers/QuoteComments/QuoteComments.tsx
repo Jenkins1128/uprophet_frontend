@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import Loading from '../../presentationals/Loading/Loading';
@@ -12,19 +12,20 @@ import { clearAddedComment, postCommentAsync, selectAddedComment } from './redux
 import { getQuotePostAsync, selectQuotePost } from './redux/getQuotePostSlice';
 import { getUserAsync, selectFirstRequestStatus } from '../../presentationals/Header/redux/getUserSlice';
 import { url } from '../../../domain';
+import { AppDispatch } from '../../../app/store';
 
-function QuoteComments() {
-	const { quoteId } = useParams();
-	const dispatch = useDispatch();
-	const [comment, setComment] = useState('');
+const QuoteComments: React.FC = () => {
+	const { quoteId } = useParams<{ quoteId: string }>();
+	const dispatch = useDispatch<AppDispatch>();
+	const [comment, setComment] = useState<string>('');
 
-	const latestComments = useSelector(selectLatestComments);
-	const getAddedComment = useSelector(selectAddedComment);
-	const quotePost = useSelector(selectQuotePost);
+	const latestComments = useSelector(selectLatestComments) as any[];
+	const getAddedComment = useSelector(selectAddedComment) as any;
+	const quotePost = useSelector(selectQuotePost) as any;
 	const requestStatus1 = useSelector(selectFirstRequestStatus);
 	const requestStatus2 = useSelector(selectSecondRequestStatus);
 
-	const isEmpty = (obj) => {
+	const isEmpty = (obj: any) => {
 		for (const x in obj) {
 			return false;
 		}
@@ -32,16 +33,16 @@ function QuoteComments() {
 	};
 
 	useEffect(() => {
-		dispatch(getQuotePostAsync({ url: `${url}/getQuotePost`, quoteId }));
+		dispatch((getQuotePostAsync as any)({ url: `${url}/getQuotePost`, quoteId }));
 	}, [dispatch, quoteId]);
 
 	useEffect(() => {
-		dispatch(getUserAsync(`${url}/currentUser`));
+		dispatch((getUserAsync as any)(`${url}/currentUser`));
 	}, [dispatch]);
 
 	useEffect(() => {
 		if (requestStatus1 === 'fulfilled') {
-			dispatch(getCommentsAsync({ url: `${url}/getComments`, quoteId }));
+			dispatch((getCommentsAsync as any)({ url: `${url}/getComments`, quoteId }));
 		}
 	}, [dispatch, requestStatus1, quoteId]);
 
@@ -54,16 +55,16 @@ function QuoteComments() {
 		}
 	}, [dispatch, getAddedComment, latestComments]);
 
-	const postComment = (event) => {
+	const postComment = (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 		if (quotePost.id && comment !== '') {
-			dispatch(postCommentAsync({ url: `${url}/addComment`, quoteId, comment }));
-			event.target.reset();
+			dispatch((postCommentAsync as any)({ url: `${url}/addComment`, quoteId, comment }));
+			(event.target as HTMLFormElement).reset();
 			setComment('');
 		}
 	};
 
-	const onCommentChange = (event) => {
+	const onCommentChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const { value } = event.target;
 		setComment(value);
 	};
@@ -91,8 +92,8 @@ function QuoteComments() {
 						)}
 						<CommentPoster postComment={postComment} onCommentChange={onCommentChange} />
 						<div className='mt5'>
-							{latestComments.map((comment) => {
-								return <QuoteComment key={comment.id} commentId={comment.id} comment={comment.comment} commenter={comment.commenter} date={comment.date_posted} />;
+							{latestComments.map((commentData) => {
+								return <QuoteComment key={commentData.id} comment={commentData.comment} commenter={commentData.commenter} date={commentData.date_posted} />;
 							})}
 						</div>
 					</section>
@@ -104,6 +105,6 @@ function QuoteComments() {
 			)}
 		</>
 	);
-}
+};
 
 export default QuoteComments;

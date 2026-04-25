@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Userphoto from '../../Userphoto/Userphoto';
 import PleaseSignin from '../../../presentationals/PleaseSignin/PleaseSignin';
@@ -8,59 +8,60 @@ import { getCurrentUserInfoAsync, selectCurrentUserInfo, selectRequestStatus } f
 import { changeBioAsync, selectChangeBioStatus } from './redux/editBioSlice';
 import { changePhotoAsync, selectChangePhotoStatus } from './redux/editPhotoSlice';
 import { url } from '../../../../domain';
+import { AppDispatch } from '../../../../app/store';
 
-const EditProfile = () => {
-	const [bio, setBio] = useState('');
-	const [imageData, setImageData] = useState({});
-	const dispatch = useDispatch();
+const EditProfile: React.FC = () => {
+	const [bio, setBio] = useState<string>('');
+	const [imageData, setImageData] = useState<any>(null);
+	const dispatch = useDispatch<AppDispatch>();
 
 	const requestStatus1 = useSelector(selectFirstRequestStatus);
 	const requestStatus2 = useSelector(selectRequestStatus);
 	const changeBioStatus = useSelector(selectChangeBioStatus);
 	const changePhotoStatus = useSelector(selectChangePhotoStatus);
-	const userInfo = useSelector(selectCurrentUserInfo);
+	const userInfo = useSelector(selectCurrentUserInfo) as any;
 
 	useEffect(() => {
-		dispatch(getUserAsync(`${url}/currentUser`));
+		dispatch((getUserAsync as any)(`${url}/currentUser`));
 	}, [dispatch, changePhotoStatus, changeBioStatus]);
 
 	useEffect(() => {
-		dispatch(getCurrentUserInfoAsync(`${url}/currentUserInfo`));
+		dispatch((getCurrentUserInfoAsync as any)(`${url}/currentUserInfo`));
 	}, [dispatch, changePhotoStatus, changeBioStatus]);
 
-	const savePhoto = (event) => {
+	const savePhoto = (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
-		event.target.reset();
-		if (imageData) dispatch(changePhotoAsync({ url: `${url}/uploadPic`, imageData }));
+		(event.target as HTMLFormElement).reset();
+		if (imageData) dispatch((changePhotoAsync as any)({ url: `${url}/uploadPic`, imageData }));
 	};
 
-	const saveBio = (event) => {
+	const saveBio = (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
-		event.target.reset();
-		dispatch(changeBioAsync({ url: `${url}/savebio`, bio }));
+		(event.target as HTMLFormElement).reset();
+		dispatch((changeBioAsync as any)({ url: `${url}/savebio`, bio }));
 	};
 
-	const onBioChange = (event) => {
+	const onBioChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
 		const { value } = event.target;
 		setBio(value);
 	};
 
-	const onPicChange = (event) => {
+	const onPicChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const { files } = event.target;
-		const file = files[0];
-		const name = file.name;
+		if (files && files.length > 0) {
+			const file = files[0];
+			const name = file.name;
 
-		const reader = new FileReader();
+			const reader = new FileReader();
 
-		reader.onload = function (event) {
-			// The file's text will be printed here, if you want to see the base64
-			const { result } = event.target;
-			const getImage = result.split(',')[1];
-			// Set state with base64 data
-			setImageData({ name: name, image: getImage });
-		};
+			reader.onload = function (e: any) {
+				const { result } = e.target;
+				const getImage = result.split(',')[1];
+				setImageData({ name: name, image: getImage });
+			};
 
-		reader.readAsDataURL(file);
+			reader.readAsDataURL(file);
+		}
 	};
 
 	return (
@@ -75,7 +76,7 @@ const EditProfile = () => {
 						<h1 className='flex ml4 moon-gray'>Edit Profile</h1>
 						<form onSubmit={savePhoto}>
 							<figure className='flex flex-column items-center'>
-								<Userphoto size='profile' username={userInfo.currentUser} />
+								<Userphoto size='profile' username={userInfo?.currentUser || ''} />
 								<figcaption>
 									<input type='file' onChange={onPicChange} className='mt4 bg-transparent b--none pointer tc b light-green f5' />
 								</figcaption>
@@ -83,7 +84,7 @@ const EditProfile = () => {
 							</figure>
 						</form>
 						<form className='mt5 flex flex-column items-center' onSubmit={saveBio}>
-							<textarea placeholder={userInfo.bio} onChange={onBioChange} className='db border-box hover-black w-100 measure ba b--black-20 pa2 br2 mb2' />
+							<textarea placeholder={userInfo?.bio || ''} onChange={onBioChange} className='db border-box hover-black w-100 measure ba b--black-20 pa2 br2 mb2' />
 							<button className='bg-light-green pointer mt3 br-pill w4 h2'>Save</button>
 						</form>
 					</section>
