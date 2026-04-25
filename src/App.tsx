@@ -18,7 +18,7 @@ import Favoriters from './features/containers/Favoriters/Favoriters';
 import Favoriting from './features/containers/Favoriting/Favoriting';
 import Header from './features/presentationals/Header/Header';
 
-function App() {
+const App: React.FC = () => {
 	return (
 		<Router>
 			<div className='App'>
