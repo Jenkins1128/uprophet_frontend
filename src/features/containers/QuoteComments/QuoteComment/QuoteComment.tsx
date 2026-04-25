@@ -1,8 +1,15 @@
+import React from 'react';
 import Userphoto from '../../Userphoto/Userphoto';
 import ReactTimeAgo from 'react-time-ago';
 import { Link } from 'react-router-dom';
 
-const QuoteComment = ({ commenter, comment, date }) => {
+interface QuoteCommentProps {
+	commenter: string;
+	comment: string;
+	date: string | Date;
+}
+
+const QuoteComment: React.FC<QuoteCommentProps> = ({ commenter, comment, date }) => {
 	return (
 		<article className='flex flex-column tc relative bg-transparent br7 pv4 ma3 mh6-l mh5-m br4 bw4 shadow-4 ph4-l ph4-m ph3-ns'>
 			<div className='flex absolute top-1 left-1'>

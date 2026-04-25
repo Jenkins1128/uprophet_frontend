@@ -1,3 +1,4 @@
+import React from 'react';
 import { Link } from 'react-router-dom';
 import Logo from '../../../../images/upicon.png';
 import Bell from '../../../../images/bell.png';
@@ -6,13 +7,22 @@ import Home from '../../../../images/home.png';
 import Logout from '../../../../images/logout.png';
 import Userphoto from '../../../containers/Userphoto/Userphoto';
 
-const Menu = ({ NotiDot, isSignedIn, logout, currentUser }) => {
+interface MenuProps {
+	NotiDot: React.ComponentType;
+	isSignedIn: boolean;
+	logout: () => void;
+	currentUser: string;
+}
+
+const Menu: React.FC<MenuProps> = ({ NotiDot, isSignedIn, logout, currentUser }) => {
 	const openNav = () => {
-		document.getElementById('mySidenav').style.width = '100%';
+		const el = document.getElementById('mySidenav');
+		if (el) el.style.width = '100%';
 	};
 
 	const closeNav = () => {
-		document.getElementById('mySidenav').style.width = '0';
+		const el = document.getElementById('mySidenav');
+		if (el) el.style.width = '0';
 	};
 
 	const signout = () => {

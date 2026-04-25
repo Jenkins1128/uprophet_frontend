@@ -1,8 +1,13 @@
+import React from 'react';
 import logo from '../../../../images/upicon.png';
 import { Link } from 'react-router-dom';
 import Search from '../Search/Search';
 
-const Logo = ({ isSignedIn }) => {
+interface LogoProps {
+	isSignedIn: boolean;
+}
+
+const Logo: React.FC<LogoProps> = ({ isSignedIn }) => {
 	return (
 		<div className='flex items-center'>
 			<Link to='/'>

@@ -1,8 +1,13 @@
+import React from 'react';
 import QuoteCard from './QuoteCard';
-import { UsersQuotes } from './UserQuotes.js';
+import { UsersQuotes } from './UserQuotes';
 import FBLikeButton from '../FBLikeButton/FBLikeButton';
 
-const Topquotes = ({ isMounted }) => {
+interface TopquotesProps {
+	isMounted?: boolean;
+}
+
+const Topquotes: React.FC<TopquotesProps> = ({ isMounted }) => {
 	return (
 		<section className='mt6 mh2'>
 			{isMounted && <FBLikeButton />}

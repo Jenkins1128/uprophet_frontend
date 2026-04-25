@@ -1,6 +1,7 @@
+import React from 'react';
 import { useHistory } from 'react-router';
 
-const PleaseSignin = () => {
+const PleaseSignin: React.FC = () => {
 	const history = useHistory();
 	const pleaseSignin = () => {
 		history.push('/signin');

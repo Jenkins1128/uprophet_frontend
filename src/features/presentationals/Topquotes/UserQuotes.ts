@@ -1,4 +1,9 @@
-export const UsersQuotes = [
+export interface UserQuote {
+	userName: string;
+	quote: string;
+}
+
+export const UsersQuotes: UserQuote[] = [
 	{ userName: 'spring_shady', quote: "I don't believe in no-win scenarios." },
 	{
 		userName: 'Chauncey1',

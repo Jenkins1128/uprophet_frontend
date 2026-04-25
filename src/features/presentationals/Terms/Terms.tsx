@@ -1,4 +1,6 @@
-const Terms = () => {
+import React from 'react';
+
+const Terms: React.FC = () => {
 	return (
 		<section className='mt6'>
 			<h1 className='moon-gray'>Terms</h1>

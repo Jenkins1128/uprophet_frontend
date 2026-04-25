@@ -1,10 +1,17 @@
+import React from 'react';
 import FavoriteButton from '../../FavoriteButton/FavoriteButton';
 import Userphoto from '../../Userphoto/Userphoto';
 import { Link } from 'react-router-dom';
 
-const ResultCard = ({ currentUser, username, didFavorite }) => {
+interface ResultCardProps {
+	currentUser: string;
+	username: string;
+	didFavorite: boolean;
+}
+
+const ResultCard: React.FC<ResultCardProps> = ({ currentUser, username, didFavorite }) => {
 	return (
-		<article className='flex justify-between dt w-100 bb b--black-05 pb2 mt2' href='#0'>
+		<article className='flex justify-between dt w-100 bb b--black-05 pb2 mt2'>
 			<div className='flex items-center'>
 				<div className='dtc w3 v-mid'>
 					<Link to={`/${username}`}>

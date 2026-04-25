@@ -1,10 +1,17 @@
+import React from 'react';
 import FavoriteButton from '../../FavoriteButton/FavoriteButton';
 import Userphoto from '../../Userphoto/Userphoto';
 import { Link } from 'react-router-dom';
 
-const FavoritersCard = ({ currentUser, username, didFavorite }) => {
+interface FavoritersCardProps {
+	currentUser: string;
+	username: string;
+	didFavorite: boolean;
+}
+
+const FavoritersCard: React.FC<FavoritersCardProps> = ({ currentUser, username, didFavorite }) => {
 	return (
-		<article className='flex justify-between w-100 bb b--black-05 pb2 mt2' href='#0'>
+		<article className='flex justify-between w-100 bb b--black-05 pb2 mt2'>
 			<div className='flex items-center'>
 				<div>
 					<Link to={`/${username}`}>

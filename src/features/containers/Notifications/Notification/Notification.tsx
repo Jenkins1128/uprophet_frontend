@@ -1,11 +1,19 @@
+import React from 'react';
 import forward from '../../../../images/forward.png';
 import { Link } from 'react-router-dom';
 import Userphoto from '../../Userphoto/Userphoto';
 import ReactTimeAgo from 'react-time-ago';
 
-const Notification = ({ username, notice, quotesId, date }) => {
+interface NotificationProps {
+	username: string;
+	notice: string;
+	quotesId?: string | number | null;
+	date: string | Date;
+}
+
+const Notification: React.FC<NotificationProps> = ({ username, notice, quotesId, date }) => {
 	return (
-		<article className='flex justify-between w-100 bb b--black-05 pb2 mt2' href='#0'>
+		<article className='flex justify-between w-100 bb b--black-05 pb2 mt2'>
 			<div className='flex items-center'>
 				<div className='dtc w3 v-mid'>
 					<Link to={`/${username}`}>

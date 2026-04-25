@@ -1,6 +1,12 @@
+import React from 'react';
 import defaultProfilePic from '../../../images/defaultProfilePic.png';
 
-const QuoteCard = ({ userName, quote }) => {
+interface QuoteCardProps {
+	userName: string;
+	quote: string;
+}
+
+const QuoteCard: React.FC<QuoteCardProps> = ({ userName, quote }) => {
 	return (
 		<article className='tc relative bg-transparent br7 pv4 ma3 mh6-l mh5-m br4 bw4 shadow-4 ph4-l ph4-m ph3-ns'>
 			<div className='flex absolute top-1 left-1'>

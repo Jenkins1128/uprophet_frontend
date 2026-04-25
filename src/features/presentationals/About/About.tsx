@@ -1,6 +1,7 @@
+import React from 'react';
 import profilePic from '../../../images/profile.jpg';
 
-const About = () => {
+const About: React.FC = () => {
 	return (
 		<>
 			<section className='pt6 '>
