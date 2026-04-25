@@ -1,13 +1,14 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, Link } from 'react-router-dom';
 import { url } from '../../../domain';
 import { getUserAsync, selectCurrentUser } from '../../presentationals/Header/redux/getUserSlice';
 import { loginAsync } from './redux/signinThunk';
+import { AppDispatch } from '../../../app/store';
 
-function Signin() {
+const Signin: React.FC = () => {
 	const history = useHistory();
-	const dispatch = useDispatch();
+	const dispatch = useDispatch<AppDispatch>();
 	const currentUser = useSelector(selectCurrentUser);
 
 	const [username, setUsername] = useState('');
@@ -16,7 +17,7 @@ function Signin() {
 	const [isEmptyError, setIsEmptyError] = useState(false);
 
 	useEffect(() => {
-		dispatch(getUserAsync(`${url}/currentUser`));
+		dispatch((getUserAsync as any)(`${url}/currentUser`));
 	}, [dispatch]);
 
 	useEffect(() => {
@@ -25,20 +26,20 @@ function Signin() {
 		}
 	}, [history, currentUser]);
 
-	const handleUsernameOnchange = (event) => {
+	const handleUsernameOnchange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const { value } = event.target;
 		setUsername(value);
 	};
 
-	const handlePasswordOnchange = (event) => {
+	const handlePasswordOnchange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const { value } = event.target;
 		setPassword(value);
 	};
 
-	const submitLogin = (event) => {
+	const submitLogin = (event: React.FormEvent<HTMLButtonElement | HTMLFormElement>) => {
 		event.preventDefault();
 		if (username && password) {
-			dispatch(loginAsync({ url: `${url}/signin`, username, password })).then((res) => {
+			dispatch((loginAsync as any)({ url: `${url}/signin`, username, password })).then((res: any) => {
 				if (res.meta.requestStatus === 'fulfilled') {
 					history.push('/');
 				} else {
@@ -67,10 +68,10 @@ function Signin() {
 				<form className='measure center pa3 black-80'>
 					<fieldset id='sign_in' className='ba b--transparent ph0 mh0'>
 						<div className='mt3'>
-							<input className='pa2 input-reset ba br4 bg-transparent w-75' maxLength='20' placeholder='Username' type='text' onChange={handleUsernameOnchange} />
+							<input className='pa2 input-reset ba br4 bg-transparent w-75' maxLength={20} placeholder='Username' type='text' onChange={handleUsernameOnchange} />
 						</div>
 						<div className='mv3'>
-							<input className='b pa2 input-reset ba br4 bg-transparent w-75' maxLength='128' placeholder='Password' type='password' onChange={handlePasswordOnchange} />
+							<input className='b pa2 input-reset ba br4 bg-transparent w-75' maxLength={128} placeholder='Password' type='password' onChange={handlePasswordOnchange} />
 						</div>
 					</fieldset>
 					<div className='lh-copy mt1'>

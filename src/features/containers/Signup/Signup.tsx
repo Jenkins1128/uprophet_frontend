@@ -1,13 +1,14 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, Link } from 'react-router-dom';
 import { signUpAsync } from './redux/signUpThunk';
 import { loginAsync } from '../Signin/redux/signinThunk';
 import { url } from '../../../domain';
 import { getUserAsync, selectCurrentUser } from '../../presentationals/Header/redux/getUserSlice';
+import { AppDispatch } from '../../../app/store';
 
-function Signup() {
-	const dispatch = useDispatch();
+const Signup: React.FC = () => {
+	const dispatch = useDispatch<AppDispatch>();
 	const history = useHistory();
 	const currentUser = useSelector(selectCurrentUser);
 
@@ -21,7 +22,7 @@ function Signup() {
 	const [isEmptyError, setIsEmptyError] = useState(false);
 
 	useEffect(() => {
-		dispatch(getUserAsync(`${url}/currentUser`));
+		dispatch((getUserAsync as any)(`${url}/currentUser`));
 	}, [dispatch]);
 
 	useEffect(() => {
@@ -30,44 +31,44 @@ function Signup() {
 		}
 	}, [history, currentUser]);
 
-	const onNameChange = (event) => {
+	const onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const { value } = event.target;
 		setName(value);
 	};
 
-	const onUsernameChange = (event) => {
+	const onUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const { value } = event.target;
 		setUsername(value);
 	};
 
-	const onEmailChange = (event) => {
+	const onEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const { value } = event.target;
 		setEmail(value);
 	};
 
-	const onPasswordChange = (event) => {
+	const onPasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const { value } = event.target;
 		setPassword(value);
 	};
 
-	const onTermsChange = (event) => {
+	const onTermsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const { value } = event.target;
 		setTerms(value === 'on' ? true : false);
 	};
 
-	const submitLogin = (username, password) => {
-		dispatch(loginAsync({ url: `${url}/signin`, username, password })).then((res) => {
+	const submitLogin = (usernameStr: string, passwordStr: string) => {
+		dispatch((loginAsync as any)({ url: `${url}/signin`, username: usernameStr, password: passwordStr })).then((res: any) => {
 			if (res.meta.requestStatus === 'fulfilled') {
 				history.push('/');
 			}
 		});
 	};
 
-	const signup = (event) => {
+	const signup = (event: React.FormEvent<HTMLButtonElement | HTMLFormElement>) => {
 		event.preventDefault();
 		if (username && name && password && email) {
 			if (terms) {
-				dispatch(signUpAsync({ url: `${url}/signup`, name, username, password, email })).then((res) => {
+				dispatch((signUpAsync as any)({ url: `${url}/signup`, name, username, password, email })).then((res: any) => {
 					if (res.meta.requestStatus === 'fulfilled') {
 						submitLogin(username, password);
 					} else {
@@ -104,16 +105,16 @@ function Signup() {
 				<div className='measure pa3 black-80'>
 					<fieldset id='sign_up' className='ba b--transparent ph0 mh0'>
 						<div className='mt3'>
-							<input className='pa2 input-reset ba br4 bg-transparent w-75' placeholder='Name' type='text' maxLength='20' onChange={onNameChange} />
+							<input className='pa2 input-reset ba br4 bg-transparent w-75' placeholder='Name' type='text' maxLength={20} onChange={onNameChange} />
 						</div>
 						<div className='mt3'>
-							<input className='pa2 input-reset ba br4 bg-transparent w-75' placeholder='Username' type='text' maxLength='20' onChange={onUsernameChange} />
+							<input className='pa2 input-reset ba br4 bg-transparent w-75' placeholder='Username' type='text' maxLength={20} onChange={onUsernameChange} />
 						</div>
 						<div className='mt3'>
-							<input className='pa2 input-reset ba br4 bg-transparent w-75' placeholder='Email' type='email' maxLength='100' onChange={onEmailChange} />
+							<input className='pa2 input-reset ba br4 bg-transparent w-75' placeholder='Email' type='email' maxLength={100} onChange={onEmailChange} />
 						</div>
 						<div className='mv3'>
-							<input className='b pa2 input-reset ba br4 bg-transparent w-75' placeholder='Password' type='password' maxLength='128' onChange={onPasswordChange} />
+							<input className='b pa2 input-reset ba br4 bg-transparent w-75' placeholder='Password' type='password' maxLength={128} onChange={onPasswordChange} />
 						</div>
 						<div className='mv3'>
 							<input className='b pa2 ba br4 bg-transparent' type='radio' onChange={onTermsChange} />
