@@ -1,3 +1,4 @@
+import React from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { useMediaQuery } from 'react-responsive';
 import Bell from '../../../images/bell.png';
@@ -11,8 +12,15 @@ import Userphoto from '../../containers/Userphoto/Userphoto';
 import { url } from '../../../domain';
 import { clearCurrentUser } from '../Header/redux/getUserSlice';
 import NotiDot from '../NotiDot/NotiDot';
+import { AppDispatch } from '../../../app/store';
 
-const Navigation = ({ hasNotifications, currentUser, isSignedIn }) => {
+export interface NavigationProps {
+	hasNotifications?: boolean;
+	currentUser: string;
+	isSignedIn: boolean;
+}
+
+const Navigation: React.FC<NavigationProps> = ({ hasNotifications, currentUser, isSignedIn }) => {
 	const isDesktopOrLaptop = useMediaQuery({
 		query: '(min-device-width: 1224px)'
 	});
@@ -22,11 +30,11 @@ const Navigation = ({ hasNotifications, currentUser, isSignedIn }) => {
 	});
 	const isPortrait = useMediaQuery({ query: '(orientation: portrait)' });
 
-	const dispatch = useDispatch();
+	const dispatch = useDispatch<AppDispatch>();
 	const history = useHistory();
 
 	const logout = () => {
-		dispatch(logoutAsync(`${url}/logout`)).then((res) => {
+		dispatch((logoutAsync as any)(`${url}/logout`)).then((res: any) => {
 			if (res.meta.requestStatus === 'fulfilled') {
 				dispatch(clearCurrentUser());
 				history.push('/signin');
@@ -77,7 +85,7 @@ const Navigation = ({ hasNotifications, currentUser, isSignedIn }) => {
 							</>
 						)
 					) : (
-						<Menu NotiDot={NotiDot} isSignedIn={isSignedIn} hasNotifications={hasNotifications} logout={logout} currentUser={currentUser} />
+						<Menu NotiDot={NotiDot} isSignedIn={isSignedIn} logout={logout} currentUser={currentUser} />
 					)}
 				</>
 			)}

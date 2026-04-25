@@ -1,4 +1,11 @@
-const Loading = ({ isPhoto, size }) => {
+import React from 'react';
+
+interface LoadingProps {
+	isPhoto?: boolean;
+	size?: 'header' | 'profile' | string;
+}
+
+const Loading: React.FC<LoadingProps> = ({ isPhoto, size }) => {
 	const getSize = () => {
 		switch (size) {
 			case 'header':
