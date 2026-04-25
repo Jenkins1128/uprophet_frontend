@@ -1,18 +1,24 @@
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { url } from '../../../domain';
 import Loading from '../../presentationals/Loading/Loading';
 import { changePhotoStatusToIdle, selectChangePhotoStatus } from '../Profile/EditProfile/redux/editPhotoSlice';
 import defaultProfilePic from '../../../images/defaultProfilePic.png';
 import { userPhotoAsync } from './redux/userPhotoThunk';
+import { AppDispatch } from '../../../app/store';
 
-const Userphoto = ({ size, username }) => {
-	const dispatch = useDispatch();
-	const [base64Img, setBase64Img] = useState('');
-	const [loading, setLoading] = useState(true);
+interface UserphotoProps {
+	size?: string;
+	username: string;
+}
+
+const Userphoto: React.FC<UserphotoProps> = ({ size, username }) => {
+	const dispatch = useDispatch<AppDispatch>();
+	const [base64Img, setBase64Img] = useState<string>('');
+	const [loading, setLoading] = useState<boolean>(true);
 	const changePhotoStatus = useSelector(selectChangePhotoStatus);
 
-	const mounted = useRef(null);
+	const mounted = useRef<boolean>(false);
 
 	useEffect(() => {
 		mounted.current = true;
@@ -22,7 +28,7 @@ const Userphoto = ({ size, username }) => {
 	}, []);
 
 	useEffect(() => {
-		dispatch(userPhotoAsync({ url: `${url}/getPhoto`, username })).then((res) => {
+		dispatch((userPhotoAsync as any)({ url: `${url}/getPhoto`, username })).then((res: any) => {
 			if (mounted.current) {
 				setLoading(false);
 			}
@@ -35,7 +41,7 @@ const Userphoto = ({ size, username }) => {
 	useEffect(() => {
 		if (changePhotoStatus === 'fulfilled') {
 			setLoading(true);
-			dispatch(userPhotoAsync({ url: `${url}/getPhoto`, username })).then((res) => {
+			dispatch((userPhotoAsync as any)({ url: `${url}/getPhoto`, username })).then((res: any) => {
 				if (mounted.current) {
 					setLoading(false);
 				}

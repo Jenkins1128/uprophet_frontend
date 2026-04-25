@@ -1,18 +1,24 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { url } from '../../../domain';
 import { favoriteAsync, unfavoriteAsync } from './redux/favoriteButtonThunk';
+import { AppDispatch } from '../../../app/store';
 
-const FavoriteButton = ({ username, didFavorite }) => {
-	const dispatch = useDispatch();
-	const [getDidFavorite, setDidFavorite] = useState(false);
+interface FavoriteButtonProps {
+	username: string;
+	didFavorite: boolean;
+}
+
+const FavoriteButton: React.FC<FavoriteButtonProps> = ({ username, didFavorite }) => {
+	const dispatch = useDispatch<AppDispatch>();
+	const [getDidFavorite, setDidFavorite] = useState<boolean>(false);
 
 	useEffect(() => {
 		setDidFavorite(didFavorite);
 	}, [didFavorite]);
 
 	const favorite = () => {
-		dispatch(favoriteAsync({ url: `${url}/favorite`, toUser: username })).then((res) => {
+		dispatch((favoriteAsync as any)({ url: `${url}/favorite`, toUser: username })).then((res: any) => {
 			if (res.meta.requestStatus === 'fulfilled') {
 				setDidFavorite(true);
 			}
@@ -20,7 +26,7 @@ const FavoriteButton = ({ username, didFavorite }) => {
 	};
 
 	const unfavorite = () => {
-		dispatch(unfavoriteAsync({ url: `${url}/unfavorite`, toUser: username })).then((res) => {
+		dispatch((unfavoriteAsync as any)({ url: `${url}/unfavorite`, toUser: username })).then((res: any) => {
 			if (res.meta.requestStatus === 'fulfilled') {
 				setDidFavorite(false);
 			}

@@ -1,18 +1,25 @@
-import { useState, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import Like from '../../../images/like.png';
 import { likeAsync, unlikeAsync } from './redux/likeButtonThunk';
 import UnLike from '../../../images/unlike.png';
 import { url } from '../../../domain';
+import { AppDispatch } from '../../../app/store';
 
-const LikeButton = ({ quoteId, likeCount, didLike }) => {
-	const dispatch = useDispatch();
+interface LikeButtonProps {
+	quoteId: string | number;
+	likeCount: number;
+	didLike: boolean;
+}
 
-	const getLikeCount = useRef(likeCount);
-	const [getDidLike, setDidLike] = useState(didLike);
+const LikeButton: React.FC<LikeButtonProps> = ({ quoteId, likeCount, didLike }) => {
+	const dispatch = useDispatch<AppDispatch>();
+
+	const getLikeCount = useRef<number>(likeCount);
+	const [getDidLike, setDidLike] = useState<boolean>(didLike);
 
 	const like = () => {
-		dispatch(likeAsync({ url: `${url}/like`, quoteId })).then((res) => {
+		dispatch((likeAsync as any)({ url: `${url}/like`, quoteId })).then((res: any) => {
 			if (res.meta.requestStatus === 'fulfilled') {
 				getLikeCount.current += 1;
 				setDidLike(true);
@@ -21,7 +28,7 @@ const LikeButton = ({ quoteId, likeCount, didLike }) => {
 	};
 
 	const unlike = () => {
-		dispatch(unlikeAsync({ url: `${url}/unlike`, quoteId })).then((res) => {
+		dispatch((unlikeAsync as any)({ url: `${url}/unlike`, quoteId })).then((res: any) => {
 			if (res.meta.requestStatus === 'fulfilled') {
 				getLikeCount.current -= 1;
 				setDidLike(false);

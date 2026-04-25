@@ -1,10 +1,24 @@
+import React from 'react';
 import LikeButton from '../LikeButton/LikeButton';
 import Userphoto from '../Userphoto/Userphoto';
 import { Link } from 'react-router-dom';
 import ReactTimeAgo from 'react-time-ago';
 import Swal from 'sweetalert2';
 
-const QuotePost = ({ username, title, quote, quoteId, likeCount, didLike, date, hasComments, canDelete, deleteQuote }) => {
+interface QuotePostProps {
+	username: string;
+	title: string;
+	quote: string;
+	quoteId: string | number;
+	likeCount: number;
+	didLike: boolean;
+	date: string | Date;
+	hasComments: boolean;
+	canDelete?: boolean;
+	deleteQuote?: (quoteId: string | number) => void;
+}
+
+const QuotePost: React.FC<QuotePostProps> = ({ username, title, quote, quoteId, likeCount, didLike, date, hasComments, canDelete, deleteQuote }) => {
 	const deleteMaybe = () => {
 		Swal.fire({
 			title: 'Delete this quote?',
@@ -16,13 +30,15 @@ const QuotePost = ({ username, title, quote, quoteId, likeCount, didLike, date, 
 			confirmButtonText: 'Yes, delete it!'
 		}).then((result) => {
 			if (result.isConfirmed) {
-				deleteQuote(quoteId);
+				if (deleteQuote) {
+					deleteQuote(quoteId);
+				}
 			}
 		});
 	};
 
 	return (
-		<article id={quoteId} className=' bg-transparent br7 pv3 ma3 mh6-l mh5-m br4 bw4 shadow-4 ph3'>
+		<article id={String(quoteId)} className=' bg-transparent br7 pv3 ma3 mh6-l mh5-m br4 bw4 shadow-4 ph3'>
 			<div className='flex justify-between'>
 				<div className='flex'>
 					<Link to={`/${username}`}>
