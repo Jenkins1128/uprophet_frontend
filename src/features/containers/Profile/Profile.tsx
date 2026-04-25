@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import Swal from 'sweetalert2';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useParams } from 'react-router-dom';
@@ -12,18 +12,19 @@ import { selectUserInfo, userInfoAsync } from './redux/userInfoSlice';
 import FavoriteButton from '../FavoriteButton/FavoriteButton';
 import { url } from '../../../domain';
 import { deleteQuoteAsync } from './redux/deleteQuoteThunk';
+import { AppDispatch } from '../../../app/store';
 
-function Profile() {
-	const { username } = useParams();
-	const dispatch = useDispatch();
+const Profile: React.FC = () => {
+	const { username } = useParams<{ username: string }>();
+	const dispatch = useDispatch<AppDispatch>();
 
 	const requestStatus1 = useSelector(selectFirstRequestStatus);
 	const requestStatus2 = useSelector(selectRequestStatus);
-	const profileQuotes = useSelector(selectProfileQuotes);
-	const userInfo = useSelector(selectUserInfo);
+	const profileQuotes = useSelector(selectProfileQuotes) as any[];
+	const userInfo = useSelector(selectUserInfo) as any;
 	const currentUser = useSelector(selectCurrentUser);
 
-	const isEmpty = (obj) => {
+	const isEmpty = (obj: any) => {
 		for (const x in obj) {
 			return false;
 		}
@@ -31,22 +32,22 @@ function Profile() {
 	};
 
 	useEffect(() => {
-		dispatch(getUserAsync(`${url}/currentUser`));
+		dispatch((getUserAsync as any)(`${url}/currentUser`));
 	}, [dispatch]);
 
 	useEffect(() => {
-		dispatch(profileAsync({ url: `${url}/profile`, username }));
+		dispatch((profileAsync as any)({ url: `${url}/profile`, username }));
 	}, [dispatch, username]);
 
 	useEffect(() => {
-		dispatch(userInfoAsync({ url: `${url}/userInfo`, username }));
+		dispatch((userInfoAsync as any)({ url: `${url}/userInfo`, username }));
 	}, [dispatch, username]);
 
-	const deleteQuote = (quoteId) => {
-		dispatch(deleteQuoteAsync({ url: `${url}/deleteQuote`, quoteId })).then((res) => {
+	const deleteQuote = (quoteId: number | string) => {
+		dispatch((deleteQuoteAsync as any)({ url: `${url}/deleteQuote`, quoteId })).then((res: any) => {
 			if (res.meta.requestStatus === 'fulfilled') {
 				Swal.fire('Deleted!', 'Your quote has been deleted.', 'success');
-				dispatch(profileAsync({ url: `${url}/profile`, username }));
+				dispatch((profileAsync as any)({ url: `${url}/profile`, username }));
 			}
 		});
 	};
@@ -88,7 +89,7 @@ function Profile() {
 						</div>
 						<div className=' mt3'>
 							<h1 className='flex pl6-l pl5-m light-green'>Quotes</h1>
-							{profileQuotes.map((quote) => {
+							{profileQuotes.map((quote: any) => {
 								return (
 									<QuotePost
 										key={quote.id}

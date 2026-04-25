@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Topquotes from '../../presentationals/Topquotes/Topquotes';
 import QuotePost from '../QuotePost/QuotePost';
@@ -9,20 +9,21 @@ import PleaseSignin from '../../presentationals/PleaseSignin/PleaseSignin';
 import { clearAddedQuote, postQuoteAsync, selectNewQuote } from './redux/postQuoteSlice';
 import { getUserAsync, selectFirstRequestStatus } from '../../presentationals/Header/redux/getUserSlice';
 import { url } from '../../../domain';
+import { AppDispatch } from '../../../app/store';
 
-function Home() {
-	const dispatch = useDispatch();
+const Home: React.FC = () => {
+	const dispatch = useDispatch<AppDispatch>();
 	const [title, setTitle] = useState('');
 	const [quote, setQuote] = useState('');
 
-	const latestQuotes = useSelector(selectLatestQuotes);
-	const getNewQuote = useSelector(selectNewQuote);
+	const latestQuotes = useSelector(selectLatestQuotes) as any[];
+	const getNewQuote = useSelector(selectNewQuote) as any;
 	const requestStatus1 = useSelector(selectFirstRequestStatus);
 	const requestStatus2 = useSelector(selectSecondRequestStatus);
 
-	const mounted = useRef(null);
+	const mounted = useRef<boolean>(false);
 
-	const isEmpty = (obj) => {
+	const isEmpty = (obj: any) => {
 		for (const x in obj) {
 			return false;
 		}
@@ -37,12 +38,12 @@ function Home() {
 	}, []);
 
 	useEffect(() => {
-		dispatch(getUserAsync(`${url}/currentUser`));
+		dispatch((getUserAsync as any)(`${url}/currentUser`));
 	}, [dispatch]);
 
 	useEffect(() => {
 		if (requestStatus1 === 'fulfilled') {
-			dispatch(homeAsync(`${url}/`));
+			dispatch((homeAsync as any)(`${url}/`));
 		}
 	}, [dispatch, requestStatus1]);
 
@@ -51,7 +52,7 @@ function Home() {
 			let updatedQuotes = [...latestQuotes];
 			//replace your current quote to added quote
 			if (updatedQuotes.length) {
-				updatedQuotes.some((quote, i) => {
+				updatedQuotes.some((quote: any, i: number) => {
 					if (quote.user_name === getNewQuote.user_name) {
 						updatedQuotes.splice(i, 1);
 					}
@@ -59,28 +60,28 @@ function Home() {
 				});
 			}
 			updatedQuotes.unshift(getNewQuote);
-			dispatch(clearAddedQuote());
+			dispatch(clearAddedQuote(undefined));
 			//add new quote to latest quotes
 			dispatch(updateLatestQuotes(updatedQuotes));
 		}
 	}, [dispatch, latestQuotes, getNewQuote]);
 
-	const postQuote = (event) => {
+	const postQuote = (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 		if (title !== '' && quote !== '') {
-			dispatch(postQuoteAsync({ url: `${url}/createQuote`, title, quote }));
-			event.target.reset();
+			dispatch((postQuoteAsync as any)({ url: `${url}/createQuote`, title, quote }));
+			(event.target as HTMLFormElement).reset();
 			setTitle('');
 			setQuote('');
 		}
 	};
 
-	const onTitleChange = (event) => {
+	const onTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const { value } = event.target;
 		setTitle(value);
 	};
 
-	const onQuoteChange = (event) => {
+	const onQuoteChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
 		const { value } = event.target;
 		setQuote(value);
 	};
@@ -97,7 +98,7 @@ function Home() {
 						<h1 className='flex ml4 moon-gray'>Home</h1>
 						<QuotePoster postQuote={postQuote} onQuoteChange={onQuoteChange} onTitleChange={onTitleChange} />
 						<div className='mt5'>
-							{latestQuotes.map((quote) => {
+							{latestQuotes.map((quote: any) => {
 								return (
 									<QuotePost
 										key={quote.id}
@@ -109,6 +110,8 @@ function Home() {
 										didLike={quote.didLike}
 										date={quote.date_posted}
 										hasComments={true}
+										canDelete={false}
+										deleteQuote={() => {}}
 									/>
 								);
 							})}
