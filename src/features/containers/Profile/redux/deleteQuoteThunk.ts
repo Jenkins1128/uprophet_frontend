@@ -1,7 +1,12 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-export const deleteQuoteAsync = createAsyncThunk('deleteQuote/status', async (data, { rejectWithValue }) => {
+interface DeleteQuoteData {
+	url: string;
+	quoteId: string | number;
+}
+
+export const deleteQuoteAsync = createAsyncThunk('deleteQuote/status', async (data: DeleteQuoteData, { rejectWithValue }) => {
 	const { url, quoteId } = data;
 	try {
 		const response = await axios({
@@ -14,7 +19,7 @@ export const deleteQuoteAsync = createAsyncThunk('deleteQuote/status', async (da
 			}
 		});
 		return response.status;
-	} catch (err) {
-		return rejectWithValue(err.response.data);
+	} catch (err: any) {
+		return rejectWithValue(err.response?.data);
 	}
 });

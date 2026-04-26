@@ -1,12 +1,18 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-const initialState = {
+interface NotificationsState {
+	state: string;
+	notifications: any[];
+	requestStatus?: 'idle' | 'pending' | 'fulfilled' | 'rejected';
+}
+
+const initialState: NotificationsState = {
 	state: 'idle',
 	notifications: []
 };
 
-export const getNotificationsAsync = createAsyncThunk('notifications/status', async (url, { rejectWithValue }) => {
+export const getNotificationsAsync = createAsyncThunk('notifications/status', async (url: string, { rejectWithValue }) => {
 	try {
 		const response = await axios({
 			url,
@@ -15,8 +21,8 @@ export const getNotificationsAsync = createAsyncThunk('notifications/status', as
 			headers: { Accept: '*/*', 'Content-Type': 'application/json' }
 		});
 		return response.data;
-	} catch (err) {
-		return rejectWithValue(err.response.data);
+	} catch (err: any) {
+		return rejectWithValue(err.response?.data);
 	}
 });
 
@@ -29,7 +35,7 @@ export const notificationsSlice = createSlice({
 			.addCase(getNotificationsAsync.pending, (state) => {
 				state.requestStatus = 'pending';
 			})
-			.addCase(getNotificationsAsync.fulfilled, (state, { payload }) => {
+			.addCase(getNotificationsAsync.fulfilled, (state, { payload }: PayloadAction<any[]>) => {
 				state.requestStatus = 'fulfilled';
 				state.notifications = payload;
 			})
@@ -39,6 +45,6 @@ export const notificationsSlice = createSlice({
 	}
 });
 
-export const selectRequestStatus = (state) => state.notifications.requestStatus;
-export const selectNotifications = (state) => state.notifications.notifications;
+export const selectRequestStatus = (state: any) => state.notifications.requestStatus;
+export const selectNotifications = (state: any) => state.notifications.notifications;
 export default notificationsSlice.reducer;

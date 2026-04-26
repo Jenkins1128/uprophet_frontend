@@ -1,7 +1,12 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-export const userPhotoAsync = createAsyncThunk('userPhoto/status', async (data, { rejectWithValue }) => {
+interface UserPhotoData {
+	url: string;
+	username: string;
+}
+
+export const userPhotoAsync = createAsyncThunk('userPhoto/status', async (data: UserPhotoData, { rejectWithValue }) => {
 	const { url, username } = data;
 	try {
 		const response = await axios({
@@ -14,7 +19,7 @@ export const userPhotoAsync = createAsyncThunk('userPhoto/status', async (data, 
 			}
 		});
 		return response.data;
-	} catch (err) {
-		return rejectWithValue(err.response.data);
+	} catch (err: any) {
+		return rejectWithValue(err.response?.data);
 	}
 });

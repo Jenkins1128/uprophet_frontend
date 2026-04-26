@@ -1,7 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-export const logoutAsync = createAsyncThunk('logout/status', async (url, { rejectWithValue }) => {
+export const logoutAsync = createAsyncThunk('logout/status', async (url: string, { rejectWithValue }) => {
 	try {
 		const response = await axios({
 			url,
@@ -10,7 +10,7 @@ export const logoutAsync = createAsyncThunk('logout/status', async (url, { rejec
 			headers: { 'Content-Type': 'application/json' }
 		});
 		return response.status;
-	} catch (error) {
-		return rejectWithValue(error.response.data);
+	} catch (error: any) {
+		return rejectWithValue(error.response?.data);
 	}
 });
