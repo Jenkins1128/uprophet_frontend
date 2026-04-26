@@ -1,48 +1,45 @@
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React from 'react';
 import { useParams } from 'next/navigation';
-import FavoritingCard from './FavoritingCard/FavoritingCard';
-import { favoritingAsync, selectFavoriting, selectRequestStatus } from './redux/favoritingSlice';
-import { url } from '../../../domain';
-import { useCurrentUser } from '../../../store/useCurrentUser';
 import PleaseSignin from '../../presentationals/PleaseSignin/PleaseSignin';
+import FavoritingCard from './FavoritingCard/FavoritingCard';
 import Loading from '../../presentationals/Loading/Loading';
-import { AppDispatch } from '../../../app/store';
+import { useCurrentUser } from '../../../store/useCurrentUser';
+import { url } from '../../../domain';
+import { useQuery } from '@tanstack/react-query';
+import axios from 'axios';
+
+const fetchFavoriting = async (username: string) => {
+	const { data } = await axios.post(`${url}/favoriting`, { username }, {
+		withCredentials: true,
+		headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+	});
+	return data;
+};
 
 const Favoriting: React.FC = () => {
-	const { username } = useParams<{ username: string }>();
-	const dispatch = useDispatch<AppDispatch>();
-	const { isLoading: isUserLoading, isSuccess: isUserSuccess, data: currentUser } = useCurrentUser();
-	const requestStatus1 = useSelector(selectFirstRequestStatus);
-	const requestStatus2 = useSelector(selectRequestStatus);
-	const favoriting = useSelector(selectFavoriting) as any[];
+	const params = useParams();
+	const username = params?.username as string;
+	const { isLoading: isUserLoading, isSuccess: isUserSuccess } = useCurrentUser();
 
-	
+	const { data: favoriting = [], isLoading: isFavoritingLoading } = useQuery({
+		queryKey: ['favoriting', username],
+		queryFn: () => fetchFavoriting(username),
+		enabled: isUserSuccess && !!username,
+	});
 
-	useEffect(() => {
-		dispatch((favoritingAsync as any)({ url: `${url}/favoriting`, username }));
-	}, [dispatch, username]);
+	if (isUserLoading) return <Loading />;
+	if (!isUserSuccess) return <PleaseSignin />;
+	if (isFavoritingLoading) return <Loading />;
 
-	return requestStatus1 === 'fulfilled' ? (
-		requestStatus2 === 'fulfilled' ? (
-			<section className='mt6 mh2 f7'>
-				<h1 className='flex ml4 moon-gray'>Favoriting</h1>
-				<div className='mt5'>
-					{favoriting.length > 0 &&
-						favoriting.map((favoriter, i) => {
-							return <FavoritingCard key={i} currentUser={favoriter.currentUser} username={favoriter.to_user} didFavorite={favoriter.didFavorite} />;
-						})}
-				</div>
-			</section>
-		) : requestStatus2 === 'pending' ? (
-			<Loading />
-		) : (
-			<PleaseSignin />
-		)
-	) : requestStatus1 === 'pending' ? (
-		<Loading />
-	) : (
-		<PleaseSignin />
+	return (
+		<section className='mt6 mh2 f7'>
+			<h1 className='flex ml4 moon-gray'>{username}'s Favoriting</h1>
+			<div className='mt5'>
+				{favoriting.map((result: any) => {
+					return <FavoritingCard key={result.id} currentUser={result.currentUser} username={result.user_name} didFavorite={result.didFavorite} />;
+				})}
+			</div>
+		</section>
 	);
 };
 
