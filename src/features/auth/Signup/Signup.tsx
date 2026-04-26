@@ -82,8 +82,7 @@ const Signup: React.FC = () => {
 	};
 
 	const onTermsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		const { value } = event.target;
-		setTerms(value === 'on' ? true : false);
+		setTerms(event.target.checked);
 	};
 
 	const signup = (event: React.FormEvent<HTMLButtonElement | HTMLFormElement>) => {
@@ -103,9 +102,9 @@ const Signup: React.FC = () => {
 	};
 
 	return (
-		<section className='pt6'>
+		<section className='pt6 tc'>
 			<h1 className='moon-gray f3'>Join Uprophet today!</h1>
-			<article className='br2 pa5-l pa4-m pa3-nsba dark-gray b--black-10 br4 mv4 w-75 mw6 shadow-5 center'>
+			<article className='br2 pa5-l pa4-m pa3-ns ba dark-gray b--black-10 br4 mv4 w-75 mw6 shadow-5 center'>
 				{isExistsError && (
 					<div className='mt3 center h-10 w-75 ba bw1 br3 bg-red'>
 						<p className='f5 white'>Username already exists.</p>
@@ -121,26 +120,28 @@ const Signup: React.FC = () => {
 						<p className='f5 white'>Please fill all the fields.</p>
 					</div>
 				)}
-				<form className='measure pa3 black-80' onSubmit={signup}>
+				<form className='measure center pa3 black-80' onSubmit={signup}>
 					<fieldset id='sign_up' className='ba b--transparent ph0 mh0'>
 						<div className='mt3'>
-							<input className='pa2 input-reset ba br4 bg-transparent w-75' placeholder='Name' type='text' maxLength={20} onChange={onNameChange} />
+							<input className='pa2 input-reset ba br4 bg-transparent w-75 center db' placeholder='Name' type='text' maxLength={20} onChange={onNameChange} />
 						</div>
 						<div className='mt3'>
-							<input className='pa2 input-reset ba br4 bg-transparent w-75' placeholder='Username' type='text' maxLength={20} onChange={onUsernameChange} />
+							<input className='pa2 input-reset ba br4 bg-transparent w-75 center db' placeholder='Username' type='text' maxLength={20} onChange={onUsernameChange} />
 						</div>
 						<div className='mt3'>
-							<input className='pa2 input-reset ba br4 bg-transparent w-75' placeholder='Email' type='email' maxLength={100} onChange={onEmailChange} />
+							<input className='pa2 input-reset ba br4 bg-transparent w-75 center db' placeholder='Email' type='email' maxLength={100} onChange={onEmailChange} />
 						</div>
 						<div className='mv3'>
-							<input className='b pa2 input-reset ba br4 bg-transparent w-75' placeholder='Password' type='password' maxLength={128} onChange={onPasswordChange} />
+							<input className='b pa2 input-reset ba br4 bg-transparent w-75 center db' placeholder='Password' type='password' maxLength={128} onChange={onPasswordChange} />
 						</div>
-						<div className='mv3'>
-							<input className='b pa2 ba br4 bg-transparent' type='radio' onChange={onTermsChange} />
-							<p>I READ & UNDERSTAND the </p>
-							<Link href='/terms' className='no-underline dark-green'>
-								Terms of Uprophet.
-							</Link>
+						<div className='mv4'>
+							<input className='b pa2 ba br4 bg-transparent center db pointer' type='checkbox' onChange={onTermsChange} />
+							<div className='mt2'>
+								<p className='f7 mb1'>I READ & UNDERSTAND the </p>
+								<Link href='/terms' className='no-underline f7 b light-green hover-black grow pointer'>
+									Terms of Uprophet.
+								</Link>
+							</div>
 						</div>
 					</fieldset>
 					<div className='lh-copy mt3'>

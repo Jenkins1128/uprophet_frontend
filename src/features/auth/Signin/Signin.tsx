@@ -64,7 +64,7 @@ const Signin: React.FC = () => {
 	};
 
 	return (
-		<section className='pt6 '>
+		<section className='pt6 tc'>
 			<h1 className='moon-gray f3'>"Focus on the now."</h1>
 			<article className='br2 ba pa5-l pa4-m pa3-ns black-80 dark-gray b--black-10 br4 w-75 mw6 shadow-5 center'>
 				{isIncorrectError && (
@@ -80,22 +80,22 @@ const Signin: React.FC = () => {
 				<form className='measure center pa3 black-80' onSubmit={submitLogin}>
 					<fieldset id='sign_in' className='ba b--transparent ph0 mh0'>
 						<div className='mt3'>
-							<input className='pa2 input-reset ba br4 bg-transparent w-75' maxLength={20} placeholder='Username' type='text' onChange={handleUsernameOnchange} />
+							<input className='pa2 input-reset ba br4 bg-transparent w-75 center db' maxLength={20} placeholder='Username' type='text' onChange={handleUsernameOnchange} />
 						</div>
 						<div className='mv3'>
-							<input className='b pa2 input-reset ba br4 bg-transparent w-75' maxLength={128} placeholder='Password' type='password' onChange={handlePasswordOnchange} />
+							<input className='b pa2 input-reset ba br4 bg-transparent w-75 center db' maxLength={128} placeholder='Password' type='password' onChange={handlePasswordOnchange} />
 						</div>
 					</fieldset>
-					<div className='lh-copy mt1'>
+					<div className='lh-copy mt3'>
 						<button className='b ph3 pv2 input-reset ba br4 b--black bg-light-green grow pointer f6 dib' type='submit'>
 							Sign in
 						</button>
 					</div>
-					<div className='flex justify-between mt3'>
-						<Link href='/changepassword' className='no-underline b light-green hover-black grow pointer'>
+					<div className='flex justify-between mt4 ph3'>
+						<Link href='/changepassword' className='no-underline b light-green hover-black grow pointer f7'>
 							Change Password
 						</Link>
-						<Link href='/forgotpassword' className='no-underline b light-green hover-black grow pointer'>
+						<Link href='/forgotpassword' className='no-underline b light-green hover-black grow pointer f7'>
 							Forgot Password
 						</Link>
 					</div>

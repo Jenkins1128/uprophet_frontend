@@ -15,7 +15,7 @@ const changePasswordSignInData = async ({ username, password }: any) => {
 };
 
 const changePasswordData = async ({ username, newPassword }: any) => {
-	const { data } = await axios.post(`${url}/changePassword`, { username, newPassword }, {
+	const { data } = await axios.post(`${url}/changePassword`, { username, password: newPassword }, {
 		withCredentials: true,
 		headers: { Accept: '*/*', 'Content-Type': 'application/json' },
 	});
@@ -100,8 +100,8 @@ const ChangePassword: React.FC = () => {
 	};
 
 	return (
-		<section className='pt6 '>
-			<h1 className='moon-gray'>Change Password?</h1>
+		<section className='pt6 tc'>
+			<h1 className='moon-gray f2 mb3'>Change Password?</h1>
 			{!changePasswordForm ? (
 				<div className='br2 ba pa5-l pa4-m pa3-ns black-80 dark-gray b--black-10 br4 w-75 mw6 shadow-5 center'>
 					{isIncorrectError && (
@@ -117,13 +117,13 @@ const ChangePassword: React.FC = () => {
 					<form className='measure center pa3 black-80' onSubmit={initChangePasswordForm as any}>
 						<fieldset id='change_password_signin' className='ba b--transparent ph0 mh0'>
 							<div className='mt3'>
-								<input className='pa2 input-reset ba br4 bg-transparent w-75' placeholder='Username' type='text' maxLength={20} onChange={handleUsernameOnchange} />
+								<input className='pa2 input-reset ba br4 bg-transparent w-75 center db' placeholder='Username' type='text' maxLength={20} onChange={handleUsernameOnchange} />
 							</div>
 							<div className='mv3'>
-								<input className='b pa2 input-reset ba br4 bg-transparent w-75' placeholder='Password' type='password' maxLength={128} onChange={handlePasswordOnchange} />
+								<input className='b pa2 input-reset ba br4 bg-transparent w-75 center db' placeholder='Password' type='password' maxLength={128} onChange={handlePasswordOnchange} />
 							</div>
 						</fieldset>
-						<div className='lh-copy mt1'>
+						<div className='lh-copy mt3'>
 							<button className='b ph3 pv2 input-reset ba br4 b--black bg-light-green grow pointer f6 dib' type='submit'>
 								Sign In
 							</button>

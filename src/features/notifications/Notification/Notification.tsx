@@ -34,7 +34,7 @@ const Notification: React.FC<NotificationProps> = ({ username, notice, quotesId,
 					</Link>
 				) : (
 					<Link href={`/quote/${quotesId}`}>
-						<img src={forward} alt='forward' className='w2  h2 bg-light-green br-100' />
+						<img src={forward.src || forward} alt='forward' className='w2  h2 bg-light-green br-100' />
 					</Link>
 				)}
 			</div>

@@ -24,13 +24,13 @@ const ChangePasswordForm: React.FC<ChangePasswordFormProps> = ({ handleNewPasswo
 			<form className='measure center pa3 black-80'>
 				<fieldset id='change_password' className='ba b--transparent ph0 mh0'>
 					<div className='mv3'>
-						<input className='b pa2 input-reset ba br4 bg-transparent w-75' placeholder='New Password' type='password' onChange={handleNewPasswordOnchange} />
+						<input className='b pa2 input-reset ba br4 bg-transparent w-75 center db' placeholder='New Password' type='password' onChange={handleNewPasswordOnchange} />
 					</div>
 					<div className='mv3'>
-						<input className='b pa2 input-reset ba br4 bg-transparent w-75' placeholder='Verify New Password' type='password' onChange={handleVerifyPasswordOnchange} />
+						<input className='b pa2 input-reset ba br4 bg-transparent w-75 center db' placeholder='Verify New Password' type='password' onChange={handleVerifyPasswordOnchange} />
 					</div>
 				</fieldset>
-				<div className='lh-copy mt1'>
+				<div className='lh-copy mt3'>
 					<button className='b ph3 pv2 input-reset ba br4 b--black bg-light-green grow pointer f6 dib' type='submit' onClick={changePassword}>
 						Change Password
 					</button>

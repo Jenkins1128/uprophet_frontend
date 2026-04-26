@@ -1,8 +1,4 @@
-import React from 'react';
-import { isMobile } from 'react-device-detect';
-
-//https://stackoverflow.com/questions/52702466/detect-react-reactdom-development-production-build?answertab=votes#tab-top
-// React elements have the property _self defined in development, whereas in production mode that property is not defined.
-const deviceDomain: string = isMobile ? 'http://192.168.86.206:3001/api' : 'http://localhost:3001/api';
-
-export const url: string = '_self' in React.createElement('div') ? deviceDomain : 'https://api.uprophet.com/api';
+export const url: string =
+	process.env.NODE_ENV === 'development'
+		? 'http://localhost:3001/api'
+		: 'https://api.uprophet.com/api';

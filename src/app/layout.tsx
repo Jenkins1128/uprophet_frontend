@@ -3,8 +3,8 @@ import '../index.css';
 import Header from '../components/layout/Header/Header';
 
 export const metadata = {
-  title: 'uProphet',
-  description: 'uProphet Web App',
+  title: 'Uprophet',
+  description: 'Uprophet Web App',
 };
 
 import Providers from './providers';
