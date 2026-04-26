@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory, Link } from 'react-router-dom';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { url } from '../../../domain';
 import { getUserAsync, selectCurrentUser } from '../../presentationals/Header/redux/getUserSlice';
 import { loginAsync } from './redux/signinThunk';
 import { AppDispatch } from '../../../app/store';
 
 const Signin: React.FC = () => {
-	const history = useHistory();
+	const router = useRouter();
 	const dispatch = useDispatch<AppDispatch>();
 	const currentUser = useSelector(selectCurrentUser);
 
@@ -22,7 +23,7 @@ const Signin: React.FC = () => {
 
 	useEffect(() => {
 		if (currentUser) {
-			history.push('/');
+			router.push('/');
 		}
 	}, [history, currentUser]);
 
@@ -41,7 +42,7 @@ const Signin: React.FC = () => {
 		if (username && password) {
 			dispatch((loginAsync as any)({ url: `${url}/signin`, username, password })).then((res: any) => {
 				if (res.meta.requestStatus === 'fulfilled') {
-					history.push('/');
+					router.push('/');
 				} else {
 					setIsIncorrectError(true);
 				}
@@ -80,10 +81,10 @@ const Signin: React.FC = () => {
 						</button>
 					</div>
 					<div className='flex justify-between mt3'>
-						<Link to='/changepassword' className='no-underline b light-green hover-black grow pointer'>
+						<Linkhref='/changepassword' className='no-underline b light-green hover-black grow pointer'>
 							Change Password
 						</Link>
-						<Link to='/forgotpassword' className='no-underline b light-green hover-black grow pointer'>
+						<Linkhref='/forgotpassword' className='no-underline b light-green hover-black grow pointer'>
 							Forgot Password
 						</Link>
 					</div>

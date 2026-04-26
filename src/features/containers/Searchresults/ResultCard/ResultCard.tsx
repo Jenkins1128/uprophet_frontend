@@ -1,7 +1,7 @@
 import React from 'react';
 import FavoriteButton from '../../FavoriteButton/FavoriteButton';
 import Userphoto from '../../Userphoto/Userphoto';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 
 interface ResultCardProps {
 	currentUser: string;
@@ -14,12 +14,12 @@ const ResultCard: React.FC<ResultCardProps> = ({ currentUser, username, didFavor
 		<article className='flex justify-between dt w-100 bb b--black-05 pb2 mt2'>
 			<div className='flex items-center'>
 				<div className='dtc w3 v-mid'>
-					<Link to={`/${username}`}>
+					<Linkhref={`/${username}`}>
 						<Userphoto username={username} />
 					</Link>
 				</div>
 				<div className='dtc v-mid pl3'>
-					<Link to={`/${username}`} className='no-underline'>
+					<Linkhref={`/${username}`} className='no-underline'>
 						<h1 className='f6 f5-ns fw6 lh-title light-green mv0'>{username}</h1>
 					</Link>
 				</div>

@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import Loading from '../../presentationals/Loading/Loading';
 import PleaseSignin from '../../presentationals/PleaseSignin/PleaseSignin';
-import { useParams } from 'react-router-dom';
+import { useParams } from 'next/navigation';
 import CommentPoster from './CommentPoster/CommentPoster';
 import QuoteComment from './QuoteComment/QuoteComment';
 import QuotePost from '../QuotePost/QuotePost';

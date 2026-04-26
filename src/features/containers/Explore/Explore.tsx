@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getUserAsync, selectFirstRequestStatus } from '../../presentationals/Header/redux/getUserSlice';
 import QuotePost from '../QuotePost/QuotePost';
 import { getExploreQuotesAsync, selectExploreQuotes } from './redux/exploreQuotesSlice';
-import { useHistory } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import refreshIcon from '../../../images/refresh.png';
 import PleaseSignin from '../../presentationals/PleaseSignin/PleaseSignin';
 import Loading from '../../presentationals/Loading/Loading';
@@ -12,7 +12,7 @@ import { AppDispatch } from '../../../app/store';
 
 const Explore: React.FC = () => {
 	const dispatch = useDispatch<AppDispatch>();
-	const history = useHistory();
+	const router = useRouter();
 
 	const requestStatus = useSelector(selectFirstRequestStatus);
 	const exploreQuotes = useSelector(selectExploreQuotes) as any[];
@@ -28,7 +28,7 @@ const Explore: React.FC = () => {
 	}, [requestStatus, dispatch]);
 
 	const refresh = () => {
-		history.go(0);
+		router.refresh();
 	};
 
 	return (

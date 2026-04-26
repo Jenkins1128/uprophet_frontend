@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 
 const Search: React.FC = () => {
 	const [searchtext, setSearchText] = useState<string>('');
-	const history = useHistory();
+	const router = useRouter();
 
 	const onSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const { value } = event.target;
@@ -13,7 +13,7 @@ const Search: React.FC = () => {
 	const submitSearch = (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 		if (searchtext.trim() !== '') {
-			history.push(`/search/${searchtext}`);
+			router.push(`/search/${searchtext}`);
 			(event.target as HTMLFormElement).reset();
 		}
 	};

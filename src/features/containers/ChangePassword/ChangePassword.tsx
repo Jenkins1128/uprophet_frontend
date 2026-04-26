@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import { changePasswordAsync, changePasswordSignInAsync } from './redux/changePasswordThunk';
 import ChangePasswordForm from './ChangePasswordForm/ChangePasswordForm';
 import { url } from '../../../domain';
@@ -8,7 +8,7 @@ import { AppDispatch } from '../../../app/store';
 
 const ChangePassword: React.FC = () => {
 	const dispatch = useDispatch<AppDispatch>();
-	const history = useHistory();
+	const router = useRouter();
 
 	const [username, setUsername] = useState<string>('');
 	const [password, setPassword] = useState<string>('');
@@ -62,7 +62,7 @@ const ChangePassword: React.FC = () => {
 			if (newPassword === verifyPassword) {
 				dispatch((changePasswordAsync as any)({ url: `${url}/changePassword`, username, newPassword })).then((res: any) => {
 					if (res.meta.requestStatus === 'fulfilled') {
-						history.push('/signin');
+						router.push('/signin');
 					}
 				});
 			} else {

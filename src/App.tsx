@@ -1,7 +1,7 @@
 import React from 'react';
 import About from './features/presentationals/About/About';
 import './App.css';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+
 import Signup from './features/containers/Signup/Signup';
 import Signin from './features/containers/Signin/Signin';
 import Terms from './features/presentationals/Terms/Terms';

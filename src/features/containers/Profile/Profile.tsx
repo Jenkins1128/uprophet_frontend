@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react';
 import Swal from 'sweetalert2';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, useParams } from 'react-router-dom';
+import Link from 'next/link';
+import { useParams } from 'next/navigation';
 import QuotePost from '../QuotePost/QuotePost';
 import Userphoto from '../Userphoto/Userphoto';
 import { profileAsync, selectProfileQuotes, selectRequestStatus } from './redux/profileSlice';
@@ -63,7 +64,7 @@ const Profile: React.FC = () => {
 					<section className='flex flex-column mt6 mh2 f7'>
 						<h1 className='flex ml3 light-green'>{username}</h1>
 						{userInfo.currentUser === username ? (
-							<Link to='/account/edit' className='self-end w-10 b--none no-underline br3 bg-white moon-gray grow pointer:hover: pointer'>
+							<Linkhref='/account/edit' className='self-end w-10 b--none no-underline br3 bg-white moon-gray grow pointer:hover: pointer'>
 								Edit Profile
 							</Link>
 						) : (
@@ -75,10 +76,10 @@ const Profile: React.FC = () => {
 							<div className='flex flex-column'>
 								<div className='flex mt4'>
 									<p className='ml3 mt0 moon-gray b f5-l f6-m'>{profileQuotes.length} quotes</p>
-									<Link to={!isEmpty(userInfo) ? `/${username}/favoriters` : '#'} className='ml4 no-underline moon-gray b f5-l f6-m'>
+									<Linkhref={!isEmpty(userInfo) ? `/${username}/favoriters` : '#'} className='ml4 no-underline moon-gray b f5-l f6-m'>
 										{userInfo.favoriters} favoriters
 									</Link>
-									<Link to={!isEmpty(userInfo) ? `/${username}/favoriting` : '#'} className='ml4 no-underline moon-gray b f5-l f6-m'>
+									<Linkhref={!isEmpty(userInfo) ? `/${username}/favoriting` : '#'} className='ml4 no-underline moon-gray b f5-l f6-m'>
 										{userInfo.favoriting} favoriting
 									</Link>
 								</div>

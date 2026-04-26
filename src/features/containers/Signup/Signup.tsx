@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory, Link } from 'react-router-dom';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { signUpAsync } from './redux/signUpThunk';
 import { loginAsync } from '../Signin/redux/signinThunk';
 import { url } from '../../../domain';
@@ -9,7 +10,7 @@ import { AppDispatch } from '../../../app/store';
 
 const Signup: React.FC = () => {
 	const dispatch = useDispatch<AppDispatch>();
-	const history = useHistory();
+	const router = useRouter();
 	const currentUser = useSelector(selectCurrentUser);
 
 	const [name, setName] = useState('');
@@ -27,7 +28,7 @@ const Signup: React.FC = () => {
 
 	useEffect(() => {
 		if (currentUser) {
-			history.push('/');
+			router.push('/');
 		}
 	}, [history, currentUser]);
 
@@ -59,7 +60,7 @@ const Signup: React.FC = () => {
 	const submitLogin = (usernameStr: string, passwordStr: string) => {
 		dispatch((loginAsync as any)({ url: `${url}/signin`, username: usernameStr, password: passwordStr })).then((res: any) => {
 			if (res.meta.requestStatus === 'fulfilled') {
-				history.push('/');
+				router.push('/');
 			}
 		});
 	};
@@ -119,7 +120,7 @@ const Signup: React.FC = () => {
 						<div className='mv3'>
 							<input className='b pa2 ba br4 bg-transparent' type='radio' onChange={onTermsChange} />
 							<p>I READ & UNDERSTAND the </p>
-							<Link to='/terms' className='no-underline dark-green'>
+							<Linkhref='/terms' className='no-underline dark-green'>
 								Terms of Uprophet.
 							</Link>
 						</div>

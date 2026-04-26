@@ -1,5 +1,6 @@
 import React from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useMediaQuery } from 'react-responsive';
 import Bell from '../../../images/bell.png';
 import Compass from '../../../images/compass.png';
@@ -31,13 +32,13 @@ const Navigation: React.FC<NavigationProps> = ({ hasNotifications, currentUser, 
 	const isPortrait = useMediaQuery({ query: '(orientation: portrait)' });
 
 	const dispatch = useDispatch<AppDispatch>();
-	const history = useHistory();
+	const router = useRouter();
 
 	const logout = () => {
 		dispatch((logoutAsync as any)(`${url}/logout`)).then((res: any) => {
 			if (res.meta.requestStatus === 'fulfilled') {
 				dispatch(clearCurrentUser());
-				history.push('/signin');
+				router.push('/signin');
 			}
 		});
 	};
@@ -49,19 +50,19 @@ const Navigation: React.FC<NavigationProps> = ({ hasNotifications, currentUser, 
 					{!(isTabletOrMobile || isPortrait) ? (
 						isSignedIn ? (
 							<>
-								<Link to='/' className='f6 grow no-underline b b--none ba bw1 ph3 mh3 dib black hover-white'>
+								<Linkhref='/' className='f6 grow no-underline b b--none ba bw1 ph3 mh3 dib black hover-white'>
 									<img title='Home' className='w2 h2' alt='Home' src={Home} />
 								</Link>
-								<Link to='/notifications' className='f6 grow no-underline b b--none ba bw1 ph3 mh3 dib black hover-white'>
+								<Linkhref='/notifications' className='f6 grow no-underline b b--none ba bw1 ph3 mh3 dib black hover-white'>
 									<div className='relative'>
 										<img title='Notifications' className='w2 h2' alt='Notifications' src={Bell} />
 										<NotiDot />
 									</div>
 								</Link>
-								<Link to='/explore' className='f6 grow b--none ph3 mh3 pt1 mb2 dib bg-transparent '>
+								<Linkhref='/explore' className='f6 grow b--none ph3 mh3 pt1 mb2 dib bg-transparent '>
 									<img title='Explore' className='w2 h2' alt='Compass' src={Compass} />
 								</Link>
-								<Link to={`/${currentUser}`} className='f6 grow no-underline mh3 mb2 dib'>
+								<Linkhref={`/${currentUser}`} className='f6 grow no-underline mh3 mb2 dib'>
 									<Userphoto size='header' username={currentUser} />
 								</Link>
 								<button onClick={logout} className='f6 grow b--none ph3 mh3 pt1 mb2 dib bg-transparent pointer'>
@@ -70,13 +71,13 @@ const Navigation: React.FC<NavigationProps> = ({ hasNotifications, currentUser, 
 							</>
 						) : (
 							<>
-								<Link to='/about' className='f6 grow no-underline b b--none ba bw1 ph3 mh3 dib black hover-white'>
+								<Linkhref='/about' className='f6 grow no-underline b b--none ba bw1 ph3 mh3 dib black hover-white'>
 									About
 								</Link>
-								<Link to='/signin' className='f6 grow no-underline b b--none ba bw1 ph3 mh3 dib black hover-white'>
+								<Linkhref='/signin' className='f6 grow no-underline b b--none ba bw1 ph3 mh3 dib black hover-white'>
 									Sign in
 								</Link>
-								<Link to='/signup' className='f6 grow no-underline b b--none ba bw1 ph3 mh3 dib black hover-white'>
+								<Linkhref='/signup' className='f6 grow no-underline b b--none ba bw1 ph3 mh3 dib black hover-white'>
 									Sign up
 								</Link>
 								<a className='f6 grow no-underline b--none b ba bw1 ph3 mh3 dib black hover-white' rel='noopener noreferrer' href='https://youtu.be/Z7YR0zwMtTk?list=TLGGTOFWbVS80XMxODA1MjAyMQ' target='_blank'>

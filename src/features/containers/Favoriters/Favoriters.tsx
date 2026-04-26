@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useParams } from 'next/navigation';
 import FavoritersCard from './FavoritersCard/FavoritersCard';
 import { favoritersAsync, selectFavoriters, selectRequestStatus } from './redux/favoritersSlice';
 import { url } from '../../../domain';

@@ -1,7 +1,7 @@
 import React from 'react';
 import LikeButton from '../LikeButton/LikeButton';
 import Userphoto from '../Userphoto/Userphoto';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import ReactTimeAgo from 'react-time-ago';
 import Swal from 'sweetalert2';
 
@@ -41,10 +41,10 @@ const QuotePost: React.FC<QuotePostProps> = ({ username, title, quote, quoteId, 
 		<article id={String(quoteId)} className=' bg-transparent br7 pv3 ma3 mh6-l mh5-m br4 bw4 shadow-4 ph3'>
 			<div className='flex justify-between'>
 				<div className='flex'>
-					<Link to={`/${username}`}>
+					<Linkhref={`/${username}`}>
 						<Userphoto username={username} />
 					</Link>
-					<Link to={`/${username}`} className='no-underline'>
+					<Linkhref={`/${username}`} className='no-underline'>
 						<p className='black-50 b relative top--1 '>{username}</p>
 					</Link>
 				</div>
@@ -64,7 +64,7 @@ const QuotePost: React.FC<QuotePostProps> = ({ username, title, quote, quoteId, 
 				<div className='flex items-center'>
 					<LikeButton quoteId={quoteId} likeCount={likeCount} didLike={didLike} />
 					{hasComments && (
-						<Link to={`/quote/${quoteId}`} className='ml4 no-underline f5 b light-green grow '>
+						<Linkhref={`/quote/${quoteId}`} className='ml4 no-underline f5 b light-green grow '>
 							Comments
 						</Link>
 					)}
