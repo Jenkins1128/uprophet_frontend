@@ -1,8 +1,13 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-export const favoriteAsync = createAsyncThunk('favorite/status', async (data, { rejectWithValue }) => {
-	const { url, toUser } = data;
+interface LikeData {
+	url: string;
+	quoteId: string | number;
+}
+
+export const likeAsync = createAsyncThunk('like/status', async (data: LikeData, { rejectWithValue }) => {
+	const { url, quoteId } = data;
 	try {
 		const response = await axios({
 			url,
@@ -10,20 +15,17 @@ export const favoriteAsync = createAsyncThunk('favorite/status', async (data, { 
 			withCredentials: true,
 			headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
 			data: {
-				toUser
+				quoteId
 			}
 		});
-		if (response.status >= 400 && response.status < 500) {
-			throw new Error('400');
-		}
 		return response.status;
-	} catch (err) {
-		return rejectWithValue(err.response.data);
+	} catch (err: any) {
+		return rejectWithValue(err.response?.data);
 	}
 });
 
-export const unfavoriteAsync = createAsyncThunk('unfavorite/status', async (data, { rejectWithValue }) => {
-	const { url, toUser } = data;
+export const unlikeAsync = createAsyncThunk('unlike/status', async (data: LikeData, { rejectWithValue }) => {
+	const { url, quoteId } = data;
 	try {
 		const response = await axios({
 			url,
@@ -31,11 +33,11 @@ export const unfavoriteAsync = createAsyncThunk('unfavorite/status', async (data
 			withCredentials: true,
 			headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
 			data: {
-				toUser
+				quoteId
 			}
 		});
 		return response.status;
-	} catch (err) {
-		return rejectWithValue(err.response.data);
+	} catch (err: any) {
+		return rejectWithValue(err.response?.data);
 	}
 });

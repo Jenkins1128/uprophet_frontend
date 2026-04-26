@@ -1,11 +1,21 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-const initialState = {
+interface FavoritingState {
+	favoriting: any[];
+	requestStatus?: 'idle' | 'pending' | 'fulfilled' | 'rejected';
+}
+
+const initialState: FavoritingState = {
 	favoriting: []
 };
 
-export const favoritingAsync = createAsyncThunk('favoriting/status', async (data, { rejectWithValue }) => {
+interface FavoritingData {
+	url: string;
+	username: string;
+}
+
+export const favoritingAsync = createAsyncThunk('favoriting/status', async (data: FavoritingData, { rejectWithValue }) => {
 	const { url, username } = data;
 	try {
 		const response = await axios({
@@ -18,8 +28,8 @@ export const favoritingAsync = createAsyncThunk('favoriting/status', async (data
 			}
 		});
 		return response.data;
-	} catch (err) {
-		return rejectWithValue(err.response.data);
+	} catch (err: any) {
+		return rejectWithValue(err.response?.data);
 	}
 });
 
@@ -32,7 +42,7 @@ export const favoritingSlice = createSlice({
 			.addCase(favoritingAsync.pending, (state) => {
 				state.requestStatus = 'pending';
 			})
-			.addCase(favoritingAsync.fulfilled, (state, { payload }) => {
+			.addCase(favoritingAsync.fulfilled, (state, { payload }: PayloadAction<any[]>) => {
 				state.requestStatus = 'fulfilled';
 				state.favoriting = payload;
 			})
@@ -42,6 +52,6 @@ export const favoritingSlice = createSlice({
 	}
 });
 
-export const selectRequestStatus = (state) => state.favoriting.requestStatus;
-export const selectFavoriting = (state) => state.favoriting.favoriting;
+export const selectRequestStatus = (state: any) => state.favoriting.requestStatus;
+export const selectFavoriting = (state: any) => state.favoriting.favoriting;
 export default favoritingSlice.reducer;

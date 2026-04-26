@@ -1,7 +1,13 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-export const loginAsync = createAsyncThunk('signin/status', async (data, { rejectWithValue }) => {
+interface SignInData {
+	url: string;
+	username?: string;
+	password?: string;
+}
+
+export const loginAsync = createAsyncThunk('signin/status', async (data: SignInData, { rejectWithValue }) => {
 	const { url, username, password } = data;
 	try {
 		const response = await axios({
@@ -15,10 +21,10 @@ export const loginAsync = createAsyncThunk('signin/status', async (data, { rejec
 			}
 		});
 		if (response.status >= 400 && response.status < 500) {
-			throw new Error(response.status);
+			throw new Error(response.status.toString());
 		}
 		return response.status;
-	} catch (err) {
-		return rejectWithValue(err.response.data);
+	} catch (err: any) {
+		return rejectWithValue(err.response?.data);
 	}
 });

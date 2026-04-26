@@ -1,7 +1,14 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-export const changePasswordAsync = createAsyncThunk('changePassword/status', async (data, { rejectWithValue }) => {
+interface ChangePasswordData {
+	url: string;
+	username?: string;
+	newPassword?: string;
+	password?: string;
+}
+
+export const changePasswordAsync = createAsyncThunk('changePassword/status', async (data: ChangePasswordData, { rejectWithValue }) => {
 	const { url, username, newPassword } = data;
 	try {
 		const response = await axios({
@@ -15,12 +22,12 @@ export const changePasswordAsync = createAsyncThunk('changePassword/status', asy
 			}
 		});
 		return response.status;
-	} catch (err) {
-		return rejectWithValue(err.response.data);
+	} catch (err: any) {
+		return rejectWithValue(err.response?.data);
 	}
 });
 
-export const changePasswordSignInAsync = createAsyncThunk('changePasswordSignIn/status', async (data, { rejectWithValue }) => {
+export const changePasswordSignInAsync = createAsyncThunk('changePasswordSignIn/status', async (data: ChangePasswordData, { rejectWithValue }) => {
 	const { url, username, password } = data;
 	try {
 		const response = await axios({
@@ -34,10 +41,10 @@ export const changePasswordSignInAsync = createAsyncThunk('changePasswordSignIn/
 			}
 		});
 		if (response.status === 401) {
-			throw new Error(response.status);
+			throw new Error(response.status.toString());
 		}
 		return response.status;
-	} catch (err) {
-		return rejectWithValue(err.response.data);
+	} catch (err: any) {
+		return rejectWithValue(err.response?.data);
 	}
 });
