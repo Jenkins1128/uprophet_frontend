@@ -39,18 +39,18 @@ const Menu: React.FC<MenuProps> = ({ NotiDot, isSignedIn, logout, currentUser })
 						&times;
 					</button>
 					<Link href='/' onClick={closeNav} className='f6 grow b'>
-						<img title='Home' className='br-100 ba bw2 ma2 b--white h3 w3 pointer' src={Logo} alt='Logo' />
+						<img title='Home' className='br-100 ba bw2 ma2 b--white h3 w3 pointer' src={Logo.src || Logo} alt='Logo' />
 					</Link>
 					<Link href='/' onClick={closeNav} className='f6 grow b'>
 						<div className='flex items-center'>
-							<img title='Home' className='w2 h2' alt='Home' src={Home} />
+							<img title='Home' className='w2 h2' alt='Home' src={Home.src || Home} />
 							&nbsp;{'Home'}
 						</div>
 					</Link>
 					<Link href='/notifications' onClick={closeNav} className='f6 grow b'>
 						<div className='flex items-center'>
 							<div className='relative'>
-								<img title='Notifications' className='w2 h2' alt='Notifications' src={Bell} />
+								<img title='Notifications' className='w2 h2' alt='Notifications' src={Bell.src || Bell} />
 								<NotiDot />
 							</div>
 							&nbsp;{'Notifications'}
@@ -58,7 +58,7 @@ const Menu: React.FC<MenuProps> = ({ NotiDot, isSignedIn, logout, currentUser })
 					</Link>
 					<Link href='/explore' onClick={closeNav} className='f6 grow b'>
 						<div className='flex items-center'>
-							<img title='Explore' className='w2 h2' alt='Compass' src={Compass} />
+							<img title='Explore' className='w2 h2' alt='Compass' src={Compass.src || Compass} />
 							&nbsp;{'Explore'}
 						</div>
 					</Link>
@@ -70,7 +70,7 @@ const Menu: React.FC<MenuProps> = ({ NotiDot, isSignedIn, logout, currentUser })
 					</Link>
 					<Link href='#' onClick={signout} className='f6 grow b'>
 						<div className='flex items-center'>
-							<img title='Logout' className='w2 h2' alt='Logout' src={Logout} />
+							<img title='Logout' className='w2 h2' alt='Logout' src={Logout.src || Logout} />
 							&nbsp;{'Logout'}
 						</div>
 					</Link>
@@ -81,7 +81,7 @@ const Menu: React.FC<MenuProps> = ({ NotiDot, isSignedIn, logout, currentUser })
 						&times;
 					</button>
 					<Link href='/' onClick={closeNav} className='f6 grow b'>
-						<img title='Home' className='br-100 ba bw2 ma2 b--white h3 w3 pointer' src={Logo} alt='Logo' />
+						<img title='Home' className='br-100 ba bw2 ma2 b--white h3 w3 pointer' src={Logo.src || Logo} alt='Logo' />
 					</Link>
 					<Link href='/about' onClick={closeNav} className='f6 grow b'>
 						About

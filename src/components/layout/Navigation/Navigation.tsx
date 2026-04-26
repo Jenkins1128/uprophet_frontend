@@ -30,6 +30,12 @@ const logoutData = async () => {
 };
 
 const Navigation: React.FC<NavigationProps> = ({ hasNotifications, currentUser, isSignedIn }) => {
+	const [hasMounted, setHasMounted] = React.useState(false);
+
+	React.useEffect(() => {
+		setHasMounted(true);
+	}, []);
+
 	const isDesktopOrLaptop = useMediaQuery({
 		query: '(min-device-width: 1224px)'
 	});
@@ -55,6 +61,10 @@ const Navigation: React.FC<NavigationProps> = ({ hasNotifications, currentUser, 
 		performLogout();
 	};
 
+	if (!hasMounted) {
+		return <nav className='flex items-center' />; // Render empty nav until mounted to avoid mismatch
+	}
+
 	return (
 		<nav className='flex items-center'>
 			{(isDesktopOrLaptop || isTabletOrMobileDevice) && (
@@ -63,22 +73,22 @@ const Navigation: React.FC<NavigationProps> = ({ hasNotifications, currentUser, 
 						isSignedIn ? (
 							<>
 								<Link href='/' className='f6 grow no-underline b b--none ba bw1 ph3 mh3 dib black hover-white'>
-									<img title='Home' className='w2 h2' alt='Home' src={Home} />
+									<img title='Home' className='w2 h2' alt='Home' src={Home.src || Home} />
 								</Link>
 								<Link href='/notifications' className='f6 grow no-underline b b--none ba bw1 ph3 mh3 dib black hover-white'>
 									<div className='relative'>
-										<img title='Notifications' className='w2 h2' alt='Notifications' src={Bell} />
+										<img title='Notifications' className='w2 h2' alt='Notifications' src={Bell.src || Bell} />
 										<NotiDot />
 									</div>
 								</Link>
 								<Link href='/explore' className='f6 grow b--none ph3 mh3 pt1 mb2 dib bg-transparent '>
-									<img title='Explore' className='w2 h2' alt='Compass' src={Compass} />
+									<img title='Explore' className='w2 h2' alt='Compass' src={Compass.src || Compass} />
 								</Link>
 								<Link href={`/${currentUser}`} className='f6 grow no-underline mh3 mb2 dib'>
 									<Userphoto size='header' username={currentUser} />
 								</Link>
 								<button onClick={logout} className='f6 grow b--none ph3 mh3 pt1 mb2 dib bg-transparent pointer'>
-									<img title='Logout' className='w2 h2' alt='Logout' src={Logout} />
+									<img title='Logout' className='w2 h2' alt='Logout' src={Logout.src || Logout} />
 								</button>
 							</>
 						) : (

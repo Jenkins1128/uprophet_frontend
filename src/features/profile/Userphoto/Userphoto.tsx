@@ -39,7 +39,7 @@ const Userphoto: React.FC<UserphotoProps> = ({ size, username }) => {
 
 	const base64Img = data.photo || '';
 
-	return isLoading ? <Loading isPhoto={true} size={size} /> : <img className={`br-100 ba bw1 b--white bg-white ${getSize()}`} src={base64Img ? `data:image;base64,${base64Img}` : defaultProfilePic} alt='UserPhoto' />;
+	return isLoading ? <Loading isPhoto={true} size={size} /> : <img className={`br-100 ba bw1 b--white bg-white ${getSize()}`} src={base64Img ? `data:image;base64,${base64Img}` : defaultProfilePic.src || defaultProfilePic} alt='UserPhoto' />;
 };
 
 export default Userphoto;

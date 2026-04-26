@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import Topquotes from '../Topquotes/Topquotes';
 import QuotePost from '../QuotePost/QuotePost';
 import QuotePoster from './QuotePoster/QuotePoster';
@@ -30,8 +30,6 @@ const Home: React.FC = () => {
 	const queryClient = useQueryClient();
 	const [title, setTitle] = useState('');
 	const [quoteText, setQuoteText] = useState('');
-
-	const mounted = useRef<boolean>(true);
 
 	const { data: latestQuotes = [], isLoading: isQuotesLoading } = useQuery({
 		queryKey: ['latestQuotes'],
@@ -71,7 +69,7 @@ const Home: React.FC = () => {
 
 	if (isUserLoading) return <Loading />;
 
-	if (!isUserSuccess) return <Topquotes isMounted={mounted.current} />;
+	if (!isUserSuccess) return <Topquotes />;
 
 	if (isQuotesLoading) return <Loading />;
 
