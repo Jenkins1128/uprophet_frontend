@@ -1,5 +1,4 @@
 import '../index.css';
-import '../App.css';
 import Header from '../features/presentationals/Header/Header';
 
 export const metadata = {

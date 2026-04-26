@@ -1,0 +1,19 @@
+{
+  "/_not-found/page": "app/_not-found/page.js",
+  "/[username]/favoriters/page": "app/[username]/favoriters/page.js",
+  "/about/page": "app/about/page.js",
+  "/[username]/page": "app/[username]/page.js",
+  "/account/edit/page": "app/account/edit/page.js",
+  "/changepassword/page": "app/changepassword/page.js",
+  "/explore/page": "app/explore/page.js",
+  "/page": "app/page.js",
+  "/forgotpassword/page": "app/forgotpassword/page.js",
+  "/notifications/page": "app/notifications/page.js",
+  "/[username]/favoriting/page": "app/[username]/favoriting/page.js",
+  "/signup/page": "app/signup/page.js",
+  "/signin/page": "app/signin/page.js",
+  "/search/page": "app/search/page.js",
+  "/search/[searchtext]/page": "app/search/[searchtext]/page.js",
+  "/terms/page": "app/terms/page.js",
+  "/quote/[quoteId]/page": "app/quote/[quoteId]/page.js"
+}

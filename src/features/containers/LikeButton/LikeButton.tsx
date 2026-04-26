@@ -1,10 +1,10 @@
+"use client";
 import React, { useState, useRef } from 'react';
-import { useDispatch } from 'react-redux';
 import Like from '../../../images/like.png';
-import { likeAsync, unlikeAsync } from './redux/likeButtonThunk';
 import UnLike from '../../../images/unlike.png';
 import { url } from '../../../domain';
-import { AppDispatch } from '../../../app/store';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import axios from 'axios';
 
 interface LikeButtonProps {
 	quoteId: string | number;
@@ -12,28 +12,53 @@ interface LikeButtonProps {
 	didLike: boolean;
 }
 
-const LikeButton: React.FC<LikeButtonProps> = ({ quoteId, likeCount, didLike }) => {
-	const dispatch = useDispatch<AppDispatch>();
+const likeData = async (quoteId: string | number) => {
+	const { data } = await axios.post(`${url}/like`, { quoteId }, {
+		withCredentials: true,
+		headers: { Accept: '*/*', 'Content-Type': 'application/json' },
+	});
+	return data;
+};
 
+const unlikeData = async (quoteId: string | number) => {
+	const { data } = await axios.post(`${url}/unlike`, { quoteId }, {
+		withCredentials: true,
+		headers: { Accept: '*/*', 'Content-Type': 'application/json' },
+	});
+	return data;
+};
+
+const LikeButton: React.FC<LikeButtonProps> = ({ quoteId, likeCount, didLike }) => {
 	const getLikeCount = useRef<number>(likeCount);
 	const [getDidLike, setDidLike] = useState<boolean>(didLike);
+	const queryClient = useQueryClient();
+
+	const { mutate: performLike } = useMutation({
+		mutationFn: likeData,
+		onSuccess: () => {
+			getLikeCount.current += 1;
+			setDidLike(true);
+			queryClient.invalidateQueries({ queryKey: ['exploreQuotes'] });
+			queryClient.invalidateQueries({ queryKey: ['homeQuotes'] });
+		}
+	});
+
+	const { mutate: performUnlike } = useMutation({
+		mutationFn: unlikeData,
+		onSuccess: () => {
+			getLikeCount.current -= 1;
+			setDidLike(false);
+			queryClient.invalidateQueries({ queryKey: ['exploreQuotes'] });
+			queryClient.invalidateQueries({ queryKey: ['homeQuotes'] });
+		}
+	});
 
 	const like = () => {
-		dispatch((likeAsync as any)({ url: `${url}/like`, quoteId })).then((res: any) => {
-			if (res.meta.requestStatus === 'fulfilled') {
-				getLikeCount.current += 1;
-				setDidLike(true);
-			}
-		});
+		performLike(quoteId);
 	};
 
 	const unlike = () => {
-		dispatch((unlikeAsync as any)({ url: `${url}/unlike`, quoteId })).then((res: any) => {
-			if (res.meta.requestStatus === 'fulfilled') {
-				getLikeCount.current -= 1;
-				setDidLike(false);
-			}
-		});
+		performUnlike(quoteId);
 	};
 
 	return (

@@ -1,3 +1,4 @@
+"use client";
 import React, { useRef, useState } from 'react';
 import Topquotes from '../../presentationals/Topquotes/Topquotes';
 import QuotePost from '../QuotePost/QuotePost';

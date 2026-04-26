@@ -1,18 +1,32 @@
+"use client";
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { signUpAsync } from './redux/signUpThunk';
-import { loginAsync } from '../Signin/redux/signinThunk';
 import { url } from '../../../domain';
 import { useCurrentUser } from '../../../store/useCurrentUser';
-import { AppDispatch } from '../../../app/store';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import axios from 'axios';
+
+const signupData = async ({ name, username, password, email }: any) => {
+	const { data } = await axios.post(`${url}/signup`, { name, username, password, email }, {
+		withCredentials: true,
+		headers: { Accept: '*/*', 'Content-Type': 'application/json' },
+	});
+	return data;
+};
+
+const signinData = async ({ username, password }: any) => {
+	const { data } = await axios.post(`${url}/signin`, { username, password }, {
+		withCredentials: true,
+		headers: { Accept: '*/*', 'Content-Type': 'application/json' },
+	});
+	return data;
+};
 
 const Signup: React.FC = () => {
-	const dispatch = useDispatch<AppDispatch>();
 	const { isLoading: isUserLoading, isSuccess: isUserSuccess, data: currentUser } = useCurrentUser();
 	const router = useRouter();
-	
+	const queryClient = useQueryClient();
 
 	const [name, setName] = useState('');
 	const [username, setUsername] = useState('');
@@ -23,13 +37,29 @@ const Signup: React.FC = () => {
 	const [isTermsError, setIsTermsError] = useState(false);
 	const [isEmptyError, setIsEmptyError] = useState(false);
 
-	
-
 	useEffect(() => {
-		if (currentUser) {
+		if (isUserSuccess && currentUser) {
 			router.push('/');
 		}
-	}, [history, currentUser]);
+	}, [isUserSuccess, currentUser, router]);
+
+	const { mutate: login } = useMutation({
+		mutationFn: signinData,
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ['currentUser'] });
+			router.push('/');
+		}
+	});
+
+	const { mutate: register } = useMutation({
+		mutationFn: signupData,
+		onSuccess: () => {
+			login({ username, password });
+		},
+		onError: () => {
+			setIsExistsError(true);
+		}
+	});
 
 	const onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const { value } = event.target;
@@ -56,27 +86,16 @@ const Signup: React.FC = () => {
 		setTerms(value === 'on' ? true : false);
 	};
 
-	const submitLogin = (usernameStr: string, passwordStr: string) => {
-		dispatch((loginAsync as any)({ url: `${url}/signin`, username: usernameStr, password: passwordStr })).then((res: any) => {
-			if (res.meta.isUserSuccess) {
-				router.push('/');
-			}
-		});
-	};
-
 	const signup = (event: React.FormEvent<HTMLButtonElement | HTMLFormElement>) => {
 		event.preventDefault();
+		setIsExistsError(false);
+		setIsTermsError(false);
+		setIsEmptyError(false);
 		if (username && name && password && email) {
 			if (terms) {
-				dispatch((signUpAsync as any)({ url: `${url}/signup`, name, username, password, email })).then((res: any) => {
-					if (res.meta.isUserSuccess) {
-						submitLogin(username, password);
-					} else {
-						setIsExistsError(true);
-					}
-				});
+				register({ name, username, password, email });
 			} else {
-				if (!terms) setIsTermsError(true);
+				setIsTermsError(true);
 			}
 		} else {
 			setIsEmptyError(true);
@@ -102,7 +121,7 @@ const Signup: React.FC = () => {
 						<p className='f5 white'>Please fill all the fields.</p>
 					</div>
 				)}
-				<div className='measure pa3 black-80'>
+				<form className='measure pa3 black-80' onSubmit={signup}>
 					<fieldset id='sign_up' className='ba b--transparent ph0 mh0'>
 						<div className='mt3'>
 							<input className='pa2 input-reset ba br4 bg-transparent w-75' placeholder='Name' type='text' maxLength={20} onChange={onNameChange} />
@@ -119,17 +138,17 @@ const Signup: React.FC = () => {
 						<div className='mv3'>
 							<input className='b pa2 ba br4 bg-transparent' type='radio' onChange={onTermsChange} />
 							<p>I READ & UNDERSTAND the </p>
-							<Linkhref='/terms' className='no-underline dark-green'>
+							<Link href='/terms' className='no-underline dark-green'>
 								Terms of Uprophet.
 							</Link>
 						</div>
 					</fieldset>
 					<div className='lh-copy mt3'>
-						<button className='b ph3 pv2 input-reset ba br4 b--black bg-light-green grow pointer f6 dib' type='submit' onClick={signup}>
+						<button className='b ph3 pv2 input-reset ba br4 b--black bg-light-green grow pointer f6 dib' type='submit'>
 							Sign up
 						</button>
 					</div>
-				</div>
+				</form>
 			</article>
 		</section>
 	);

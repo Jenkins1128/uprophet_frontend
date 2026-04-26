@@ -1,13 +1,28 @@
+"use client";
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { useRouter } from 'next/navigation';
-import { changePasswordAsync, changePasswordSignInAsync } from './redux/changePasswordThunk';
 import ChangePasswordForm from './ChangePasswordForm/ChangePasswordForm';
 import { url } from '../../../domain';
-import { AppDispatch } from '../../../app/store';
+import { useMutation } from '@tanstack/react-query';
+import axios from 'axios';
+
+const changePasswordSignInData = async ({ username, password }: any) => {
+	const { data } = await axios.post(`${url}/changePasswordSignIn`, { username, password }, {
+		withCredentials: true,
+		headers: { Accept: '*/*', 'Content-Type': 'application/json' },
+	});
+	return data;
+};
+
+const changePasswordData = async ({ username, newPassword }: any) => {
+	const { data } = await axios.post(`${url}/changePassword`, { username, newPassword }, {
+		withCredentials: true,
+		headers: { Accept: '*/*', 'Content-Type': 'application/json' },
+	});
+	return data;
+};
 
 const ChangePassword: React.FC = () => {
-	const dispatch = useDispatch<AppDispatch>();
 	const router = useRouter();
 
 	const [username, setUsername] = useState<string>('');
@@ -20,6 +35,23 @@ const ChangePassword: React.FC = () => {
 	const [isIncorrectVerifyError, setIsIncorrectVerifyError] = useState<boolean>(false);
 	const [isEmptyError1, setIsEmptyError1] = useState<boolean>(false);
 	const [isEmptyError2, setIsEmptyError2] = useState<boolean>(false);
+
+	const { mutate: signIn } = useMutation({
+		mutationFn: changePasswordSignInData,
+		onSuccess: () => {
+			setChangePasswordForm(true);
+		},
+		onError: () => {
+			setIsIncorrectError(true);
+		}
+	});
+
+	const { mutate: changePass } = useMutation({
+		mutationFn: changePasswordData,
+		onSuccess: () => {
+			router.push('/signin');
+		}
+	});
 
 	const handleUsernameOnchange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const { value } = event.target;
@@ -41,16 +73,12 @@ const ChangePassword: React.FC = () => {
 		setVerifyPassword(value);
 	};
 
-	const initChangePasswordForm = (event: React.MouseEvent<HTMLButtonElement>) => {
+	const initChangePasswordForm = (event: React.MouseEvent<HTMLButtonElement> | React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
+		setIsIncorrectError(false);
+		setIsEmptyError1(false);
 		if (username && password) {
-			dispatch((changePasswordSignInAsync as any)({ url: `${url}/changePasswordSignIn`, username, password })).then((res: any) => {
-				if (res.meta.requestStatus === 'fulfilled') {
-					setChangePasswordForm(true);
-				} else {
-					setIsIncorrectError(true);
-				}
-			});
+			signIn({ username, password });
 		} else {
 			setIsEmptyError1(true);
 		}
@@ -58,13 +86,11 @@ const ChangePassword: React.FC = () => {
 
 	const changePassword = (event: React.MouseEvent<HTMLButtonElement>) => {
 		event.preventDefault();
+		setIsIncorrectVerifyError(false);
+		setIsEmptyError2(false);
 		if (newPassword && verifyPassword) {
 			if (newPassword === verifyPassword) {
-				dispatch((changePasswordAsync as any)({ url: `${url}/changePassword`, username, newPassword })).then((res: any) => {
-					if (res.meta.requestStatus === 'fulfilled') {
-						router.push('/signin');
-					}
-				});
+				changePass({ username, newPassword });
 			} else {
 				setIsIncorrectVerifyError(true);
 			}
@@ -88,7 +114,7 @@ const ChangePassword: React.FC = () => {
 							<p className='f5 white'>Please fill all the fields.</p>
 						</div>
 					)}
-					<form className='measure center pa3 black-80'>
+					<form className='measure center pa3 black-80' onSubmit={initChangePasswordForm as any}>
 						<fieldset id='change_password_signin' className='ba b--transparent ph0 mh0'>
 							<div className='mt3'>
 								<input className='pa2 input-reset ba br4 bg-transparent w-75' placeholder='Username' type='text' maxLength={20} onChange={handleUsernameOnchange} />
@@ -98,7 +124,7 @@ const ChangePassword: React.FC = () => {
 							</div>
 						</fieldset>
 						<div className='lh-copy mt1'>
-							<button className='b ph3 pv2 input-reset ba br4 b--black bg-light-green grow pointer f6 dib' type='submit' onClick={initChangePasswordForm}>
+							<button className='b ph3 pv2 input-reset ba br4 b--black bg-light-green grow pointer f6 dib' type='submit'>
 								Sign In
 							</button>
 						</div>

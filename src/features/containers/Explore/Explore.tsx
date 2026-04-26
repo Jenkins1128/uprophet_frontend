@@ -1,3 +1,4 @@
+"use client";
 import React from 'react';
 import { useCurrentUser } from '../../../store/useCurrentUser';
 import QuotePost from '../QuotePost/QuotePost';

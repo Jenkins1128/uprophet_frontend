@@ -1,36 +1,62 @@
+"use client";
 import React, { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { url } from '../../../domain';
-import { favoriteAsync, unfavoriteAsync } from './redux/favoriteButtonThunk';
-import { AppDispatch } from '../../../app/store';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import axios from 'axios';
 
 interface FavoriteButtonProps {
 	username: string;
 	didFavorite: boolean;
 }
 
+const favoriteData = async (toUser: string) => {
+	const { data } = await axios.post(`${url}/favorite`, { toUser }, {
+		withCredentials: true,
+		headers: { Accept: '*/*', 'Content-Type': 'application/json' },
+	});
+	return data;
+};
+
+const unfavoriteData = async (toUser: string) => {
+	const { data } = await axios.post(`${url}/unfavorite`, { toUser }, {
+		withCredentials: true,
+		headers: { Accept: '*/*', 'Content-Type': 'application/json' },
+	});
+	return data;
+};
+
 const FavoriteButton: React.FC<FavoriteButtonProps> = ({ username, didFavorite }) => {
-	const dispatch = useDispatch<AppDispatch>();
 	const [getDidFavorite, setDidFavorite] = useState<boolean>(false);
+	const queryClient = useQueryClient();
 
 	useEffect(() => {
 		setDidFavorite(didFavorite);
 	}, [didFavorite]);
 
+	const { mutate: performFavorite } = useMutation({
+		mutationFn: favoriteData,
+		onSuccess: () => {
+			setDidFavorite(true);
+			queryClient.invalidateQueries({ queryKey: ['favoriters'] });
+			queryClient.invalidateQueries({ queryKey: ['favoriting'] });
+		}
+	});
+
+	const { mutate: performUnfavorite } = useMutation({
+		mutationFn: unfavoriteData,
+		onSuccess: () => {
+			setDidFavorite(false);
+			queryClient.invalidateQueries({ queryKey: ['favoriters'] });
+			queryClient.invalidateQueries({ queryKey: ['favoriting'] });
+		}
+	});
+
 	const favorite = () => {
-		dispatch((favoriteAsync as any)({ url: `${url}/favorite`, toUser: username })).then((res: any) => {
-			if (res.meta.requestStatus === 'fulfilled') {
-				setDidFavorite(true);
-			}
-		});
+		performFavorite(username);
 	};
 
 	const unfavorite = () => {
-		dispatch((unfavoriteAsync as any)({ url: `${url}/unfavorite`, toUser: username })).then((res: any) => {
-			if (res.meta.requestStatus === 'fulfilled') {
-				setDidFavorite(false);
-			}
-		});
+		performUnfavorite(username);
 	};
 
 	return (

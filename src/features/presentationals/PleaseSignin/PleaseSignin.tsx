@@ -1,10 +1,11 @@
+"use client";
 import React from 'react';
-import { useHistory } from 'react-router';
+import { useRouter } from 'next/navigation';
 
 const PleaseSignin: React.FC = () => {
-	const history = useHistory();
+	const router = useRouter();
 	const pleaseSignin = () => {
-		history.push('/signin');
+		router.push('/signin');
 	};
 
 	return (

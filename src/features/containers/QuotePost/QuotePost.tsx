@@ -41,10 +41,10 @@ const QuotePost: React.FC<QuotePostProps> = ({ username, title, quote, quoteId, 
 		<article id={String(quoteId)} className=' bg-transparent br7 pv3 ma3 mh6-l mh5-m br4 bw4 shadow-4 ph3'>
 			<div className='flex justify-between'>
 				<div className='flex'>
-					<Linkhref={`/${username}`}>
+					<Link href={`/${username}`}>
 						<Userphoto username={username} />
 					</Link>
-					<Linkhref={`/${username}`} className='no-underline'>
+					<Link href={`/${username}`} className='no-underline'>
 						<p className='black-50 b relative top--1 '>{username}</p>
 					</Link>
 				</div>
@@ -64,7 +64,7 @@ const QuotePost: React.FC<QuotePostProps> = ({ username, title, quote, quoteId, 
 				<div className='flex items-center'>
 					<LikeButton quoteId={quoteId} likeCount={likeCount} didLike={didLike} />
 					{hasComments && (
-						<Linkhref={`/quote/${quoteId}`} className='ml4 no-underline f5 b light-green grow '>
+						<Link href={`/quote/${quoteId}`} className='ml4 no-underline f5 b light-green grow '>
 							Comments
 						</Link>
 					)}

@@ -14,12 +14,12 @@ const FavoritingCard: React.FC<FavoritingCardProps> = ({ currentUser, username, 
 		<article className='flex justify-between w-100 bb b--black-05 pb2 mt2'>
 			<div className='flex items-center'>
 				<div>
-					<Linkhref={`/${username}`}>
+					<Link href={`/${username}`}>
 						<Userphoto username={username} />
 					</Link>
 				</div>
 				<div className='ml3'>
-					<Linkhref={`/${username}`} className='no-underline'>
+					<Link href={`/${username}`} className='no-underline'>
 						<h1 className='f6 f5-ns fw6 lh-title light-green mv0'>{username}</h1>
 					</Link>
 				</div>

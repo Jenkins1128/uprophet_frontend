@@ -1,21 +1,36 @@
+"use client";
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
 import Link from 'next/link';
 import { url } from '../../../domain';
 import Loading from '../../presentationals/Loading/Loading';
 import CheckEmailForm from './CheckEmailForm/CheckEmailForm';
-import { forgotPasswordAsync } from './redux/forgotPasswordThunk';
-import { AppDispatch } from '../../../app/store';
+import { useMutation } from '@tanstack/react-query';
+import axios from 'axios';
+
+const forgotPasswordData = async ({ username, email }: any) => {
+	const { data } = await axios.post(`${url}/forgotPassword`, { username, email }, {
+		withCredentials: true,
+		headers: { Accept: '*/*', 'Content-Type': 'application/json' },
+	});
+	return data;
+};
 
 const ForgotPassword: React.FC = () => {
-	const dispatch = useDispatch<AppDispatch>();
-
 	const [username, setUsername] = useState<string>('');
 	const [email, setEmail] = useState<string>('');
 	const [checkEmailForm, setCheckEmailForm] = useState<boolean>(false);
-	const [isLoading, setLoading] = useState<boolean>(false);
 	const [isIncorrectError, setIsIncorrectError] = useState<boolean>(false);
 	const [isEmptyError, setIsEmptyError] = useState<boolean>(false);
+
+	const { mutate: forgotPass, isPending: isLoading } = useMutation({
+		mutationFn: forgotPasswordData,
+		onSuccess: () => {
+			setCheckEmailForm(true);
+		},
+		onError: () => {
+			setIsIncorrectError(true);
+		}
+	});
 
 	const handleUsernameOnchange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const { value } = event.target;
@@ -27,18 +42,12 @@ const ForgotPassword: React.FC = () => {
 		setEmail(value);
 	};
 
-	const initCheckEmailForm = (event: React.MouseEvent<HTMLButtonElement>) => {
+	const initCheckEmailForm = (event: React.MouseEvent<HTMLButtonElement> | React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
+		setIsIncorrectError(false);
+		setIsEmptyError(false);
 		if (username && email) {
-			setLoading(true);
-			dispatch((forgotPasswordAsync as any)({ url: `${url}/forgotPassword`, username, email })).then((res: any) => {
-				setLoading(false);
-				if (res.meta.requestStatus === 'fulfilled') {
-					setCheckEmailForm(true);
-				} else {
-					setIsIncorrectError(true);
-				}
-			});
+			forgotPass({ username, email });
 		} else {
 			setIsEmptyError(true);
 		}
@@ -61,7 +70,7 @@ const ForgotPassword: React.FC = () => {
 							<p className='f5 white'>Please fill all the fields.</p>
 						</div>
 					)}
-					<form className='measure center pa3 black-80'>
+					<form className='measure center pa3 black-80' onSubmit={initCheckEmailForm as any}>
 						<fieldset id='change_password_signin' className='ba b--transparent ph0 mh0'>
 							<div className='mt3'>
 								<input className='pa2 input-reset ba br4 bg-transparent w-75' placeholder='Username' type='text' maxLength={20} onChange={handleUsernameOnchange} />
@@ -71,7 +80,7 @@ const ForgotPassword: React.FC = () => {
 							</div>
 						</fieldset>
 						<div className='lh-copy mt1'>
-							<button className='b ph3 pv2 input-reset ba br4 b--black bg-light-green grow pointer f6 dib' type='submit' onClick={initCheckEmailForm}>
+							<button className='b ph3 pv2 input-reset ba br4 b--black bg-light-green grow pointer f6 dib' type='submit'>
 								Submit
 							</button>
 						</div>

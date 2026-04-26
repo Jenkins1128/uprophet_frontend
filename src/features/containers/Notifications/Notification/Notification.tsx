@@ -16,7 +16,7 @@ const Notification: React.FC<NotificationProps> = ({ username, notice, quotesId,
 		<article className='flex justify-between w-100 bb b--black-05 pb2 mt2'>
 			<div className='flex items-center'>
 				<div className='dtc w3 v-mid'>
-					<Linkhref={`/${username}`}>
+					<Link href={`/${username}`}>
 						<Userphoto username={username} />
 					</Link>
 				</div>
@@ -29,11 +29,11 @@ const Notification: React.FC<NotificationProps> = ({ username, notice, quotesId,
 			</div>
 			<div className='self-center'>
 				{!quotesId ? (
-					<Linkhref={`/${username}`}>
+					<Link href={`/${username}`}>
 						<img src={forward} alt='forward' className='w2  h2 bg-light-green br-100' />
 					</Link>
 				) : (
-					<Linkhref={`/quote/${quotesId}`}>
+					<Link href={`/quote/${quotesId}`}>
 						<img src={forward} alt='forward' className='w2  h2 bg-light-green br-100' />
 					</Link>
 				)}

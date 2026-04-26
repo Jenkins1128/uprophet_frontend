@@ -1,3 +1,4 @@
+"use client";
 import React from 'react';
 import RedDot from '../../../images/reddot.png';
 import { useQuery } from '@tanstack/react-query';

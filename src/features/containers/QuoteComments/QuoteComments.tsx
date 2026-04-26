@@ -1,3 +1,4 @@
+"use client";
 import React, { useState } from 'react';
 import Loading from '../../presentationals/Loading/Loading';
 import PleaseSignin from '../../presentationals/PleaseSignin/PleaseSignin';

@@ -1,3 +1,4 @@
+"use client";
 import React from 'react';
 import PleaseSignin from '../../presentationals/PleaseSignin/PleaseSignin';
 import Notification from './Notification/Notification';
