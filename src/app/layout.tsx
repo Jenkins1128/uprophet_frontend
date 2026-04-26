@@ -1,5 +1,5 @@
 import '../index.css';
-import Header from '../features/presentationals/Header/Header';
+import Header from '../components/layout/Header/Header';
 
 export const metadata = {
   title: 'uProphet',

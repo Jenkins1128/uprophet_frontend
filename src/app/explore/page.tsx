@@ -1,5 +1,5 @@
 'use client';
-import Explore from '../../features/containers/Explore/Explore';
+import Explore from '../../features/quotes/Explore/Explore';
 
 export default function Page() {
   return <Explore />;

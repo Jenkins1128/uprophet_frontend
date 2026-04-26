@@ -1,5 +1,5 @@
 'use client';
-import About from '../../features/presentationals/About/About';
+import About from '../../components/ui/About/About';
 
 export default function Page() {
   return <About />;

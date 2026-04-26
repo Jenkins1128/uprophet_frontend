@@ -1,5 +1,5 @@
 'use client';
-import Favoriting from '../../../features/containers/Favoriting/Favoriting';
+import Favoriting from '../../../features/profile/Favoriting/Favoriting';
 
 export default function Page() {
   return <Favoriting />;

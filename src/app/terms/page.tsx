@@ -1,5 +1,5 @@
 'use client';
-import Terms from '../../features/presentationals/Terms/Terms';
+import Terms from '../../components/ui/Terms/Terms';
 
 export default function Page() {
   return <Terms />;
