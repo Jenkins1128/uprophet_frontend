@@ -1,8 +1,4 @@
 import { configureStore } from '@reduxjs/toolkit';
-import commentsReducer from '../features/containers/QuoteComments/redux/quoteCommentsSlice';
-import postCommentReducer from '../features/containers/QuoteComments/redux/postCommentSlice';
-import getQuotePostReducer from '../features/containers/QuoteComments/redux/getQuotePostSlice';
-import searchReducer from '../features/containers/Searchresults/redux/searchSlice';
 import profileReducer from '../features/containers/Profile/redux/profileSlice';
 import userInfoReducer from '../features/containers/Profile/redux/userInfoSlice';
 import favoritersReducer from '../features/containers/Favoriters/redux/favoritersSlice';
@@ -14,10 +10,6 @@ import editPhotoReducer from '../features/containers/Profile/EditProfile/redux/e
 
 export const store = configureStore({
 	reducer: {
-		comments: commentsReducer,
-		postComment: postCommentReducer,
-		quotePost: getQuotePostReducer,
-		search: searchReducer,
 		profile: profileReducer,
 		userInfo: userInfoReducer,
 		favoriters: favoritersReducer,

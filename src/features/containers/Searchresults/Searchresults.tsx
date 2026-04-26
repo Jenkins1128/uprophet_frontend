@@ -1,52 +1,45 @@
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from 'react-router';
-import { searchAsync, selectRequestStatus, selectResults } from './redux/searchSlice';
+import React from 'react';
+import { useParams } from 'next/navigation';
 import PleaseSignin from '../../presentationals/PleaseSignin/PleaseSignin';
 import ResultCard from './ResultCard/ResultCard';
 import Loading from '../../presentationals/Loading/Loading';
 import { useCurrentUser } from '../../../store/useCurrentUser';
 import { url } from '../../../domain';
-import { AppDispatch } from '../../../app/store';
+import { useQuery } from '@tanstack/react-query';
+import axios from 'axios';
+
+const fetchSearchResults = async (search: string) => {
+	const { data } = await axios.post(`${url}/search`, { search }, {
+		withCredentials: true,
+		headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+	});
+	return data;
+};
 
 const Searchresults: React.FC = () => {
-	const { searchtext } = useParams<{ searchtext: string }>();
-	const dispatch = useDispatch<AppDispatch>();
-	const { isLoading: isUserLoading, isSuccess: isUserSuccess, data: currentUser } = useCurrentUser();
+	const params = useParams();
+	const searchtext = params?.searchtext as string;
+	const { isLoading: isUserLoading, isSuccess: isUserSuccess } = useCurrentUser();
 
-	const requestStatus = useSelector(selectRequestStatus);
-	const results = useSelector(selectResults) as any[];
+	const { data: results = [], isLoading: isSearchLoading } = useQuery({
+		queryKey: ['search', searchtext],
+		queryFn: () => fetchSearchResults(searchtext),
+		enabled: isUserSuccess && !!searchtext && searchtext.trim() !== '',
+	});
 
-	
-
-	useEffect(() => {
-		if (searchtext && searchtext.trim() !== '') {
-			dispatch((searchAsync as any)({ url: `${url}/search`, search: searchtext }));
-		}
-	}, [dispatch, searchtext]);
+	if (isUserLoading) return <Loading />;
+	if (!isUserSuccess) return <PleaseSignin />;
+	if (isSearchLoading) return <Loading />;
 
 	return (
-		<>
-			{isUserLoading ? (
-				<Loading />
-			) : isUserSuccess ? (
-				<section className='mt6 mh2 f7'>
-					<h1 className='flex ml4 moon-gray'>Search Results for "{searchtext}"</h1>
-					<div className='mt5'>
-						{results.map((result: any) => {
-							return <ResultCard key={result.id} currentUser={result.currentUser} username={result.user_name} didFavorite={result.didFavorite} />;
-						})}
-					</div>
-				</section>
-			) : requestStatus === 'idle' ? (
-				<section className='mt6 mh2 f7'>
-					<h1 className='flex ml4 moon-gray'>Search Results for ""</h1>
-					<div className='mt5'></div>
-				</section>
-			) : (
-				<PleaseSignin />
-			)}
-		</>
+		<section className='mt6 mh2 f7'>
+			<h1 className='flex ml4 moon-gray'>Search Results for "{searchtext || ''}"</h1>
+			<div className='mt5'>
+				{results.map((result: any) => {
+					return <ResultCard key={result.id} currentUser={result.currentUser} username={result.user_name} didFavorite={result.didFavorite} />;
+				})}
+			</div>
+		</section>
 	);
 };
 

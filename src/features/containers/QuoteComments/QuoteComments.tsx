@@ -1,108 +1,107 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-
+import React, { useState } from 'react';
 import Loading from '../../presentationals/Loading/Loading';
 import PleaseSignin from '../../presentationals/PleaseSignin/PleaseSignin';
 import { useParams } from 'next/navigation';
 import CommentPoster from './CommentPoster/CommentPoster';
 import QuoteComment from './QuoteComment/QuoteComment';
 import QuotePost from '../QuotePost/QuotePost';
-import { getCommentsAsync, selectLatestComments, selectSecondRequestStatus, updateQuoteComment } from './redux/quoteCommentsSlice';
-import { clearAddedComment, postCommentAsync, selectAddedComment } from './redux/postCommentSlice';
-import { getQuotePostAsync, selectQuotePost } from './redux/getQuotePostSlice';
 import { useCurrentUser } from '../../../store/useCurrentUser';
 import { url } from '../../../domain';
-import { AppDispatch } from '../../../app/store';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import axios from 'axios';
+
+const fetchQuotePost = async (quoteId: string) => {
+	const { data } = await axios.post(`${url}/getQuotePost`, { quoteId }, {
+		withCredentials: true,
+		headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+	});
+	return data;
+};
+
+const fetchComments = async (quoteId: string) => {
+	const { data } = await axios.post(`${url}/getComments`, { quoteId }, {
+		withCredentials: true,
+		headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+	});
+	return data;
+};
+
+const postCommentData = async ({ quoteId, comment }: { quoteId: string; comment: string }) => {
+	const { data } = await axios.post(`${url}/addComment`, { quoteId, comment }, {
+		withCredentials: true,
+		headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+	});
+	return data;
+};
 
 const QuoteComments: React.FC = () => {
 	const { quoteId } = useParams<{ quoteId: string }>();
-	const dispatch = useDispatch<AppDispatch>();
-	const { isLoading: isUserLoading, isSuccess: isUserSuccess, data: currentUser } = useCurrentUser();
-	const [comment, setComment] = useState<string>('');
+	const { isLoading: isUserLoading, isSuccess: isUserSuccess } = useCurrentUser();
+	const queryClient = useQueryClient();
+	const [commentText, setCommentText] = useState<string>('');
 
-	const latestComments = useSelector(selectLatestComments) as any[];
-	const getAddedComment = useSelector(selectAddedComment) as any;
-	const quotePost = useSelector(selectQuotePost) as any;
-	const requestStatus1 = useSelector(selectFirstRequestStatus);
-	const requestStatus2 = useSelector(selectSecondRequestStatus);
+	const { data: quotePost, isLoading: isQuoteLoading } = useQuery({
+		queryKey: ['quotePost', quoteId],
+		queryFn: () => fetchQuotePost(quoteId as string),
+		enabled: isUserSuccess && !!quoteId,
+	});
 
-	const isEmpty = (obj: any) => {
-		for (const x in obj) {
-			return false;
-		}
-		return true;
-	};
+	const { data: latestComments = [], isLoading: isCommentsLoading } = useQuery({
+		queryKey: ['comments', quoteId],
+		queryFn: () => fetchComments(quoteId as string),
+		enabled: isUserSuccess && !!quoteId,
+	});
 
-	useEffect(() => {
-		dispatch((getQuotePostAsync as any)({ url: `${url}/getQuotePost`, quoteId }));
-	}, [dispatch, quoteId]);
-
-	
-
-	useEffect(() => {
-		if (requestStatus1 === 'fulfilled') {
-			dispatch((getCommentsAsync as any)({ url: `${url}/getComments`, quoteId }));
-		}
-	}, [dispatch, requestStatus1, quoteId]);
-
-	useEffect(() => {
-		if (!isEmpty(getAddedComment)) {
-			let updatedComments = [...latestComments];
-			updatedComments.unshift(getAddedComment);
-			dispatch(clearAddedComment());
-			dispatch(updateQuoteComment(updatedComments));
-		}
-	}, [dispatch, getAddedComment, latestComments]);
+	const { mutate: createComment } = useMutation({
+		mutationFn: postCommentData,
+		onSuccess: (newComment) => {
+			queryClient.setQueryData(['comments', quoteId], (oldData: any[]) => {
+				if (!oldData) return [newComment];
+				return [newComment, ...oldData];
+			});
+		},
+	});
 
 	const postComment = (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
-		if (quotePost.id && comment !== '') {
-			dispatch((postCommentAsync as any)({ url: `${url}/addComment`, quoteId, comment }));
+		if (quotePost?.id && commentText !== '') {
+			createComment({ quoteId: quoteId as string, comment: commentText });
 			(event.target as HTMLFormElement).reset();
-			setComment('');
+			setCommentText('');
 		}
 	};
 
 	const onCommentChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		const { value } = event.target;
-		setComment(value);
+		setCommentText(event.target.value);
 	};
 
+	if (isUserLoading) return <Loading />;
+	if (!isUserSuccess) return <PleaseSignin />;
+	if (isQuoteLoading || isCommentsLoading) return <Loading />;
+
 	return (
-		<>
-			{requestStatus1 === 'pending' ? (
-				<Loading />
-			) : requestStatus1 === 'fulfilled' ? (
-				requestStatus2 === 'pending' ? (
-					<Loading />
-				) : requestStatus2 === 'fulfilled' ? (
-					<section className='mt6 mh2 f7'>
-						{quotePost.id && (
-							<QuotePost
-								quoteId={quotePost.id}
-								username={quotePost.user_name}
-								title={quotePost.title}
-								quote={`${quotePost.quote}`}
-								likeCount={quotePost.likeCount}
-								didLike={quotePost.didLike}
-								date={quotePost.date_posted}
-								hasComments={false}
-							/>
-						)}
-						<CommentPoster postComment={postComment} onCommentChange={onCommentChange} />
-						<div className='mt5'>
-							{latestComments.map((commentData) => {
-								return <QuoteComment key={commentData.id} comment={commentData.comment} commenter={commentData.commenter} date={commentData.date_posted} />;
-							})}
-						</div>
-					</section>
-				) : (
-					<PleaseSignin />
-				)
-			) : (
-				<PleaseSignin />
+		<section className='mt6 mh2 f7'>
+			{quotePost?.id && (
+				<QuotePost
+					quoteId={quotePost.id}
+					username={quotePost.user_name}
+					title={quotePost.title}
+					quote={`${quotePost.quote}`}
+					likeCount={quotePost.likeCount}
+					didLike={quotePost.didLike}
+					date={quotePost.date_posted}
+					hasComments={false}
+					canDelete={false}
+					deleteQuote={() => {}}
+				/>
 			)}
-		</>
+			<CommentPoster postComment={postComment} onCommentChange={onCommentChange} />
+			<div className='mt5'>
+				{latestComments.map((commentData: any) => {
+					return <QuoteComment key={commentData.id} comment={commentData.comment} commenter={commentData.commenter} date={commentData.date_posted} />;
+				})}
+			</div>
+		</section>
 	);
 };
 
