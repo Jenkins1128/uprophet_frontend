@@ -1,0 +1,29 @@
+import '../index.css';
+import '../App.css';
+import Header from '../features/presentationals/Header/Header';
+
+export const metadata = {
+  title: 'uProphet',
+  description: 'uProphet Web App',
+};
+
+import Providers from './providers';
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html lang="en">
+      <body>
+        <Providers>
+          <div className="App">
+            <Header />
+            <main>{children}</main>
+          </div>
+        </Providers>
+      </body>
+    </html>
+  );
+}
