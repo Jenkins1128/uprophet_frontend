@@ -60,7 +60,7 @@ const Home: React.FC = () => {
 				});
 			}
 			updatedQuotes.unshift(getNewQuote);
-			dispatch(clearAddedQuote(undefined));
+			dispatch(clearAddedQuote());
 			//add new quote to latest quotes
 			dispatch(updateLatestQuotes(updatedQuotes));
 		}

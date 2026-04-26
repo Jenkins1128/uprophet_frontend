@@ -1,12 +1,17 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-const initialState = {
+interface GetUserState {
+	requestStatus: 'idle' | 'pending' | 'fulfilled' | 'rejected';
+	currentUser: string;
+}
+
+const initialState: GetUserState = {
 	requestStatus: 'idle',
 	currentUser: ''
 };
 
-export const getUserAsync = createAsyncThunk('getUser/status', async (url, { rejectWithValue }) => {
+export const getUserAsync = createAsyncThunk('getUser/status', async (url: string, { rejectWithValue }) => {
 	try {
 		const response = await axios({
 			url,
@@ -15,8 +20,8 @@ export const getUserAsync = createAsyncThunk('getUser/status', async (url, { rej
 			headers: { Accept: '*/*' }
 		});
 		return response.data;
-	} catch (err) {
-		return rejectWithValue(err.response.data);
+	} catch (err: any) {
+		return rejectWithValue(err.response?.data);
 	}
 });
 
@@ -33,7 +38,7 @@ export const getUserSlice = createSlice({
 			.addCase(getUserAsync.pending, (state) => {
 				state.requestStatus = 'pending';
 			})
-			.addCase(getUserAsync.fulfilled, (state, { payload }) => {
+			.addCase(getUserAsync.fulfilled, (state, { payload }: PayloadAction<string>) => {
 				state.requestStatus = 'fulfilled';
 				state.currentUser = payload;
 			})
@@ -45,6 +50,6 @@ export const getUserSlice = createSlice({
 });
 
 export const { clearCurrentUser } = getUserSlice.actions;
-export const selectFirstRequestStatus = (state) => state.getUser.requestStatus;
-export const selectCurrentUser = (state) => state.getUser.currentUser;
+export const selectFirstRequestStatus = (state: any) => state.getUser.requestStatus;
+export const selectCurrentUser = (state: any) => state.getUser.currentUser;
 export default getUserSlice.reducer;

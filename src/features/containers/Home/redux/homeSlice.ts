@@ -1,13 +1,18 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-const initialState = {
+interface HomeState {
+	latestQuotes: any[];
+	requestStatus: 'idle' | 'pending' | 'fulfilled' | 'rejected';
+}
+
+const initialState: HomeState = {
 	latestQuotes: [],
 	requestStatus: 'idle'
 };
 
-export const homeAsync = createAsyncThunk('home/status', async (url, { rejectWithValue }) => {
-	let errorCode;
+export const homeAsync = createAsyncThunk('home/status', async (url: string, { rejectWithValue }) => {
+	let errorCode: number | undefined;
 	try {
 		const response = await axios({
 			url,
@@ -19,7 +24,7 @@ export const homeAsync = createAsyncThunk('home/status', async (url, { rejectWit
 			errorCode = response.status;
 		}
 		return response.data;
-	} catch (err) {
+	} catch (err: any) {
 		return rejectWithValue([errorCode]);
 	}
 });
@@ -28,7 +33,7 @@ export const homeSlice = createSlice({
 	name: 'home',
 	initialState,
 	reducers: {
-		updateLatestQuotes: (state, { payload }) => {
+		updateLatestQuotes: (state, { payload }: PayloadAction<any[]>) => {
 			state.latestQuotes = payload;
 		}
 	},
@@ -37,7 +42,7 @@ export const homeSlice = createSlice({
 			.addCase(homeAsync.pending, (state) => {
 				state.requestStatus = 'pending';
 			})
-			.addCase(homeAsync.fulfilled, (state, { payload }) => {
+			.addCase(homeAsync.fulfilled, (state, { payload }: PayloadAction<any[]>) => {
 				state.latestQuotes = payload;
 				state.requestStatus = 'fulfilled';
 			})
@@ -48,7 +53,7 @@ export const homeSlice = createSlice({
 });
 
 export const { updateLatestQuotes } = homeSlice.actions;
-export const selectLatestQuotes = (state) => state.home.latestQuotes;
-export const selectSecondRequestStatus = (state) => state.home.requestStatus;
+export const selectLatestQuotes = (state: any) => state.home.latestQuotes;
+export const selectSecondRequestStatus = (state: any) => state.home.requestStatus;
 
 export default homeSlice.reducer;

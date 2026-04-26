@@ -1,11 +1,20 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-const initialState = {
+interface UserInfoState {
+	userInfo: any;
+}
+
+const initialState: UserInfoState = {
 	userInfo: {}
 };
 
-export const userInfoAsync = createAsyncThunk('userInfo/status', async (data, { rejectWithValue }) => {
+interface UserInfoData {
+	url: string;
+	username: string;
+}
+
+export const userInfoAsync = createAsyncThunk('userInfo/status', async (data: UserInfoData, { rejectWithValue }) => {
 	const { url, username } = data;
 	try {
 		const response = await axios({
@@ -18,8 +27,8 @@ export const userInfoAsync = createAsyncThunk('userInfo/status', async (data, { 
 			}
 		});
 		return response.data;
-	} catch (err) {
-		return rejectWithValue(err.response.data);
+	} catch (err: any) {
+		return rejectWithValue(err.response?.data);
 	}
 });
 
@@ -30,7 +39,7 @@ export const userInfoSlice = createSlice({
 	extraReducers: (builder) => {
 		builder
 			.addCase(userInfoAsync.pending, () => {})
-			.addCase(userInfoAsync.fulfilled, (state, { payload }) => {
+			.addCase(userInfoAsync.fulfilled, (state, { payload }: PayloadAction<any>) => {
 				state.userInfo = payload;
 			})
 			.addCase(userInfoAsync.rejected, (state) => {
@@ -39,5 +48,5 @@ export const userInfoSlice = createSlice({
 	}
 });
 
-export const selectUserInfo = (state) => state.userInfo.userInfo;
+export const selectUserInfo = (state: any) => state.userInfo.userInfo;
 export default userInfoSlice.reducer;
