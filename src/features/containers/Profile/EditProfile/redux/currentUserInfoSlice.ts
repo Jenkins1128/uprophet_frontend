@@ -1,12 +1,17 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-const initialState = {
+interface CurrentUserInfoState {
+	requestStatus: 'idle' | 'pending' | 'fulfilled' | 'rejected';
+	currentUserInfo: any;
+}
+
+const initialState: CurrentUserInfoState = {
 	requestStatus: 'idle',
 	currentUserInfo: {}
 };
 
-export const getCurrentUserInfoAsync = createAsyncThunk('currentUserInfo/status', async (url, { rejectWithValue }) => {
+export const getCurrentUserInfoAsync = createAsyncThunk('currentUserInfo/status', async (url: string, { rejectWithValue }) => {
 	try {
 		const response = await axios({
 			url,
@@ -15,8 +20,8 @@ export const getCurrentUserInfoAsync = createAsyncThunk('currentUserInfo/status'
 			headers: { Accept: '*/*' }
 		});
 		return response.data;
-	} catch (err) {
-		return rejectWithValue(err.response.data);
+	} catch (err: any) {
+		return rejectWithValue(err.response?.data);
 	}
 });
 
@@ -29,7 +34,7 @@ export const currentUserInfoSlice = createSlice({
 			.addCase(getCurrentUserInfoAsync.pending, (state) => {
 				state.requestStatus = 'pending';
 			})
-			.addCase(getCurrentUserInfoAsync.fulfilled, (state, { payload }) => {
+			.addCase(getCurrentUserInfoAsync.fulfilled, (state, { payload }: PayloadAction<any>) => {
 				state.requestStatus = 'fulfilled';
 				state.currentUserInfo = payload;
 			})
@@ -39,6 +44,6 @@ export const currentUserInfoSlice = createSlice({
 	}
 });
 
-export const selectRequestStatus = (state) => state.currentUserInfo.requestStatus;
-export const selectCurrentUserInfo = (state) => state.currentUserInfo.currentUserInfo;
+export const selectRequestStatus = (state: any) => state.currentUserInfo.requestStatus;
+export const selectCurrentUserInfo = (state: any) => state.currentUserInfo.currentUserInfo;
 export default currentUserInfoSlice.reducer;

@@ -1,12 +1,22 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-const initialState = {
+interface SearchState {
+	requestStatus: 'idle' | 'pending' | 'fulfilled' | 'rejected';
+	results: any[];
+}
+
+const initialState: SearchState = {
 	requestStatus: 'idle',
 	results: []
 };
 
-export const searchAsync = createAsyncThunk('search/status', async (data, { rejectWithValue }) => {
+interface SearchData {
+	url: string;
+	search: string;
+}
+
+export const searchAsync = createAsyncThunk('search/status', async (data: SearchData, { rejectWithValue }) => {
 	const { url, search } = data;
 	try {
 		const response = await axios({
@@ -19,8 +29,8 @@ export const searchAsync = createAsyncThunk('search/status', async (data, { reje
 			}
 		});
 		return response.data;
-	} catch (err) {
-		return rejectWithValue(err.response.data);
+	} catch (err: any) {
+		return rejectWithValue(err.response?.data);
 	}
 });
 
@@ -33,7 +43,7 @@ export const searchSlice = createSlice({
 			.addCase(searchAsync.pending, (state) => {
 				state.requestStatus = 'pending';
 			})
-			.addCase(searchAsync.fulfilled, (state, { payload }) => {
+			.addCase(searchAsync.fulfilled, (state, { payload }: PayloadAction<any[]>) => {
 				state.requestStatus = 'fulfilled';
 				state.results = payload;
 			})
@@ -43,6 +53,6 @@ export const searchSlice = createSlice({
 	}
 });
 
-export const selectRequestStatus = (state) => state.search.requestStatus;
-export const selectResults = (state) => state.search.results;
+export const selectRequestStatus = (state: any) => state.search.requestStatus;
+export const selectResults = (state: any) => state.search.results;
 export default searchSlice.reducer;

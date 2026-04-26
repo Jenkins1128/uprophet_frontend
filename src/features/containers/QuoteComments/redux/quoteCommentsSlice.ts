@@ -1,14 +1,24 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-const initialState = {
+interface QuoteCommentsState {
+	status: 'idle' | 'pending' | 'fulfilled' | 'rejected';
+	latestComments: any[];
+}
+
+const initialState: QuoteCommentsState = {
 	status: 'idle',
 	latestComments: []
 };
 
-export const getCommentsAsync = createAsyncThunk('getComments/status', async (data, { rejectWithValue }) => {
+interface GetCommentsData {
+	url: string;
+	quoteId: string | number;
+}
+
+export const getCommentsAsync = createAsyncThunk('getComments/status', async (data: GetCommentsData, { rejectWithValue }) => {
 	const { url, quoteId } = data;
-	let errorCode;
+	let errorCode: number | undefined;
 	try {
 		const response = await axios({
 			url,
@@ -20,7 +30,7 @@ export const getCommentsAsync = createAsyncThunk('getComments/status', async (da
 			}
 		});
 		return response.data;
-	} catch (err) {
+	} catch (err: any) {
 		return rejectWithValue([errorCode]);
 	}
 });
@@ -29,7 +39,7 @@ export const getCommentsSlice = createSlice({
 	name: 'getComments',
 	initialState,
 	reducers: {
-		updateQuoteComment: (state, { payload }) => {
+		updateQuoteComment: (state, { payload }: PayloadAction<any[]>) => {
 			state.latestComments = payload;
 		}
 	},
@@ -38,7 +48,7 @@ export const getCommentsSlice = createSlice({
 			.addCase(getCommentsAsync.pending, (state) => {
 				state.status = 'pending';
 			})
-			.addCase(getCommentsAsync.fulfilled, (state, { payload }) => {
+			.addCase(getCommentsAsync.fulfilled, (state, { payload }: PayloadAction<any[]>) => {
 				state.status = 'fulfilled';
 				state.latestComments = payload;
 			})
@@ -49,6 +59,6 @@ export const getCommentsSlice = createSlice({
 });
 
 export const { updateQuoteComment } = getCommentsSlice.actions;
-export const selectLatestComments = (state) => state.comments.latestComments;
-export const selectSecondRequestStatus = (state) => state.comments.status;
+export const selectLatestComments = (state: any) => state.comments.latestComments;
+export const selectSecondRequestStatus = (state: any) => state.comments.status;
 export default getCommentsSlice.reducer;

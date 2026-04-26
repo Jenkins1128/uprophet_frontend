@@ -1,11 +1,25 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-const initialState = {
+interface EditPhotoState {
+	changePhotoStatus: 'idle' | 'pending' | 'fulfilled' | 'rejected';
+}
+
+const initialState: EditPhotoState = {
 	changePhotoStatus: 'idle'
 };
 
-export const changePhotoAsync = createAsyncThunk('changePhoto/status', async (data, { rejectWithValue }) => {
+interface ImageData {
+	name: string;
+	image: string;
+}
+
+interface EditPhotoData {
+	url: string;
+	imageData: ImageData;
+}
+
+export const changePhotoAsync = createAsyncThunk('changePhoto/status', async (data: EditPhotoData, { rejectWithValue }) => {
 	const { url, imageData } = data;
 	const { name, image } = imageData;
 
@@ -21,8 +35,8 @@ export const changePhotoAsync = createAsyncThunk('changePhoto/status', async (da
 			}
 		});
 		return response.status;
-	} catch (err) {
-		return rejectWithValue(err.response.data);
+	} catch (err: any) {
+		return rejectWithValue(err.response?.data);
 	}
 });
 
@@ -49,5 +63,5 @@ export const changePhotoSlice = createSlice({
 });
 
 export const { changePhotoStatusToIdle } = changePhotoSlice.actions;
-export const selectChangePhotoStatus = (state) => state.changePhoto.changePhotoStatus;
+export const selectChangePhotoStatus = (state: any) => state.changePhoto.changePhotoStatus;
 export default changePhotoSlice.reducer;

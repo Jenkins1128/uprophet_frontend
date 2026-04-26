@@ -1,11 +1,21 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-const initialState = {
+interface PostCommentState {
+	addedComment: any;
+}
+
+const initialState: PostCommentState = {
 	addedComment: {}
 };
 
-export const postCommentAsync = createAsyncThunk('postComment/status', async (data, { rejectWithValue }) => {
+interface PostCommentData {
+	url: string;
+	quoteId: string | number;
+	comment: string;
+}
+
+export const postCommentAsync = createAsyncThunk('postComment/status', async (data: PostCommentData, { rejectWithValue }) => {
 	const { url, quoteId, comment } = data;
 	try {
 		const response = await axios({
@@ -19,8 +29,8 @@ export const postCommentAsync = createAsyncThunk('postComment/status', async (da
 			}
 		});
 		return response.data;
-	} catch (err) {
-		return rejectWithValue(err.response.data);
+	} catch (err: any) {
+		return rejectWithValue(err.response?.data);
 	}
 });
 
@@ -35,7 +45,7 @@ export const postCommentSlice = createSlice({
 	extraReducers: (builder) => {
 		builder
 			.addCase(postCommentAsync.pending, () => {})
-			.addCase(postCommentAsync.fulfilled, (state, { payload }) => {
+			.addCase(postCommentAsync.fulfilled, (state, { payload }: PayloadAction<any>) => {
 				state.addedComment = payload;
 			})
 			.addCase(postCommentAsync.rejected, () => {});
@@ -43,5 +53,5 @@ export const postCommentSlice = createSlice({
 });
 
 export const { clearAddedComment } = postCommentSlice.actions;
-export const selectAddedComment = (state) => state.postComment.addedComment;
+export const selectAddedComment = (state: any) => state.postComment.addedComment;
 export default postCommentSlice.reducer;

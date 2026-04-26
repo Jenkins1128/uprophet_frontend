@@ -1,11 +1,20 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-const initialState = {
+interface GetQuotePostState {
+	quotePost: any;
+}
+
+const initialState: GetQuotePostState = {
 	quotePost: {}
 };
 
-export const getQuotePostAsync = createAsyncThunk('getQuotePost/status', async (data, { rejectWithValue }) => {
+interface GetQuotePostData {
+	url: string;
+	quoteId: string | number;
+}
+
+export const getQuotePostAsync = createAsyncThunk('getQuotePost/status', async (data: GetQuotePostData, { rejectWithValue }) => {
 	const { url, quoteId } = data;
 	try {
 		const response = await axios({
@@ -18,23 +27,24 @@ export const getQuotePostAsync = createAsyncThunk('getQuotePost/status', async (
 			}
 		});
 		return response.data;
-	} catch (err) {
-		return rejectWithValue(err.response.data);
+	} catch (err: any) {
+		return rejectWithValue(err.response?.data);
 	}
 });
 
 export const getQuotePostSlice = createSlice({
 	name: 'getQuotePost',
 	initialState,
+	reducers: {},
 	extraReducers: (builder) => {
 		builder
 			.addCase(getQuotePostAsync.pending, () => {})
-			.addCase(getQuotePostAsync.fulfilled, (state, { payload }) => {
+			.addCase(getQuotePostAsync.fulfilled, (state, { payload }: PayloadAction<any>) => {
 				state.quotePost = payload;
 			})
 			.addCase(getQuotePostAsync.rejected, () => {});
 	}
 });
 
-export const selectQuotePost = (state) => state.quotePost.quotePost;
+export const selectQuotePost = (state: any) => state.quotePost.quotePost;
 export default getQuotePostSlice.reducer;

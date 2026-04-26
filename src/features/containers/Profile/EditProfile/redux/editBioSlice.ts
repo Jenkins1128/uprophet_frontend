@@ -1,11 +1,20 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-const initialState = {
+interface EditBioState {
+	changeBioStatus: 'idle' | 'pending' | 'fulfilled' | 'rejected';
+}
+
+const initialState: EditBioState = {
 	changeBioStatus: 'idle'
 };
 
-export const changeBioAsync = createAsyncThunk('changeBio/status', async (data, { rejectWithValue }) => {
+interface EditBioData {
+	url: string;
+	bio: string;
+}
+
+export const changeBioAsync = createAsyncThunk('changeBio/status', async (data: EditBioData, { rejectWithValue }) => {
 	const { url, bio } = data;
 	try {
 		const response = await axios({
@@ -18,8 +27,8 @@ export const changeBioAsync = createAsyncThunk('changeBio/status', async (data, 
 			}
 		});
 		return response.data;
-	} catch (err) {
-		return rejectWithValue(err.response.data);
+	} catch (err: any) {
+		return rejectWithValue(err.response?.data);
 	}
 });
 
@@ -41,5 +50,5 @@ export const changeBioSlice = createSlice({
 	}
 });
 
-export const selectChangeBioStatus = (state) => state.changeBio.changeBioStatus;
+export const selectChangeBioStatus = (state: any) => state.changeBio.changeBioStatus;
 export default changeBioSlice.reducer;
