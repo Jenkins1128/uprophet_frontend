@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Userphoto from '../../Userphoto/Userphoto';
 import PleaseSignin from '../../../presentationals/PleaseSignin/PleaseSignin';
 import Loading from '../../../presentationals/Loading/Loading';
-import { getUserAsync, selectFirstRequestStatus } from '../../../presentationals/Header/redux/getUserSlice';
+import { useCurrentUser } from '../../../../store/useCurrentUser';
 import { getCurrentUserInfoAsync, selectCurrentUserInfo, selectRequestStatus } from './redux/currentUserInfoSlice';
 import { changeBioAsync, selectChangeBioStatus } from './redux/editBioSlice';
 import { changePhotoAsync, selectChangePhotoStatus } from './redux/editPhotoSlice';
@@ -14,6 +14,7 @@ const EditProfile: React.FC = () => {
 	const [bio, setBio] = useState<string>('');
 	const [imageData, setImageData] = useState<any>(null);
 	const dispatch = useDispatch<AppDispatch>();
+	const { isLoading: isUserLoading, isSuccess: isUserSuccess, data: currentUser } = useCurrentUser();
 
 	const requestStatus1 = useSelector(selectFirstRequestStatus);
 	const requestStatus2 = useSelector(selectRequestStatus);
@@ -22,7 +23,7 @@ const EditProfile: React.FC = () => {
 	const userInfo = useSelector(selectCurrentUserInfo) as any;
 
 	useEffect(() => {
-		dispatch((getUserAsync as any)(`${url}/currentUser`));
+		
 	}, [dispatch, changePhotoStatus, changeBioStatus]);
 
 	useEffect(() => {

@@ -5,20 +5,19 @@ import { searchAsync, selectRequestStatus, selectResults } from './redux/searchS
 import PleaseSignin from '../../presentationals/PleaseSignin/PleaseSignin';
 import ResultCard from './ResultCard/ResultCard';
 import Loading from '../../presentationals/Loading/Loading';
-import { getUserAsync } from '../../presentationals/Header/redux/getUserSlice';
+import { useCurrentUser } from '../../../store/useCurrentUser';
 import { url } from '../../../domain';
 import { AppDispatch } from '../../../app/store';
 
 const Searchresults: React.FC = () => {
 	const { searchtext } = useParams<{ searchtext: string }>();
 	const dispatch = useDispatch<AppDispatch>();
+	const { isLoading: isUserLoading, isSuccess: isUserSuccess, data: currentUser } = useCurrentUser();
 
 	const requestStatus = useSelector(selectRequestStatus);
 	const results = useSelector(selectResults) as any[];
 
-	useEffect(() => {
-		dispatch((getUserAsync as any)(`${url}/currentUser`));
-	}, [dispatch]);
+	
 
 	useEffect(() => {
 		if (searchtext && searchtext.trim() !== '') {
@@ -28,9 +27,9 @@ const Searchresults: React.FC = () => {
 
 	return (
 		<>
-			{requestStatus === 'pending' ? (
+			{isUserLoading ? (
 				<Loading />
-			) : requestStatus === 'fulfilled' ? (
+			) : isUserSuccess ? (
 				<section className='mt6 mh2 f7'>
 					<h1 className='flex ml4 moon-gray'>Search Results for "{searchtext}"</h1>
 					<div className='mt5'>

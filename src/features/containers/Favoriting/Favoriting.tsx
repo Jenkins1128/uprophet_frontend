@@ -4,7 +4,7 @@ import { useParams } from 'next/navigation';
 import FavoritingCard from './FavoritingCard/FavoritingCard';
 import { favoritingAsync, selectFavoriting, selectRequestStatus } from './redux/favoritingSlice';
 import { url } from '../../../domain';
-import { getUserAsync, selectFirstRequestStatus } from '../../presentationals/Header/redux/getUserSlice';
+import { useCurrentUser } from '../../../store/useCurrentUser';
 import PleaseSignin from '../../presentationals/PleaseSignin/PleaseSignin';
 import Loading from '../../presentationals/Loading/Loading';
 import { AppDispatch } from '../../../app/store';
@@ -12,13 +12,12 @@ import { AppDispatch } from '../../../app/store';
 const Favoriting: React.FC = () => {
 	const { username } = useParams<{ username: string }>();
 	const dispatch = useDispatch<AppDispatch>();
+	const { isLoading: isUserLoading, isSuccess: isUserSuccess, data: currentUser } = useCurrentUser();
 	const requestStatus1 = useSelector(selectFirstRequestStatus);
 	const requestStatus2 = useSelector(selectRequestStatus);
 	const favoriting = useSelector(selectFavoriting) as any[];
 
-	useEffect(() => {
-		dispatch((getUserAsync as any)(`${url}/currentUser`));
-	}, [dispatch]);
+	
 
 	useEffect(() => {
 		dispatch((favoritingAsync as any)({ url: `${url}/favoriting`, username }));

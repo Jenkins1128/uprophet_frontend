@@ -4,7 +4,6 @@ import commentsReducer from '../features/containers/QuoteComments/redux/quoteCom
 import postCommentReducer from '../features/containers/QuoteComments/redux/postCommentSlice';
 import getQuotePostReducer from '../features/containers/QuoteComments/redux/getQuotePostSlice';
 import postQuoteReducer from '../features/containers/Home/redux/postQuoteSlice';
-import getUserReducer from '../features/presentationals/Header/redux/getUserSlice';
 import getNotificationCountReducer from '../features/presentationals/NotiDot/redux/getNotificationCountSlice';
 import exploreQuotesReducer from '../features/containers/Explore/redux/exploreQuotesSlice';
 import searchReducer from '../features/containers/Searchresults/redux/searchSlice';
@@ -24,7 +23,6 @@ export const store = configureStore({
 		postComment: postCommentReducer,
 		quotePost: getQuotePostReducer,
 		postQuote: postQuoteReducer,
-		getUser: getUserReducer,
 		notificationCount: getNotificationCountReducer,
 		exploreQuotes: exploreQuotesReducer,
 		search: searchReducer,

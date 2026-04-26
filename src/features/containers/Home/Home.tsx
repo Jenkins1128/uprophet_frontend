@@ -7,12 +7,13 @@ import { homeAsync, selectLatestQuotes, selectSecondRequestStatus, updateLatestQ
 import Loading from '../../presentationals/Loading/Loading';
 import PleaseSignin from '../../presentationals/PleaseSignin/PleaseSignin';
 import { clearAddedQuote, postQuoteAsync, selectNewQuote } from './redux/postQuoteSlice';
-import { getUserAsync, selectFirstRequestStatus } from '../../presentationals/Header/redux/getUserSlice';
+import { useCurrentUser } from '../../../store/useCurrentUser';
 import { url } from '../../../domain';
 import { AppDispatch } from '../../../app/store';
 
 const Home: React.FC = () => {
 	const dispatch = useDispatch<AppDispatch>();
+	const { isLoading: isUserLoading, isSuccess: isUserSuccess, data: currentUser } = useCurrentUser();
 	const [title, setTitle] = useState('');
 	const [quote, setQuote] = useState('');
 
@@ -37,9 +38,7 @@ const Home: React.FC = () => {
 		};
 	}, []);
 
-	useEffect(() => {
-		dispatch((getUserAsync as any)(`${url}/currentUser`));
-	}, [dispatch]);
+	
 
 	useEffect(() => {
 		if (requestStatus1 === 'fulfilled') {

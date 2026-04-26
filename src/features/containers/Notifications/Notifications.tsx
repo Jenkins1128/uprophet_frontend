@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Notification from './Notification/Notification';
 import { getNotificationsAsync, selectNotifications, selectRequestStatus } from './redux/notificationsSlice';
-import { getUserAsync, selectFirstRequestStatus } from '../../presentationals/Header/redux/getUserSlice';
+import { useCurrentUser } from '../../../store/useCurrentUser';
 import Loading from '../../presentationals/Loading/Loading';
 import PleaseSignin from '../../presentationals/PleaseSignin/PleaseSignin';
 import { url } from '../../../domain';
@@ -10,13 +10,12 @@ import { AppDispatch } from '../../../app/store';
 
 const Notifications: React.FC = () => {
 	const dispatch = useDispatch<AppDispatch>();
+	const { isLoading: isUserLoading, isSuccess: isUserSuccess, data: currentUser } = useCurrentUser();
 	const requestStatus1 = useSelector(selectFirstRequestStatus);
 	const requestStatus2 = useSelector(selectRequestStatus);
 	const notifications = useSelector(selectNotifications) as any[];
 
-	useEffect(() => {
-		dispatch((getUserAsync as any)(`${url}/currentUser`));
-	}, [dispatch]);
+	
 
 	useEffect(() => {
 		dispatch((getNotificationsAsync as any)(`${url}/notifications`));

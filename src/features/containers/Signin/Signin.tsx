@@ -3,23 +3,22 @@ import { useDispatch, useSelector } from 'react-redux';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { url } from '../../../domain';
-import { getUserAsync, selectCurrentUser } from '../../presentationals/Header/redux/getUserSlice';
+import { useCurrentUser } from '../../../store/useCurrentUser';
 import { loginAsync } from './redux/signinThunk';
 import { AppDispatch } from '../../../app/store';
 
 const Signin: React.FC = () => {
 	const router = useRouter();
 	const dispatch = useDispatch<AppDispatch>();
-	const currentUser = useSelector(selectCurrentUser);
+	const { isLoading: isUserLoading, isSuccess: isUserSuccess, data: currentUser } = useCurrentUser();
+	
 
 	const [username, setUsername] = useState('');
 	const [password, setPassword] = useState('');
 	const [isIncorrectError, setIsIncorrectError] = useState(false);
 	const [isEmptyError, setIsEmptyError] = useState(false);
 
-	useEffect(() => {
-		dispatch((getUserAsync as any)(`${url}/currentUser`));
-	}, [dispatch]);
+	
 
 	useEffect(() => {
 		if (currentUser) {
@@ -41,7 +40,7 @@ const Signin: React.FC = () => {
 		event.preventDefault();
 		if (username && password) {
 			dispatch((loginAsync as any)({ url: `${url}/signin`, username, password })).then((res: any) => {
-				if (res.meta.requestStatus === 'fulfilled') {
+				if (res.meta.isUserSuccess) {
 					router.push('/');
 				} else {
 					setIsIncorrectError(true);

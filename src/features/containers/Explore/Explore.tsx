@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getUserAsync, selectFirstRequestStatus } from '../../presentationals/Header/redux/getUserSlice';
+import { useCurrentUser } from '../../../store/useCurrentUser';
 import QuotePost from '../QuotePost/QuotePost';
 import { getExploreQuotesAsync, selectExploreQuotes } from './redux/exploreQuotesSlice';
 import { useRouter } from 'next/navigation';
@@ -12,17 +12,16 @@ import { AppDispatch } from '../../../app/store';
 
 const Explore: React.FC = () => {
 	const dispatch = useDispatch<AppDispatch>();
+	const { isLoading: isUserLoading, isSuccess: isUserSuccess, data: currentUser } = useCurrentUser();
 	const router = useRouter();
 
-	const requestStatus = useSelector(selectFirstRequestStatus);
+	
 	const exploreQuotes = useSelector(selectExploreQuotes) as any[];
 
-	useEffect(() => {
-		dispatch((getUserAsync as any)(`${url}/currentUser`));
-	}, [dispatch]);
+	
 
 	useEffect(() => {
-		if (requestStatus === 'fulfilled') {
+		if (isUserSuccess) {
 			dispatch((getExploreQuotesAsync as any)(`${url}/explore`));
 		}
 	}, [requestStatus, dispatch]);
@@ -33,9 +32,9 @@ const Explore: React.FC = () => {
 
 	return (
 		<>
-			{requestStatus === 'pending' ? (
+			{isUserLoading ? (
 				<Loading />
-			) : requestStatus === 'fulfilled' ? (
+			) : isUserSuccess ? (
 				<section className='mt6 mh2 f7'>
 					<h1 className='flex ml4 moon-gray'>Explore</h1>
 					<button className='bg-transparent b--none pointer grow' onClick={refresh}>

@@ -8,7 +8,7 @@ import Userphoto from '../Userphoto/Userphoto';
 import { profileAsync, selectProfileQuotes, selectRequestStatus } from './redux/profileSlice';
 import PleaseSignin from '../../presentationals/PleaseSignin/PleaseSignin';
 import Loading from '../../presentationals/Loading/Loading';
-import { getUserAsync, selectCurrentUser, selectFirstRequestStatus } from '../../presentationals/Header/redux/getUserSlice';
+import { useCurrentUser } from '../../../store/useCurrentUser';
 import { selectUserInfo, userInfoAsync } from './redux/userInfoSlice';
 import FavoriteButton from '../FavoriteButton/FavoriteButton';
 import { url } from '../../../domain';
@@ -18,12 +18,13 @@ import { AppDispatch } from '../../../app/store';
 const Profile: React.FC = () => {
 	const { username } = useParams<{ username: string }>();
 	const dispatch = useDispatch<AppDispatch>();
+	const { isLoading: isUserLoading, isSuccess: isUserSuccess, data: currentUser } = useCurrentUser();
 
 	const requestStatus1 = useSelector(selectFirstRequestStatus);
 	const requestStatus2 = useSelector(selectRequestStatus);
 	const profileQuotes = useSelector(selectProfileQuotes) as any[];
 	const userInfo = useSelector(selectUserInfo) as any;
-	const currentUser = useSelector(selectCurrentUser);
+	
 
 	const isEmpty = (obj: any) => {
 		for (const x in obj) {
@@ -32,9 +33,7 @@ const Profile: React.FC = () => {
 		return true;
 	};
 
-	useEffect(() => {
-		dispatch((getUserAsync as any)(`${url}/currentUser`));
-	}, [dispatch]);
+	
 
 	useEffect(() => {
 		dispatch((profileAsync as any)({ url: `${url}/profile`, username }));
@@ -46,7 +45,7 @@ const Profile: React.FC = () => {
 
 	const deleteQuote = (quoteId: number | string) => {
 		dispatch((deleteQuoteAsync as any)({ url: `${url}/deleteQuote`, quoteId })).then((res: any) => {
-			if (res.meta.requestStatus === 'fulfilled') {
+			if (res.meta.isUserSuccess) {
 				Swal.fire('Deleted!', 'Your quote has been deleted.', 'success');
 				dispatch((profileAsync as any)({ url: `${url}/profile`, username }));
 			}

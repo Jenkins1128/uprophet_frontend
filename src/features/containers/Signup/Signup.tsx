@@ -5,13 +5,14 @@ import { useRouter } from 'next/navigation';
 import { signUpAsync } from './redux/signUpThunk';
 import { loginAsync } from '../Signin/redux/signinThunk';
 import { url } from '../../../domain';
-import { getUserAsync, selectCurrentUser } from '../../presentationals/Header/redux/getUserSlice';
+import { useCurrentUser } from '../../../store/useCurrentUser';
 import { AppDispatch } from '../../../app/store';
 
 const Signup: React.FC = () => {
 	const dispatch = useDispatch<AppDispatch>();
+	const { isLoading: isUserLoading, isSuccess: isUserSuccess, data: currentUser } = useCurrentUser();
 	const router = useRouter();
-	const currentUser = useSelector(selectCurrentUser);
+	
 
 	const [name, setName] = useState('');
 	const [username, setUsername] = useState('');
@@ -22,9 +23,7 @@ const Signup: React.FC = () => {
 	const [isTermsError, setIsTermsError] = useState(false);
 	const [isEmptyError, setIsEmptyError] = useState(false);
 
-	useEffect(() => {
-		dispatch((getUserAsync as any)(`${url}/currentUser`));
-	}, [dispatch]);
+	
 
 	useEffect(() => {
 		if (currentUser) {
@@ -59,7 +58,7 @@ const Signup: React.FC = () => {
 
 	const submitLogin = (usernameStr: string, passwordStr: string) => {
 		dispatch((loginAsync as any)({ url: `${url}/signin`, username: usernameStr, password: passwordStr })).then((res: any) => {
-			if (res.meta.requestStatus === 'fulfilled') {
+			if (res.meta.isUserSuccess) {
 				router.push('/');
 			}
 		});
@@ -70,7 +69,7 @@ const Signup: React.FC = () => {
 		if (username && name && password && email) {
 			if (terms) {
 				dispatch((signUpAsync as any)({ url: `${url}/signup`, name, username, password, email })).then((res: any) => {
-					if (res.meta.requestStatus === 'fulfilled') {
+					if (res.meta.isUserSuccess) {
 						submitLogin(username, password);
 					} else {
 						setIsExistsError(true);

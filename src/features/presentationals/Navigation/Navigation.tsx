@@ -11,7 +11,7 @@ import { useDispatch } from 'react-redux';
 import { logoutAsync } from './redux/logoutThunk';
 import Userphoto from '../../containers/Userphoto/Userphoto';
 import { url } from '../../../domain';
-import { clearCurrentUser } from '../Header/redux/getUserSlice';
+import { useCurrentUser } from '../../../store/useCurrentUser';
 import NotiDot from '../NotiDot/NotiDot';
 import { AppDispatch } from '../../../app/store';
 
@@ -32,11 +32,12 @@ const Navigation: React.FC<NavigationProps> = ({ hasNotifications, currentUser, 
 	const isPortrait = useMediaQuery({ query: '(orientation: portrait)' });
 
 	const dispatch = useDispatch<AppDispatch>();
+	const { isLoading: isUserLoading, isSuccess: isUserSuccess, data: currentUser } = useCurrentUser();
 	const router = useRouter();
 
 	const logout = () => {
 		dispatch((logoutAsync as any)(`${url}/logout`)).then((res: any) => {
-			if (res.meta.requestStatus === 'fulfilled') {
+			if (res.meta.isUserSuccess) {
 				dispatch(clearCurrentUser());
 				router.push('/signin');
 			}

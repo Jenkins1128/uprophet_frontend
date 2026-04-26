@@ -10,13 +10,14 @@ import QuotePost from '../QuotePost/QuotePost';
 import { getCommentsAsync, selectLatestComments, selectSecondRequestStatus, updateQuoteComment } from './redux/quoteCommentsSlice';
 import { clearAddedComment, postCommentAsync, selectAddedComment } from './redux/postCommentSlice';
 import { getQuotePostAsync, selectQuotePost } from './redux/getQuotePostSlice';
-import { getUserAsync, selectFirstRequestStatus } from '../../presentationals/Header/redux/getUserSlice';
+import { useCurrentUser } from '../../../store/useCurrentUser';
 import { url } from '../../../domain';
 import { AppDispatch } from '../../../app/store';
 
 const QuoteComments: React.FC = () => {
 	const { quoteId } = useParams<{ quoteId: string }>();
 	const dispatch = useDispatch<AppDispatch>();
+	const { isLoading: isUserLoading, isSuccess: isUserSuccess, data: currentUser } = useCurrentUser();
 	const [comment, setComment] = useState<string>('');
 
 	const latestComments = useSelector(selectLatestComments) as any[];
@@ -36,9 +37,7 @@ const QuoteComments: React.FC = () => {
 		dispatch((getQuotePostAsync as any)({ url: `${url}/getQuotePost`, quoteId }));
 	}, [dispatch, quoteId]);
 
-	useEffect(() => {
-		dispatch((getUserAsync as any)(`${url}/currentUser`));
-	}, [dispatch]);
+	
 
 	useEffect(() => {
 		if (requestStatus1 === 'fulfilled') {
