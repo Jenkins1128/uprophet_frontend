@@ -1,128 +1,104 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useRef, useState } from 'react';
 import Topquotes from '../../presentationals/Topquotes/Topquotes';
 import QuotePost from '../QuotePost/QuotePost';
 import QuotePoster from './QuotePoster/QuotePoster';
-import { homeAsync, selectLatestQuotes, selectSecondRequestStatus, updateLatestQuotes } from './redux/homeSlice';
 import Loading from '../../presentationals/Loading/Loading';
 import PleaseSignin from '../../presentationals/PleaseSignin/PleaseSignin';
-import { clearAddedQuote, postQuoteAsync, selectNewQuote } from './redux/postQuoteSlice';
 import { useCurrentUser } from '../../../store/useCurrentUser';
 import { url } from '../../../domain';
-import { AppDispatch } from '../../../app/store';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import axios from 'axios';
+
+const fetchLatestQuotes = async () => {
+	const { data } = await axios.get(`${url}/`, {
+		withCredentials: true,
+		headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+	});
+	return data;
+};
+
+const postQuoteData = async ({ title, quote }: { title: string; quote: string }) => {
+	const { data } = await axios.post(`${url}/createQuote`, { title, quote }, {
+		withCredentials: true,
+		headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+	});
+	return data;
+};
 
 const Home: React.FC = () => {
-	const dispatch = useDispatch<AppDispatch>();
-	const { isLoading: isUserLoading, isSuccess: isUserSuccess, data: currentUser } = useCurrentUser();
+	const { isLoading: isUserLoading, isSuccess: isUserSuccess } = useCurrentUser();
+	const queryClient = useQueryClient();
 	const [title, setTitle] = useState('');
-	const [quote, setQuote] = useState('');
+	const [quoteText, setQuoteText] = useState('');
 
-	const latestQuotes = useSelector(selectLatestQuotes) as any[];
-	const getNewQuote = useSelector(selectNewQuote) as any;
-	const requestStatus1 = useSelector(selectFirstRequestStatus);
-	const requestStatus2 = useSelector(selectSecondRequestStatus);
+	const mounted = useRef<boolean>(true);
 
-	const mounted = useRef<boolean>(false);
+	const { data: latestQuotes = [], isLoading: isQuotesLoading } = useQuery({
+		queryKey: ['latestQuotes'],
+		queryFn: fetchLatestQuotes,
+		enabled: isUserSuccess,
+	});
 
-	const isEmpty = (obj: any) => {
-		for (const x in obj) {
-			return false;
-		}
-		return true;
-	};
-
-	useEffect(() => {
-		mounted.current = true;
-		return () => {
-			mounted.current = false;
-		};
-	}, []);
-
-	
-
-	useEffect(() => {
-		if (requestStatus1 === 'fulfilled') {
-			dispatch((homeAsync as any)(`${url}/`));
-		}
-	}, [dispatch, requestStatus1]);
-
-	useEffect(() => {
-		if (!isEmpty(getNewQuote)) {
-			let updatedQuotes = [...latestQuotes];
-			//replace your current quote to added quote
-			if (updatedQuotes.length) {
-				updatedQuotes.some((quote: any, i: number) => {
-					if (quote.user_name === getNewQuote.user_name) {
-						updatedQuotes.splice(i, 1);
-					}
-					return quote.user_name === getNewQuote.user_name;
-				});
-			}
-			updatedQuotes.unshift(getNewQuote);
-			dispatch(clearAddedQuote());
-			//add new quote to latest quotes
-			dispatch(updateLatestQuotes(updatedQuotes));
-		}
-	}, [dispatch, latestQuotes, getNewQuote]);
+	const { mutate: createQuote } = useMutation({
+		mutationFn: postQuoteData,
+		onSuccess: (newQuote) => {
+			queryClient.setQueryData(['latestQuotes'], (oldData: any[]) => {
+				if (!oldData) return [newQuote];
+				// remove if user already had a quote (business logic from old slice)
+				const filtered = oldData.filter((q: any) => q.user_name !== newQuote.user_name);
+				return [newQuote, ...filtered];
+			});
+		},
+	});
 
 	const postQuote = (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
-		if (title !== '' && quote !== '') {
-			dispatch((postQuoteAsync as any)({ url: `${url}/createQuote`, title, quote }));
+		if (title !== '' && quoteText !== '') {
+			createQuote({ title, quote: quoteText });
 			(event.target as HTMLFormElement).reset();
 			setTitle('');
-			setQuote('');
+			setQuoteText('');
 		}
 	};
 
 	const onTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		const { value } = event.target;
-		setTitle(value);
+		setTitle(event.target.value);
 	};
 
 	const onQuoteChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-		const { value } = event.target;
-		setQuote(value);
+		setQuoteText(event.target.value);
 	};
 
+	if (isUserLoading) return <Loading />;
+
+	if (!isUserSuccess) return <Topquotes isMounted={mounted.current} />;
+
+	if (isQuotesLoading) return <Loading />;
+
 	return (
-		<>
-			{requestStatus1 === 'pending' ? (
-				<Loading />
-			) : requestStatus1 === 'fulfilled' ? (
-				requestStatus2 === 'pending' ? (
-					<Loading />
-				) : requestStatus2 === 'fulfilled' ? (
-					<section className='mt6 mh2 f7'>
-						<h1 className='flex ml4 moon-gray'>Home</h1>
-						<QuotePoster postQuote={postQuote} onQuoteChange={onQuoteChange} onTitleChange={onTitleChange} />
-						<div className='mt5'>
-							{latestQuotes.map((quote: any) => {
-								return (
-									<QuotePost
-										key={quote.id}
-										quoteId={quote.id}
-										username={quote.user_name}
-										title={quote.title}
-										quote={`"${quote.quote}"`}
-										likeCount={quote.likeCount}
-										didLike={quote.didLike}
-										date={quote.date_posted}
-										hasComments={true}
-										canDelete={false}
-										deleteQuote={() => {}}
-									/>
-								);
-							})}
-						</div>
-					</section>
-				) : (
-					<PleaseSignin />
-				)
-			) : (
-				<Topquotes isMounted={mounted.current} />
-			)}
-		</>
+		<section className='mt6 mh2 f7'>
+			<h1 className='flex ml4 moon-gray'>Home</h1>
+			<QuotePoster postQuote={postQuote} onQuoteChange={onQuoteChange} onTitleChange={onTitleChange} />
+			<div className='mt5'>
+				{latestQuotes.map((quote: any) => {
+					return (
+						<QuotePost
+							key={quote.id}
+							quoteId={quote.id}
+							username={quote.user_name}
+							title={quote.title}
+							quote={`"${quote.quote}"`}
+							likeCount={quote.likeCount}
+							didLike={quote.didLike}
+							date={quote.date_posted}
+							hasComments={true}
+							canDelete={false}
+							deleteQuote={() => {}}
+						/>
+					);
+				})}
+			</div>
+		</section>
 	);
 }
 

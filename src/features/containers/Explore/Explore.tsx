@@ -1,30 +1,31 @@
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React from 'react';
 import { useCurrentUser } from '../../../store/useCurrentUser';
 import QuotePost from '../QuotePost/QuotePost';
-import { getExploreQuotesAsync, selectExploreQuotes } from './redux/exploreQuotesSlice';
 import { useRouter } from 'next/navigation';
 import refreshIcon from '../../../images/refresh.png';
 import PleaseSignin from '../../presentationals/PleaseSignin/PleaseSignin';
 import Loading from '../../presentationals/Loading/Loading';
 import { url } from '../../../domain';
-import { AppDispatch } from '../../../app/store';
+import { useQuery } from '@tanstack/react-query';
+import axios from 'axios';
+
+const fetchExploreQuotes = async () => {
+  const { data } = await axios.get(`${url}/explore`, {
+    withCredentials: true,
+    headers: { Accept: 'application/json', 'Content-Type': 'application/json' }
+  });
+  return data;
+};
 
 const Explore: React.FC = () => {
-	const dispatch = useDispatch<AppDispatch>();
-	const { isLoading: isUserLoading, isSuccess: isUserSuccess, data: currentUser } = useCurrentUser();
+	const { isLoading: isUserLoading, isSuccess: isUserSuccess } = useCurrentUser();
 	const router = useRouter();
 
-	
-	const exploreQuotes = useSelector(selectExploreQuotes) as any[];
-
-	
-
-	useEffect(() => {
-		if (isUserSuccess) {
-			dispatch((getExploreQuotesAsync as any)(`${url}/explore`));
-		}
-	}, [requestStatus, dispatch]);
+	const { data: exploreQuotes = [], isLoading: isExploreLoading } = useQuery({
+		queryKey: ['exploreQuotes'],
+		queryFn: fetchExploreQuotes,
+		enabled: isUserSuccess, // Only fetch if user is logged in
+	});
 
 	const refresh = () => {
 		router.refresh();

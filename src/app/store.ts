@@ -1,11 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
-import homeReducer from '../features/containers/Home/redux/homeSlice';
 import commentsReducer from '../features/containers/QuoteComments/redux/quoteCommentsSlice';
 import postCommentReducer from '../features/containers/QuoteComments/redux/postCommentSlice';
 import getQuotePostReducer from '../features/containers/QuoteComments/redux/getQuotePostSlice';
-import postQuoteReducer from '../features/containers/Home/redux/postQuoteSlice';
-import getNotificationCountReducer from '../features/presentationals/NotiDot/redux/getNotificationCountSlice';
-import exploreQuotesReducer from '../features/containers/Explore/redux/exploreQuotesSlice';
 import searchReducer from '../features/containers/Searchresults/redux/searchSlice';
 import profileReducer from '../features/containers/Profile/redux/profileSlice';
 import userInfoReducer from '../features/containers/Profile/redux/userInfoSlice';
@@ -18,13 +14,9 @@ import editPhotoReducer from '../features/containers/Profile/EditProfile/redux/e
 
 export const store = configureStore({
 	reducer: {
-		home: homeReducer,
 		comments: commentsReducer,
 		postComment: postCommentReducer,
 		quotePost: getQuotePostReducer,
-		postQuote: postQuoteReducer,
-		notificationCount: getNotificationCountReducer,
-		exploreQuotes: exploreQuotesReducer,
 		search: searchReducer,
 		profile: profileReducer,
 		userInfo: userInfoReducer,

@@ -1,21 +1,25 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import RedDot from '../../../images/reddot.png';
-import { useTime } from 'react-time-sync';
-import { useDispatch, useSelector } from 'react-redux';
-import { getNotificationCountAsync, selectNotificationCount } from './redux/getNotificationCountSlice';
+import { useQuery } from '@tanstack/react-query';
+import axios from 'axios';
 import { url } from '../../../domain';
-import { AppDispatch } from '../../../app/store';
+
+const fetchNotificationCount = async () => {
+  const { data } = await axios.get(`${url}/getNotificationCount`, {
+    withCredentials: true,
+    headers: { Accept: 'application/json', 'Content-Type': 'application/json' }
+  });
+  return data.notificationCount;
+};
 
 const NotiDot: React.FC = () => {
-	const timeLeft = useTime();
-	const dispatch = useDispatch<AppDispatch>();
-	const notificationCount = useSelector(selectNotificationCount) as number;
+  const { data: notificationCount } = useQuery({
+    queryKey: ['notificationCount'],
+    queryFn: fetchNotificationCount,
+    refetchInterval: 10000, // Refetch every 10 seconds instead of every second for better performance
+  });
 
-	useEffect(() => {
-		dispatch((getNotificationCountAsync as any)(`${url}/getNotificationCount`));
-	}, [dispatch, timeLeft]);
-
-	return notificationCount > 0 ? <img alt='notidot' className='absolute left-1 h1 w1' src={RedDot} /> : null;
+  return (notificationCount && notificationCount > 0) ? <img alt='notidot' className='absolute left-1 h1 w1' src={RedDot} /> : null;
 };
 
 export default NotiDot;
