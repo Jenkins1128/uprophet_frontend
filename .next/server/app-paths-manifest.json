@@ -1,8 +1,0 @@
-{
-  "/[username]/page": "app/[username]/page.js",
-  "/quote/[quoteId]/page": "app/quote/[quoteId]/page.js",
-  "/explore/page": "app/explore/page.js",
-  "/[username]/favoriters/page": "app/[username]/favoriters/page.js",
-  "/[username]/favoriting/page": "app/[username]/favoriting/page.js",
-  "/page": "app/page.js"
-}
