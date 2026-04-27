@@ -37,7 +37,7 @@ const Favoriting: React.FC = () => {
 			<h1 className='flex ml4 moon-gray'>{username}'s Favoriting</h1>
 			<div className='mt5'>
 				{favoriting.map((result: any) => {
-					return <FavoritingCard key={result.id} currentUser={result.currentUser} username={result.user_name} didFavorite={result.didFavorite} />;
+					return <FavoritingCard key={result.to_user} currentUser={result.currentUser} username={result.to_user} didFavorite={result.didFavorite} />;
 				})}
 			</div>
 		</section>

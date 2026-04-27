@@ -7,7 +7,7 @@ import refreshIcon from '../../../images/refresh.png';
 import PleaseSignin from '../../../components/ui/PleaseSignin/PleaseSignin';
 import Loading from '../../../components/ui/Loading/Loading';
 import { url } from '../../../domain';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 
 const fetchExploreQuotes = async () => {
@@ -20,7 +20,7 @@ const fetchExploreQuotes = async () => {
 
 const Explore: React.FC = () => {
 	const { isLoading: isUserLoading, isSuccess: isUserSuccess } = useCurrentUser();
-	const router = useRouter();
+	const queryClient = useQueryClient();
 
 	const { data: exploreQuotes = [], isLoading: isExploreLoading } = useQuery({
 		queryKey: ['exploreQuotes'],
@@ -29,7 +29,7 @@ const Explore: React.FC = () => {
 	});
 
 	const refresh = () => {
-		router.refresh();
+		queryClient.invalidateQueries({ queryKey: ['exploreQuotes'] });
 	};
 
 	return (
@@ -38,10 +38,12 @@ const Explore: React.FC = () => {
 				<Loading />
 			) : isUserSuccess ? (
 				<section className='mt6 mh2 f7'>
-					<h1 className='flex ml4 moon-gray'>Explore</h1>
-					<button className='bg-transparent b--none pointer grow' onClick={refresh}>
-						<img alt='refresh' className='h1 w1' src={refreshIcon} />
-					</button>
+					<h1 className='moon-gray f4 ml4 mb3'>Explore</h1>
+					<div className='flex justify-center mb4'>
+						<button className='bg-transparent b--none pointer grow' onClick={refresh}>
+							<img alt='refresh' className='h1 w1' src={refreshIcon.src || refreshIcon} />
+						</button>
+					</div>
 					<div className='mt5'>
 						{exploreQuotes.map((quote: any) => {
 							return (

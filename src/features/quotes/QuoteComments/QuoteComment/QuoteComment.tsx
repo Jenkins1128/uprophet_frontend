@@ -12,20 +12,24 @@ interface QuoteCommentProps {
 
 const QuoteComment: React.FC<QuoteCommentProps> = ({ commenter, comment, date }) => {
 	return (
-		<article className='flex flex-column tc relative bg-transparent br7 pv4 ma3 mh6-l mh5-m br4 bw4 shadow-4 ph4-l ph4-m ph3-ns'>
-			<div className='flex absolute top-1 left-1'>
+		<article className='bg-near-white br4 pa3 pa4-ns ma3 mh6-l mh4-m shadow-5'>
+			<div className='flex items-start'>
 				<Link href={`/${commenter}`}>
 					<Userphoto username={commenter} />
 				</Link>
-				<Link href={`/${commenter}`} className='no-underline'>
-					<p className='black-50 b relative top--1 '>{commenter}</p>
+				<Link href={`/${commenter}`} className='no-underline ml2'>
+					<p className='black-50 b f7 f6-ns mv1'>{commenter}</p>
 				</Link>
 			</div>
-			<div className='self-center pt5 ph3'>
-				<p className='f6 light-green b'>{comment}</p>
+			
+			<div className='tc pv3'>
+				<p className='f6 f5-ns light-green b'>{comment}</p>
 			</div>
-			<div className='self-end'>
-				<ReactTimeAgo date={new Date(date)} locale='en' timeStyle='mini-minute-now' />
+
+			<div className='flex justify-end mt3 ph2'>
+				<div className='f7 moon-gray b'>
+					<ReactTimeAgo date={new Date(date)} locale='en' timeStyle='mini-minute-now' />
+				</div>
 			</div>
 		</article>
 	);

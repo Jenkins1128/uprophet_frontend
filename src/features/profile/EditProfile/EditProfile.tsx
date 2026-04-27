@@ -18,7 +18,7 @@ const fetchCurrentUserInfo = async () => {
 };
 
 const savePhotoData = async (imageData: any) => {
-	const { data } = await axios.post(`${url}/uploadPic`, { imageData }, {
+	const { data } = await axios.put(`${url}/uploadPic`, imageData, {
 		withCredentials: true,
 		headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
 	});
@@ -26,7 +26,7 @@ const savePhotoData = async (imageData: any) => {
 };
 
 const saveBioData = async (bio: string) => {
-	const { data } = await axios.post(`${url}/savebio`, { bio }, {
+	const { data } = await axios.put(`${url}/savebio`, { bio }, {
 		withCredentials: true,
 		headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
 	});
@@ -50,6 +50,7 @@ const EditProfile: React.FC = () => {
 		onSuccess: () => {
 			Swal.fire('Saved!', 'Your photo has been updated.', 'success');
 			queryClient.invalidateQueries({ queryKey: ['currentUserInfo'] });
+			queryClient.invalidateQueries({ queryKey: ['userPhoto', userInfo.currentUser] });
 		},
 	});
 

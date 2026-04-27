@@ -36,14 +36,7 @@ const Navigation: React.FC<NavigationProps> = ({ hasNotifications, currentUser, 
 		setHasMounted(true);
 	}, []);
 
-	const isDesktopOrLaptop = useMediaQuery({
-		query: '(min-device-width: 1224px)'
-	});
-	const isTabletOrMobile = useMediaQuery({ query: '(max-width: 889px)' });
-	const isTabletOrMobileDevice = useMediaQuery({
-		query: '(max-device-width: 1224px)'
-	});
-	const isPortrait = useMediaQuery({ query: '(orientation: portrait)' });
+	const isMobile = useMediaQuery({ query: '(max-width: 1024px)' });
 
 	const queryClient = useQueryClient();
 	const router = useRouter();
@@ -67,50 +60,46 @@ const Navigation: React.FC<NavigationProps> = ({ hasNotifications, currentUser, 
 
 	return (
 		<nav className='flex items-center'>
-			{(isDesktopOrLaptop || isTabletOrMobileDevice) && (
-				<>
-					{!(isTabletOrMobile || isPortrait) ? (
-						isSignedIn ? (
-							<>
-								<Link href='/' className='f6 grow no-underline b b--none ba bw1 ph3 mh3 dib black hover-white'>
-									<img title='Home' className='w2 h2' alt='Home' src={Home.src || Home} />
-								</Link>
-								<Link href='/notifications' className='f6 grow no-underline b b--none ba bw1 ph3 mh3 dib black hover-white'>
-									<div className='relative'>
-										<img title='Notifications' className='w2 h2' alt='Notifications' src={Bell.src || Bell} />
-										<NotiDot />
-									</div>
-								</Link>
-								<Link href='/explore' className='f6 grow b--none ph3 mh3 pt1 mb2 dib bg-transparent '>
-									<img title='Explore' className='w2 h2' alt='Compass' src={Compass.src || Compass} />
-								</Link>
-								<Link href={`/${currentUser}`} className='f6 grow no-underline mh3 mb2 dib'>
-									<Userphoto size='header' username={currentUser} />
-								</Link>
-								<button onClick={logout} className='f6 grow b--none ph3 mh3 pt1 mb2 dib bg-transparent pointer'>
-									<img title='Logout' className='w2 h2' alt='Logout' src={Logout.src || Logout} />
-								</button>
-							</>
-						) : (
-							<>
-								<Link href='/about' className='f6 grow no-underline b b--none ba bw1 ph3 mh3 dib black hover-white'>
-									About
-								</Link>
-								<Link href='/signin' className='f6 grow no-underline b b--none ba bw1 ph3 mh3 dib black hover-white'>
-									Sign in
-								</Link>
-								<Link href='/signup' className='f6 grow no-underline b b--none ba bw1 ph3 mh3 dib black hover-white'>
-									Sign up
-								</Link>
-								<a className='f6 grow no-underline b--none b ba bw1 ph3 mh3 dib black hover-white' rel='noopener noreferrer' href='https://youtu.be/Z7YR0zwMtTk?list=TLGGTOFWbVS80XMxODA1MjAyMQ' target='_blank'>
-									Video
-								</a>
-							</>
-						)
-					) : (
-						<Menu NotiDot={NotiDot} isSignedIn={isSignedIn} logout={logout} currentUser={currentUser} />
-					)}
-				</>
+			{isMobile ? (
+				<Menu NotiDot={NotiDot} isSignedIn={isSignedIn} logout={logout} currentUser={currentUser} />
+			) : (
+				isSignedIn ? (
+					<>
+						<Link href='/' className='f6 grow no-underline b b--none ba bw1 ph3 mh3 dib black hover-white'>
+							<img title='Home' className='w2 h2' alt='Home' src={Home.src || Home} />
+						</Link>
+						<Link href='/notifications' className='f6 grow no-underline b b--none ba bw1 ph3 mh3 dib black hover-white'>
+							<div className='relative'>
+								<img title='Notifications' className='w2 h2' alt='Notifications' src={Bell.src || Bell} />
+								<NotiDot />
+							</div>
+						</Link>
+						<Link href='/explore' className='f6 grow b--none ph3 mh3 pt1 mb2 dib bg-transparent '>
+							<img title='Explore' className='w2 h2' alt='Compass' src={Compass.src || Compass} />
+						</Link>
+						<Link href={`/${currentUser}`} className='f6 grow no-underline mh3 mb2 dib'>
+							<Userphoto size='header' username={currentUser} />
+						</Link>
+						<button onClick={logout} className='f6 grow b--none ph3 mh3 pt1 mb2 dib bg-transparent pointer'>
+							<img title='Logout' className='w2 h2' alt='Logout' src={Logout.src || Logout} />
+						</button>
+					</>
+				) : (
+					<>
+						<Link href='/about' className='f6 grow no-underline b b--none ba bw1 ph3 mh3 dib black hover-white'>
+							About
+						</Link>
+						<Link href='/signin' className='f6 grow no-underline b b--none ba bw1 ph3 mh3 dib black hover-white'>
+							Sign in
+						</Link>
+						<Link href='/signup' className='f6 grow no-underline b b--none ba bw1 ph3 mh3 dib black hover-white'>
+							Sign up
+						</Link>
+						<a className='f6 grow no-underline b--none b ba bw1 ph3 mh3 dib black hover-white' rel='noopener noreferrer' href='https://youtu.be/Z7YR0zwMtTk?list=TLGGTOFWbVS80XMxODA1MjAyMQ' target='_blank'>
+							Video
+						</a>
+					</>
+				)
 			)}
 		</nav>
 	);

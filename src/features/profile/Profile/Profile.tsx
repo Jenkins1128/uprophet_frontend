@@ -82,7 +82,7 @@ const Profile: React.FC = () => {
 		<section className='flex flex-column mt6 mh2 f7'>
 			<h1 className='flex ml3 light-green'>{username}</h1>
 			{userInfo.currentUser === username ? (
-				<Link href='/account/edit' className='self-end w-10 b--none no-underline br3 bg-white moon-gray grow pointer:hover: pointer'>
+				<Link href='/account/edit' className='self-end tc ph3 pv2 b--none no-underline br3 bg-white moon-gray grow pointer'>
 					Edit Profile
 				</Link>
 			) : (

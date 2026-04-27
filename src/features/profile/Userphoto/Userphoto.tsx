@@ -24,6 +24,9 @@ const Userphoto: React.FC<UserphotoProps> = ({ size, username }) => {
 		queryKey: ['userPhoto', username],
 		queryFn: () => fetchUserPhoto(username),
 		enabled: !!username,
+		staleTime: Infinity,
+		gcTime: Infinity,
+		retry: false
 	});
 
 	const getSize = () => {
