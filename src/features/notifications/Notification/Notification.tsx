@@ -23,7 +23,11 @@ const Notification: React.FC<NotificationProps> = ({ username, notice, quotesId,
 				<div className='dtc v-mid pl3'>
 					<h1 className='f7 f5-ns fw6 lh-title light-green mv0'>{notice}</h1>
 					<div>
-						<ReactTimeAgo date={new Date(date)} locale='en' timeStyle='mini-minute-now' />
+						{date && !isNaN(new Date(date).getTime()) ? (
+							<ReactTimeAgo date={new Date(date)} locale='en' timeStyle='mini-minute-now' />
+						) : (
+							<span>Just now</span>
+						)}
 					</div>
 				</div>
 			</div>

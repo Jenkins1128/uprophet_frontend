@@ -28,7 +28,11 @@ const QuoteComment: React.FC<QuoteCommentProps> = ({ commenter, comment, date })
 
 			<div className='flex justify-end mt3 ph2'>
 				<div className='f7 moon-gray b'>
-					<ReactTimeAgo date={new Date(date)} locale='en' timeStyle='mini-minute-now' />
+					{date && !isNaN(new Date(date).getTime()) ? (
+						<ReactTimeAgo date={new Date(date)} locale='en' timeStyle='mini-minute-now' />
+					) : (
+						<span>Just now</span>
+					)}
 				</div>
 			</div>
 		</article>

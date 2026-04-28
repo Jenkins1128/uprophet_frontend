@@ -69,7 +69,11 @@ const QuotePost: React.FC<QuotePostProps> = ({ username, title, quote, quoteId, 
 					)}
 				</div>
 				<div className='f7 moon-gray b'>
-					<ReactTimeAgo date={new Date(date)} locale='en' timeStyle='mini-minute-now' />
+					{date && !isNaN(new Date(date).getTime()) ? (
+						<ReactTimeAgo date={new Date(date)} locale='en' timeStyle='mini-minute-now' />
+					) : (
+						<span>Just now</span>
+					)}
 				</div>
 			</div>
 		</article>

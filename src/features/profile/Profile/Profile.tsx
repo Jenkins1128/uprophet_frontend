@@ -113,14 +113,14 @@ const Profile: React.FC = () => {
 						<QuotePost
 							key={quote.id}
 							quoteId={quote.id}
-							username={quote.user_name}
+							username={quote.userName}
 							title={quote.title}
 							quote={`"${quote.quote}"`}
 							likeCount={quote.likeCount}
 							didLike={quote.didLike}
-							date={quote.date_posted}
+							date={quote.datePosted}
 							hasComments={true}
-							canDelete={quote.user_name === currentUser ? true : false}
+							canDelete={quote.userName === currentUser ? true : false}
 							deleteQuote={deleteQuote}
 						/>
 					);

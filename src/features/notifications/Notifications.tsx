@@ -39,7 +39,7 @@ const Notifications: React.FC = () => {
 							key={notification.id}
 							username={notification.notice.split(' ')[0]}
 							notice={notification.notice}
-							quotesId={notification.quotes_id}
+							quotesId={notification.quotesId}
 							date={notification.date}
 						/>
 					);

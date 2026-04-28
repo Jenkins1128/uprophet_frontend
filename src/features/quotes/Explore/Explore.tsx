@@ -47,7 +47,7 @@ const Explore: React.FC = () => {
 					<div className='mt5'>
 						{exploreQuotes.map((quote: any) => {
 							return (
-								<QuotePost key={quote.id} quoteId={quote.id} username={quote.user_name} title={quote.title} quote={`"${quote.quote}"`} likeCount={quote.likeCount} didLike={quote.didLike} date={quote.date_posted} hasComments={true} canDelete={false} deleteQuote={() => {}} />
+								<QuotePost key={quote.id} quoteId={quote.id} username={quote.userName} title={quote.title} quote={`"${quote.quote}"`} likeCount={quote.likeCount} didLike={quote.didLike} date={quote.datePosted} hasComments={true} canDelete={false} deleteQuote={() => {}} />
 							);
 						})}
 					</div>

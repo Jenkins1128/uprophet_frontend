@@ -43,7 +43,7 @@ const Home: React.FC = () => {
 			queryClient.setQueryData(['latestQuotes'], (oldData: any[]) => {
 				if (!oldData) return [newQuote];
 				// remove if user already had a quote (business logic from old slice)
-				const filtered = oldData.filter((q: any) => q.user_name !== newQuote.user_name);
+				const filtered = oldData.filter((q: any) => q.userName !== newQuote.userName);
 				return [newQuote, ...filtered];
 			});
 		},
@@ -83,12 +83,12 @@ const Home: React.FC = () => {
 						<QuotePost
 							key={quote.id}
 							quoteId={quote.id}
-							username={quote.user_name}
+							username={quote.userName}
 							title={quote.title}
 							quote={`"${quote.quote}"`}
 							likeCount={quote.likeCount}
 							didLike={quote.didLike}
-							date={quote.date_posted}
+							date={quote.datePosted}
 							hasComments={true}
 							canDelete={false}
 							deleteQuote={() => {}}

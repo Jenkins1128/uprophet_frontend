@@ -85,12 +85,12 @@ const QuoteComments: React.FC = () => {
 			{quotePost?.id && (
 				<QuotePost
 					quoteId={quotePost.id}
-					username={quotePost.user_name}
+					username={quotePost.userName}
 					title={quotePost.title}
 					quote={`${quotePost.quote}`}
 					likeCount={quotePost.likeCount}
 					didLike={quotePost.didLike}
-					date={quotePost.date_posted}
+					date={quotePost.datePosted}
 					hasComments={false}
 					canDelete={false}
 					deleteQuote={() => {}}
@@ -99,7 +99,7 @@ const QuoteComments: React.FC = () => {
 			<CommentPoster postComment={postComment} onCommentChange={onCommentChange} />
 			<div className='mt5'>
 				{latestComments.map((commentData: any) => {
-					return <QuoteComment key={commentData.id} comment={commentData.comment} commenter={commentData.commenter} date={commentData.date_posted} />;
+					return <QuoteComment key={commentData.id} comment={commentData.comment} commenter={commentData.commenter} date={commentData.datePosted} />;
 				})}
 			</div>
 		</section>
