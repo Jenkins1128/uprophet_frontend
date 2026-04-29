@@ -4,7 +4,7 @@ import Header from '../components/layout/Header/Header';
 
 export const metadata = {
   title: 'Uprophet',
-  description: 'Uprophet Web App',
+  description: 'A social network to express, share, and inspire with creative quotes.',
 };
 
 import Providers from './providers';
