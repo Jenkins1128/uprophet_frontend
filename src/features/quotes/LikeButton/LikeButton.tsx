@@ -33,13 +33,39 @@ const LikeButton: React.FC<LikeButtonProps> = ({ quoteId, likeCount, didLike }) 
 	const [getDidLike, setDidLike] = useState<boolean>(didLike);
 	const queryClient = useQueryClient();
 
+	const updateCache = (liked: boolean) => {
+		const updateQuote = (oldData: any) => {
+			if (!oldData) return oldData;
+			
+			// If it's an array (like exploreQuotes, latestQuotes, profileQuotes)
+			if (Array.isArray(oldData)) {
+				return oldData.map((q: any) => 
+					q.id === quoteId 
+						? { ...q, didLike: liked, likeCount: q.likeCount + (liked ? 1 : -1) } 
+						: q
+				);
+			}
+			
+			// If it's a single object (like quotePost)
+			if (oldData.id === quoteId) {
+				return { ...oldData, didLike: liked, likeCount: oldData.likeCount + (liked ? 1 : -1) };
+			}
+			
+			return oldData;
+		};
+
+		queryClient.setQueriesData({ queryKey: ['exploreQuotes'] }, updateQuote);
+		queryClient.setQueriesData({ queryKey: ['latestQuotes'] }, updateQuote);
+		queryClient.setQueriesData({ queryKey: ['profileQuotes'] }, updateQuote);
+		queryClient.setQueriesData({ queryKey: ['quotePost', quoteId] }, updateQuote);
+	};
+
 	const { mutate: performLike } = useMutation({
 		mutationFn: likeData,
 		onSuccess: () => {
 			getLikeCount.current += 1;
 			setDidLike(true);
-			queryClient.invalidateQueries({ queryKey: ['exploreQuotes'] });
-			queryClient.invalidateQueries({ queryKey: ['homeQuotes'] });
+			updateCache(true);
 		}
 	});
 
@@ -48,8 +74,7 @@ const LikeButton: React.FC<LikeButtonProps> = ({ quoteId, likeCount, didLike }) 
 		onSuccess: () => {
 			getLikeCount.current -= 1;
 			setDidLike(false);
-			queryClient.invalidateQueries({ queryKey: ['exploreQuotes'] });
-			queryClient.invalidateQueries({ queryKey: ['homeQuotes'] });
+			updateCache(false);
 		}
 	});
 
