@@ -14,7 +14,7 @@ const QuoteCard: React.FC<QuoteCardProps> = ({ userName, quote }) => {
 				<p className='black-50 b relative top--1 '>{userName}</p>
 			</div>
 			<div className='pt5 ph3'>
-				<p className='light-green b  '>"{quote}"</p>
+				<p className='light-green b  '>&quot;{quote}&quot;</p>
 			</div>
 		</article>
 	);

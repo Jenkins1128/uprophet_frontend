@@ -26,7 +26,7 @@ const SearchResults: React.FC = () => {
 
 	return (
 		<section className='mt6 mh2 f7'>
-			<h1 className='flex ml4 moon-gray'>Search Results for "{searchtext || ''}"</h1>
+			<h1 className='flex ml4 moon-gray'>Search Results for &quot;{searchtext || ''}&quot;</h1>
 			<div className='mt5'>
 				{results.map((result: SearchResult) => {
 					return <ResultCard key={result.id} currentUser={result.currentUser} username={result.user_name} didFavorite={result.didFavorite} />;

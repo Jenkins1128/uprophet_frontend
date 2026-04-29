@@ -42,7 +42,7 @@ const Terms: React.FC = () => {
 
 				<h2 className='f4 light-green mb2'>6. Limitation of Liability</h2>
 				<p className='f6 mb4'>
-					Uprophet is provided on an "as is" and "as available" basis. We make no warranties regarding the accuracy or reliability of content posted by users. In no event shall Uprophet be liable for any direct, indirect, or incidental damages resulting from your use of the service.
+					Uprophet is provided on an &quot;as is&quot; and &quot;as available&quot; basis. We make no warranties regarding the accuracy or reliability of content posted by users. In no event shall Uprophet be liable for any direct, indirect, or incidental damages resulting from your use of the service.
 				</p>
 
 				<div className='mt4 pt3 bt b--light-gray tc'>
