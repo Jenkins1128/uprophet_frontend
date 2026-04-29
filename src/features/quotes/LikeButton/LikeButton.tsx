@@ -1,10 +1,10 @@
 "use client";
 import React, { useState, useRef } from 'react';
-import Like from '../../../images/like.png';
-import UnLike from '../../../images/unlike.png';
-import { url } from '../../../domain';
+import Like from '@/images/like.png';
+import UnLike from '@/images/unlike.png';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import axios from 'axios';
+import { likeQuoteRequest, unlikeQuoteRequest } from '@/api/quotes';
+import type { Quote } from '@/types';
 
 interface LikeButtonProps {
 	quoteId: string | number;
@@ -12,45 +12,29 @@ interface LikeButtonProps {
 	didLike: boolean;
 }
 
-const likeData = async (quoteId: string | number) => {
-	const { data } = await axios.post(`${url}/like`, { quoteId }, {
-		withCredentials: true,
-		headers: { Accept: '*/*', 'Content-Type': 'application/json' },
-	});
-	return data;
-};
-
-const unlikeData = async (quoteId: string | number) => {
-	const { data } = await axios.post(`${url}/unlike`, { quoteId }, {
-		withCredentials: true,
-		headers: { Accept: '*/*', 'Content-Type': 'application/json' },
-	});
-	return data;
-};
-
 const LikeButton: React.FC<LikeButtonProps> = ({ quoteId, likeCount, didLike }) => {
 	const getLikeCount = useRef<number>(likeCount);
 	const [getDidLike, setDidLike] = useState<boolean>(didLike);
 	const queryClient = useQueryClient();
 
 	const updateCache = (liked: boolean) => {
-		const updateQuote = (oldData: any) => {
+		const updateQuote = (oldData: Quote | Quote[] | undefined): Quote | Quote[] | undefined => {
 			if (!oldData) return oldData;
-			
+
 			// If it's an array (like exploreQuotes, latestQuotes, profileQuotes)
 			if (Array.isArray(oldData)) {
-				return oldData.map((q: any) => 
-					q.id === quoteId 
-						? { ...q, didLike: liked, likeCount: q.likeCount + (liked ? 1 : -1) } 
+				return oldData.map((q) =>
+					q.id === quoteId
+						? { ...q, didLike: liked, likeCount: q.likeCount + (liked ? 1 : -1) }
 						: q
 				);
 			}
-			
+
 			// If it's a single object (like quotePost)
 			if (oldData.id === quoteId) {
 				return { ...oldData, didLike: liked, likeCount: oldData.likeCount + (liked ? 1 : -1) };
 			}
-			
+
 			return oldData;
 		};
 
@@ -61,7 +45,7 @@ const LikeButton: React.FC<LikeButtonProps> = ({ quoteId, likeCount, didLike }) 
 	};
 
 	const { mutate: performLike } = useMutation({
-		mutationFn: likeData,
+		mutationFn: likeQuoteRequest,
 		onSuccess: () => {
 			getLikeCount.current += 1;
 			setDidLike(true);
@@ -70,7 +54,7 @@ const LikeButton: React.FC<LikeButtonProps> = ({ quoteId, likeCount, didLike }) 
 	});
 
 	const { mutate: performUnlike } = useMutation({
-		mutationFn: unlikeData,
+		mutationFn: unlikeQuoteRequest,
 		onSuccess: () => {
 			getLikeCount.current -= 1;
 			setDidLike(false);

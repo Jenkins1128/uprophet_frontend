@@ -1,19 +1,11 @@
 "use client";
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { url } from '../../../domain';
-import Loading from '../../../components/ui/Loading/Loading';
+import Loading from '@/components/ui/Loading/Loading';
 import CheckEmailForm from './CheckEmailForm/CheckEmailForm';
 import { useMutation } from '@tanstack/react-query';
-import axios from 'axios';
-
-const forgotPasswordData = async ({ username, email }: any) => {
-	const { data } = await axios.post(`${url}/forgotPassword`, { username, email }, {
-		withCredentials: true,
-		headers: { Accept: '*/*', 'Content-Type': 'application/json' },
-	});
-	return data;
-};
+import { forgotPasswordRequest } from '@/api/auth';
+import type { ForgotPasswordPayload } from '@/types';
 
 const ForgotPassword: React.FC = () => {
 	const [username, setUsername] = useState<string>('');
@@ -23,7 +15,7 @@ const ForgotPassword: React.FC = () => {
 	const [isEmptyError, setIsEmptyError] = useState<boolean>(false);
 
 	const { mutate: forgotPass, isPending: isLoading } = useMutation({
-		mutationFn: forgotPasswordData,
+		mutationFn: (payload: ForgotPasswordPayload) => forgotPasswordRequest(payload),
 		onSuccess: () => {
 			setCheckEmailForm(true);
 		},
@@ -70,7 +62,7 @@ const ForgotPassword: React.FC = () => {
 							<p className='f5 white'>Please fill all the fields.</p>
 						</div>
 					)}
-					<form className='measure center pa3 black-80' onSubmit={initCheckEmailForm as any}>
+					<form className='measure center pa3 black-80' onSubmit={initCheckEmailForm}>
 						<fieldset id='change_password_signin' className='ba b--transparent ph0 mh0'>
 							<div className='mt3'>
 								<input className='pa2 input-reset ba br4 bg-transparent w-75 center db' placeholder='Username' type='text' maxLength={20} onChange={handleUsernameOnchange} />

@@ -2,25 +2,9 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import ChangePasswordForm from './ChangePasswordForm/ChangePasswordForm';
-import { url } from '../../../domain';
 import { useMutation } from '@tanstack/react-query';
-import axios from 'axios';
-
-const changePasswordSignInData = async ({ username, password }: any) => {
-	const { data } = await axios.post(`${url}/changePasswordSignIn`, { username, password }, {
-		withCredentials: true,
-		headers: { Accept: '*/*', 'Content-Type': 'application/json' },
-	});
-	return data;
-};
-
-const changePasswordData = async ({ username, newPassword }: any) => {
-	const { data } = await axios.post(`${url}/changePassword`, { username, password: newPassword }, {
-		withCredentials: true,
-		headers: { Accept: '*/*', 'Content-Type': 'application/json' },
-	});
-	return data;
-};
+import { changePasswordSignInRequest, changePasswordRequest } from '@/api/auth';
+import type { ChangePasswordCredentials, NewPasswordPayload } from '@/types';
 
 const ChangePassword: React.FC = () => {
 	const router = useRouter();
@@ -37,7 +21,7 @@ const ChangePassword: React.FC = () => {
 	const [isEmptyError2, setIsEmptyError2] = useState<boolean>(false);
 
 	const { mutate: signIn } = useMutation({
-		mutationFn: changePasswordSignInData,
+		mutationFn: (credentials: ChangePasswordCredentials) => changePasswordSignInRequest(credentials),
 		onSuccess: () => {
 			setChangePasswordForm(true);
 		},
@@ -47,7 +31,7 @@ const ChangePassword: React.FC = () => {
 	});
 
 	const { mutate: changePass } = useMutation({
-		mutationFn: changePasswordData,
+		mutationFn: (payload: NewPasswordPayload) => changePasswordRequest(payload),
 		onSuccess: () => {
 			router.push('/signin');
 		}
@@ -114,7 +98,7 @@ const ChangePassword: React.FC = () => {
 							<p className='f5 white'>Please fill all the fields.</p>
 						</div>
 					)}
-					<form className='measure center pa3 black-80' onSubmit={initChangePasswordForm as any}>
+					<form className='measure center pa3 black-80' onSubmit={initChangePasswordForm}>
 						<fieldset id='change_password_signin' className='ba b--transparent ph0 mh0'>
 							<div className='mt3'>
 								<input className='pa2 input-reset ba br4 bg-transparent w-75 center db' placeholder='Username' type='text' maxLength={20} onChange={handleUsernameOnchange} />

@@ -1,61 +1,37 @@
 "use client";
 import React, { useState } from 'react';
 import Userphoto from '../Userphoto/Userphoto';
-import PleaseSignin from '../../../components/ui/PleaseSignin/PleaseSignin';
-import Loading from '../../../components/ui/Loading/Loading';
-import { useCurrentUser } from '../../../store/useCurrentUser';
-import { url } from '../../../domain';
+import PleaseSignin from '@/components/ui/PleaseSignin/PleaseSignin';
+import Loading from '@/components/ui/Loading/Loading';
+import { useCurrentUser } from '@/store/useCurrentUser';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import axios from 'axios';
+import { fetchCurrentUserInfo, savePhotoRequest, saveBioRequest } from '@/api/user';
+import type { ImagePayload } from '@/types';
 import Swal from 'sweetalert2';
-
-const fetchCurrentUserInfo = async () => {
-	const { data } = await axios.get(`${url}/currentUserInfo`, {
-		withCredentials: true,
-		headers: { Accept: '*/*', 'Content-Type': 'application/json' },
-	});
-	return data;
-};
-
-const savePhotoData = async (imageData: any) => {
-	const { data } = await axios.put(`${url}/uploadPic`, imageData, {
-		withCredentials: true,
-		headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
-	});
-	return data;
-};
-
-const saveBioData = async (bio: string) => {
-	const { data } = await axios.put(`${url}/savebio`, { bio }, {
-		withCredentials: true,
-		headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
-	});
-	return data;
-};
 
 const EditProfile: React.FC = () => {
 	const [bio, setBio] = useState<string>('');
-	const [imageData, setImageData] = useState<any>(null);
+	const [imageData, setImageData] = useState<ImagePayload | null>(null);
 	const { isLoading: isUserLoading, isSuccess: isUserSuccess } = useCurrentUser();
 	const queryClient = useQueryClient();
 
-	const { data: userInfo = {}, isLoading: isUserInfoLoading } = useQuery({
+	const { data: userInfo, isLoading: isUserInfoLoading } = useQuery({
 		queryKey: ['currentUserInfo'],
 		queryFn: fetchCurrentUserInfo,
 		enabled: isUserSuccess,
 	});
 
 	const { mutate: updatePhoto } = useMutation({
-		mutationFn: savePhotoData,
+		mutationFn: savePhotoRequest,
 		onSuccess: () => {
 			Swal.fire('Saved!', 'Your photo has been updated.', 'success');
 			queryClient.invalidateQueries({ queryKey: ['currentUserInfo'] });
-			queryClient.invalidateQueries({ queryKey: ['userPhoto', userInfo.currentUser] });
+			queryClient.invalidateQueries({ queryKey: ['userPhoto', userInfo?.currentUser] });
 		},
 	});
 
 	const { mutate: updateBio } = useMutation({
-		mutationFn: saveBioData,
+		mutationFn: saveBioRequest,
 		onSuccess: () => {
 			Swal.fire('Saved!', 'Your bio has been updated.', 'success');
 			queryClient.invalidateQueries({ queryKey: ['currentUserInfo'] });
@@ -87,8 +63,8 @@ const EditProfile: React.FC = () => {
 
 			const reader = new FileReader();
 
-			reader.onload = function (e: any) {
-				const { result } = e.target;
+			reader.onload = function (e: ProgressEvent<FileReader>) {
+				const result = e.target?.result as string;
 				const getImage = result.split(',')[1];
 				setImageData({ name: name, image: getImage });
 			};

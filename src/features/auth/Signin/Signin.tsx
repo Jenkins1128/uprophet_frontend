@@ -2,18 +2,10 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { url } from '../../../domain';
-import { useCurrentUser } from '../../../store/useCurrentUser';
+import { useCurrentUser } from '@/store/useCurrentUser';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import axios from 'axios';
-
-const signinData = async ({ username, password }: any) => {
-	const { data } = await axios.post(`${url}/signin`, { username, password }, {
-		withCredentials: true,
-		headers: { Accept: '*/*', 'Content-Type': 'application/json' },
-	});
-	return data;
-};
+import { signinRequest } from '@/api/auth';
+import type { SigninCredentials } from '@/types';
 
 const Signin: React.FC = () => {
 	const router = useRouter();
@@ -32,7 +24,7 @@ const Signin: React.FC = () => {
 	}, [isUserSuccess, currentUser, router]);
 
 	const { mutate: login } = useMutation({
-		mutationFn: signinData,
+		mutationFn: (credentials: SigninCredentials) => signinRequest(credentials),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['currentUser'] });
 			router.push('/');

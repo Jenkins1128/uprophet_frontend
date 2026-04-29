@@ -1,17 +1,8 @@
 "use client";
 import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
-import { url } from '../domain';
 import { useUserStore } from './useUserStore';
 import { useEffect } from 'react';
-
-export const fetchCurrentUser = async () => {
-  const { data } = await axios.get(`${url}/currentUser`, {
-    withCredentials: true,
-    headers: { Accept: '*/*' },
-  });
-  return data;
-};
+import { fetchCurrentUser } from '@/api/auth';
 
 export const useCurrentUser = () => {
   const setUser = useUserStore((state) => state.setUser);

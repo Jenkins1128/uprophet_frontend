@@ -3,27 +3,11 @@ import React, { useState } from 'react';
 import TopQuotes from '../TopQuotes/TopQuotes';
 import QuotePost from '../QuotePost/QuotePost';
 import QuotePoster from '../Home/QuotePoster/QuotePoster';
-import Loading from '../../../components/ui/Loading/Loading';
-import { useCurrentUser } from '../../../store/useCurrentUser';
-import { url } from '../../../domain';
+import Loading from '@/components/ui/Loading/Loading';
+import { useCurrentUser } from '@/store/useCurrentUser';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import axios from 'axios';
-
-const fetchLatestQuotes = async () => {
-	const { data } = await axios.get(`${url}/`, {
-		withCredentials: true,
-		headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
-	});
-	return data;
-};
-
-const postQuoteData = async ({ title, quote }: { title: string; quote: string }) => {
-	const { data } = await axios.post(`${url}/createQuote`, { title, quote }, {
-		withCredentials: true,
-		headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
-	});
-	return data;
-};
+import { fetchLatestQuotes, createQuoteRequest } from '@/api/quotes';
+import type { Quote } from '@/types';
 
 const Home: React.FC = () => {
 	const { isLoading: isUserLoading, isSuccess: isUserSuccess } = useCurrentUser();
@@ -38,12 +22,12 @@ const Home: React.FC = () => {
 	});
 
 	const { mutate: createQuote } = useMutation({
-		mutationFn: postQuoteData,
-		onSuccess: (newQuote) => {
-			queryClient.setQueryData(['latestQuotes'], (oldData: any[]) => {
+		mutationFn: createQuoteRequest,
+		onSuccess: (newQuote: Quote) => {
+			queryClient.setQueryData(['latestQuotes'], (oldData: Quote[] | undefined) => {
 				if (!oldData) return [newQuote];
 				// remove if user already had a quote (business logic from old slice)
-				const filtered = oldData.filter((q: any) => q.userName !== newQuote.userName);
+				const filtered = oldData.filter((q) => q.userName !== newQuote.userName);
 				return [newQuote, ...filtered];
 			});
 		},
@@ -78,7 +62,7 @@ const Home: React.FC = () => {
 			<h1 className='flex ml4 moon-gray'>Home</h1>
 			<QuotePoster postQuote={postQuote} onQuoteChange={onQuoteChange} onTitleChange={onTitleChange} />
 			<div className='mt5'>
-				{latestQuotes.map((quote: any) => {
+				{latestQuotes.map((quote: Quote) => {
 					return (
 						<QuotePost
 							key={quote.id}

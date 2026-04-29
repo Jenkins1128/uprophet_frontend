@@ -1,22 +1,13 @@
 "use client";
 import React from 'react';
-import { useCurrentUser } from '../../../store/useCurrentUser';
+import { useCurrentUser } from '@/store/useCurrentUser';
 import QuotePost from '../QuotePost/QuotePost';
-import { useRouter } from 'next/navigation';
-import refreshIcon from '../../../images/refresh.png';
-import PleaseSignin from '../../../components/ui/PleaseSignin/PleaseSignin';
-import Loading from '../../../components/ui/Loading/Loading';
-import { url } from '../../../domain';
+import refreshIcon from '@/images/refresh.png';
+import PleaseSignin from '@/components/ui/PleaseSignin/PleaseSignin';
+import Loading from '@/components/ui/Loading/Loading';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import axios from 'axios';
-
-const fetchExploreQuotes = async () => {
-  const { data } = await axios.get(`${url}/explore`, {
-    withCredentials: true,
-    headers: { Accept: 'application/json', 'Content-Type': 'application/json' }
-  });
-  return data;
-};
+import { fetchExploreQuotes } from '@/api/quotes';
+import type { Quote } from '@/types';
 
 const Explore: React.FC = () => {
 	const { isLoading: isUserLoading, isSuccess: isUserSuccess } = useCurrentUser();
@@ -45,7 +36,7 @@ const Explore: React.FC = () => {
 						</button>
 					</div>
 					<div className='mt5'>
-						{exploreQuotes.map((quote: any) => {
+						{exploreQuotes.map((quote: Quote) => {
 							return (
 								<QuotePost key={quote.id} quoteId={quote.id} username={quote.userName} title={quote.title} quote={`"${quote.quote}"`} likeCount={quote.likeCount} didLike={quote.didLike} date={quote.datePosted} hasComments={true} canDelete={false} deleteQuote={() => {}} />
 							);

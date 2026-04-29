@@ -1,39 +1,15 @@
 "use client";
 import React, { useState } from 'react';
-import Loading from '../../../components/ui/Loading/Loading';
-import PleaseSignin from '../../../components/ui/PleaseSignin/PleaseSignin';
+import Loading from '@/components/ui/Loading/Loading';
+import PleaseSignin from '@/components/ui/PleaseSignin/PleaseSignin';
 import { useParams } from 'next/navigation';
 import CommentPoster from './CommentPoster/CommentPoster';
 import QuoteComment from './QuoteComment/QuoteComment';
 import QuotePost from '../QuotePost/QuotePost';
-import { useCurrentUser } from '../../../store/useCurrentUser';
-import { url } from '../../../domain';
+import { useCurrentUser } from '@/store/useCurrentUser';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import axios from 'axios';
-
-const fetchQuotePost = async (quoteId: string) => {
-	const { data } = await axios.post(`${url}/getQuotePost`, { quoteId }, {
-		withCredentials: true,
-		headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
-	});
-	return data;
-};
-
-const fetchComments = async (quoteId: string) => {
-	const { data } = await axios.post(`${url}/getComments`, { quoteId }, {
-		withCredentials: true,
-		headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
-	});
-	return data;
-};
-
-const postCommentData = async ({ quoteId, comment }: { quoteId: string; comment: string }) => {
-	const { data } = await axios.post(`${url}/addComment`, { quoteId, comment }, {
-		withCredentials: true,
-		headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
-	});
-	return data;
-};
+import { fetchQuotePost, fetchComments, postCommentRequest } from '@/api/quotes';
+import type { Comment } from '@/types';
 
 const QuoteComments: React.FC = () => {
 	const { quoteId } = useParams<{ quoteId: string }>();
@@ -54,9 +30,9 @@ const QuoteComments: React.FC = () => {
 	});
 
 	const { mutate: createComment } = useMutation({
-		mutationFn: postCommentData,
-		onSuccess: (newComment) => {
-			queryClient.setQueryData(['comments', quoteId], (oldData: any[]) => {
+		mutationFn: postCommentRequest,
+		onSuccess: (newComment: Comment) => {
+			queryClient.setQueryData(['comments', quoteId], (oldData: Comment[] | undefined) => {
 				if (!oldData) return [newComment];
 				return [newComment, ...oldData];
 			});
@@ -98,7 +74,7 @@ const QuoteComments: React.FC = () => {
 			)}
 			<CommentPoster postComment={postComment} onCommentChange={onCommentChange} />
 			<div className='mt5'>
-				{latestComments.map((commentData: any) => {
+				{latestComments.map((commentData: Comment) => {
 					return <QuoteComment key={commentData.id} comment={commentData.comment} commenter={commentData.commenter} date={commentData.datePosted} />;
 				})}
 			</div>

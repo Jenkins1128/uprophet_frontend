@@ -2,26 +2,10 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { url } from '../../../domain';
-import { useCurrentUser } from '../../../store/useCurrentUser';
+import { useCurrentUser } from '@/store/useCurrentUser';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import axios from 'axios';
-
-const signupData = async ({ name, username, password, email }: any) => {
-	const { data } = await axios.post(`${url}/signup`, { name, username, password, email }, {
-		withCredentials: true,
-		headers: { Accept: '*/*', 'Content-Type': 'application/json' },
-	});
-	return data;
-};
-
-const signinData = async ({ username, password }: any) => {
-	const { data } = await axios.post(`${url}/signin`, { username, password }, {
-		withCredentials: true,
-		headers: { Accept: '*/*', 'Content-Type': 'application/json' },
-	});
-	return data;
-};
+import { signupRequest, signinRequest } from '@/api/auth';
+import type { SignupCredentials, SigninCredentials } from '@/types';
 
 const Signup: React.FC = () => {
 	const { isSuccess: isUserSuccess, data: currentUser } = useCurrentUser();
@@ -44,7 +28,7 @@ const Signup: React.FC = () => {
 	}, [isUserSuccess, currentUser, router]);
 
 	const { mutate: login } = useMutation({
-		mutationFn: signinData,
+		mutationFn: (credentials: SigninCredentials) => signinRequest(credentials),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['currentUser'] });
 			router.push('/');
@@ -52,7 +36,7 @@ const Signup: React.FC = () => {
 	});
 
 	const { mutate: register } = useMutation({
-		mutationFn: signupData,
+		mutationFn: (credentials: SignupCredentials) => signupRequest(credentials),
 		onSuccess: () => {
 			login({ username, password });
 		},

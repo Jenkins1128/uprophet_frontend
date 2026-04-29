@@ -1,21 +1,13 @@
 "use client";
 import React from 'react';
 import { useParams } from 'next/navigation';
-import PleaseSignin from '../../../components/ui/PleaseSignin/PleaseSignin';
+import PleaseSignin from '@/components/ui/PleaseSignin/PleaseSignin';
 import FavoritingCard from './FavoritingCard/FavoritingCard';
-import Loading from '../../../components/ui/Loading/Loading';
-import { useCurrentUser } from '../../../store/useCurrentUser';
-import { url } from '../../../domain';
+import Loading from '@/components/ui/Loading/Loading';
+import { useCurrentUser } from '@/store/useCurrentUser';
 import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
-
-const fetchFavoriting = async (username: string) => {
-	const { data } = await axios.post(`${url}/favoriting`, { username }, {
-		withCredentials: true,
-		headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
-	});
-	return data;
-};
+import { fetchFavoriting } from '@/api/user';
+import type { FavoriteRelation } from '@/types';
 
 const Favoriting: React.FC = () => {
 	const params = useParams();
@@ -36,7 +28,7 @@ const Favoriting: React.FC = () => {
 		<section className='mt6 mh2 f7'>
 			<h1 className='flex ml4 moon-gray'>{username}'s Favoriting</h1>
 			<div className='mt5'>
-				{favoriting.map((result: any) => {
+				{favoriting.map((result: FavoriteRelation) => {
 					return <FavoritingCard key={result.to_user} currentUser={result.currentUser} username={result.to_user} didFavorite={result.didFavorite} />;
 				})}
 			</div>
