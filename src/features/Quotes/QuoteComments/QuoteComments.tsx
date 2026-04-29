@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from 'react';
+import React from 'react';
 import Loading from '@/components/ui/Loading/Loading';
 import PleaseSignin from '@/components/ui/PleaseSignin/PleaseSignin';
 import { useParams } from 'next/navigation';
@@ -9,13 +9,27 @@ import QuotePost from '../QuotePost/QuotePost';
 import { useCurrentUser } from '@/store/useCurrentUser';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { fetchQuotePost, fetchComments, postCommentRequest } from '@/api/quotes';
+import { useForm, SubmitHandler } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { addCommentSchema, type AddCommentFormData } from '@/validation/quotes';
 import type { Comment } from '@/types';
 
 const QuoteComments: React.FC = () => {
 	const { quoteId } = useParams<{ quoteId: string }>();
 	const { isLoading: isUserLoading, isSuccess: isUserSuccess } = useCurrentUser();
 	const queryClient = useQueryClient();
-	const [commentText, setCommentText] = useState<string>('');
+
+	const {
+		register,
+		handleSubmit,
+		reset,
+		formState: { errors, isSubmitting }
+	} = useForm<AddCommentFormData>({
+		resolver: zodResolver(addCommentSchema),
+		defaultValues: {
+			comment: ''
+		}
+	});
 
 	const { data: quotePost, isLoading: isQuoteLoading } = useQuery({
 		queryKey: ['quotePost', quoteId],
@@ -32,6 +46,7 @@ const QuoteComments: React.FC = () => {
 	const { mutate: createComment } = useMutation({
 		mutationFn: postCommentRequest,
 		onSuccess: (newComment: Comment) => {
+			reset();
 			queryClient.setQueryData(['comments', quoteId], (oldData: Comment[] | undefined) => {
 				if (!oldData) return [newComment];
 				return [newComment, ...oldData];
@@ -39,17 +54,10 @@ const QuoteComments: React.FC = () => {
 		},
 	});
 
-	const postComment = (event: React.FormEvent<HTMLFormElement>) => {
-		event.preventDefault();
-		if (quotePost?.id && commentText !== '') {
-			createComment({ quoteId: quoteId as string, comment: commentText });
-			(event.target as HTMLFormElement).reset();
-			setCommentText('');
+	const onSubmit: SubmitHandler<AddCommentFormData> = (data) => {
+		if (quoteId) {
+			createComment({ quoteId: quoteId as string, comment: data.comment });
 		}
-	};
-
-	const onCommentChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		setCommentText(event.target.value);
 	};
 
 	if (isUserLoading) return <Loading />;
@@ -72,7 +80,13 @@ const QuoteComments: React.FC = () => {
 					deleteQuote={() => {}}
 				/>
 			)}
-			<CommentPoster postComment={postComment} onCommentChange={onCommentChange} />
+			<CommentPoster
+				register={register}
+				errors={errors}
+				handleSubmit={handleSubmit}
+				onSubmit={onSubmit}
+				isSubmitting={isSubmitting}
+			/>
 			<div className='mt5'>
 				{latestComments.map((commentData: Comment) => {
 					return <QuoteComment key={commentData.id} comment={commentData.comment} commenter={commentData.commenter} date={commentData.datePosted} />;
@@ -83,3 +97,4 @@ const QuoteComments: React.FC = () => {
 };
 
 export default QuoteComments;
+
