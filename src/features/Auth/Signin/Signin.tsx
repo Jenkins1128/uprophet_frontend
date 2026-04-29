@@ -5,17 +5,24 @@ import { useRouter } from 'next/navigation';
 import { useCurrentUser } from '@/store/useCurrentUser';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { signinRequest } from '@/api/auth';
-import type { SigninCredentials } from '@/types';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { signinSchema, type SigninFormData } from '@/validation/auth';
 
 const Signin: React.FC = () => {
 	const router = useRouter();
 	const { isSuccess: isUserSuccess, data: currentUser } = useCurrentUser();
 	const queryClient = useQueryClient();
 
-	const [username, setUsername] = useState('');
-	const [password, setPassword] = useState('');
 	const [isIncorrectError, setIsIncorrectError] = useState(false);
-	const [isEmptyError, setIsEmptyError] = useState(false);
+
+	const {
+		register,
+		handleSubmit,
+		formState: { errors, isSubmitting }
+	} = useForm<SigninFormData>({
+		resolver: zodResolver(signinSchema)
+	});
 
 	useEffect(() => {
 		if (isUserSuccess && currentUser) {
@@ -24,7 +31,7 @@ const Signin: React.FC = () => {
 	}, [isUserSuccess, currentUser, router]);
 
 	const { mutate: login } = useMutation({
-		mutationFn: (credentials: SigninCredentials) => signinRequest(credentials),
+		mutationFn: (data: SigninFormData) => signinRequest(data),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['currentUser'] });
 			router.push('/');
@@ -34,25 +41,9 @@ const Signin: React.FC = () => {
 		}
 	});
 
-	const handleUsernameOnchange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		const { value } = event.target;
-		setUsername(value);
-	};
-
-	const handlePasswordOnchange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		const { value } = event.target;
-		setPassword(value);
-	};
-
-	const submitLogin = (event: React.FormEvent<HTMLButtonElement | HTMLFormElement>) => {
-		event.preventDefault();
+	const onSubmit = (data: SigninFormData) => {
 		setIsIncorrectError(false);
-		setIsEmptyError(false);
-		if (username && password) {
-			login({ username, password });
-		} else {
-			setIsEmptyError(true);
-		}
+		login(data);
 	};
 
 	return (
@@ -64,23 +55,36 @@ const Signin: React.FC = () => {
 						<p className='f5 white'>Username or password is incorrect.</p>
 					</div>
 				)}
-				{isEmptyError && (
-					<div className='mt3 center h-10 w-75 ba bw1 br3 bg-red'>
-						<p className='f5 white'>Please fill all the fields.</p>
-					</div>
-				)}
-				<form className='measure center pa3 black-80' onSubmit={submitLogin}>
+				<form className='measure center pa3 black-80' onSubmit={handleSubmit(onSubmit)}>
 					<fieldset id='sign_in' className='ba b--transparent ph0 mh0'>
 						<div className='mt3'>
-							<input className='pa2 input-reset ba br4 bg-transparent w-75 center db' maxLength={20} placeholder='Username' type='text' onChange={handleUsernameOnchange} />
+							<input
+								{...register('username')}
+								className={`pa2 input-reset ba br4 bg-transparent w-75 center db ${errors.username ? 'b--red' : ''}`}
+								maxLength={20}
+								placeholder='Username'
+								type='text'
+							/>
+							{errors.username && <p className='f7 red mt1'>{errors.username.message}</p>}
 						</div>
 						<div className='mv3'>
-							<input className='b pa2 input-reset ba br4 bg-transparent w-75 center db' maxLength={128} placeholder='Password' type='password' onChange={handlePasswordOnchange} />
+							<input
+								{...register('password')}
+								className={`b pa2 input-reset ba br4 bg-transparent w-75 center db ${errors.password ? 'b--red' : ''}`}
+								maxLength={128}
+								placeholder='Password'
+								type='password'
+							/>
+							{errors.password && <p className='f7 red mt1'>{errors.password.message}</p>}
 						</div>
 					</fieldset>
 					<div className='lh-copy mt3'>
-						<button className='b ph3 pv2 input-reset ba br4 b--black bg-light-green grow pointer f6 dib' type='submit'>
-							Sign in
+						<button
+							className='b ph3 pv2 input-reset ba br4 b--black bg-light-green grow pointer f6 dib'
+							type='submit'
+							disabled={isSubmitting}
+						>
+							{isSubmitting ? 'Signing in...' : 'Sign in'}
 						</button>
 					</div>
 					<div className='flex justify-between mt4 ph3'>
@@ -98,3 +102,4 @@ const Signin: React.FC = () => {
 }
 
 export default Signin;
+

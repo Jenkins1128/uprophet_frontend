@@ -5,17 +5,24 @@ import Loading from '@/components/ui/Loading/Loading';
 import CheckEmailForm from './CheckEmailForm/CheckEmailForm';
 import { useMutation } from '@tanstack/react-query';
 import { forgotPasswordRequest } from '@/api/auth';
-import type { ForgotPasswordPayload } from '@/types';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { forgotPasswordSchema, type ForgotPasswordFormData } from '@/validation/auth';
 
 const ForgotPassword: React.FC = () => {
-	const [username, setUsername] = useState<string>('');
-	const [email, setEmail] = useState<string>('');
 	const [checkEmailForm, setCheckEmailForm] = useState<boolean>(false);
 	const [isIncorrectError, setIsIncorrectError] = useState<boolean>(false);
-	const [isEmptyError, setIsEmptyError] = useState<boolean>(false);
+
+	const {
+		register,
+		handleSubmit,
+		formState: { errors }
+	} = useForm<ForgotPasswordFormData>({
+		resolver: zodResolver(forgotPasswordSchema)
+	});
 
 	const { mutate: forgotPass, isPending: isLoading } = useMutation({
-		mutationFn: (payload: ForgotPasswordPayload) => forgotPasswordRequest(payload),
+		mutationFn: (payload: ForgotPasswordFormData) => forgotPasswordRequest(payload),
 		onSuccess: () => {
 			setCheckEmailForm(true);
 		},
@@ -24,25 +31,9 @@ const ForgotPassword: React.FC = () => {
 		}
 	});
 
-	const handleUsernameOnchange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		const { value } = event.target;
-		setUsername(value);
-	};
-
-	const handleEmailOnchange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		const { value } = event.target;
-		setEmail(value);
-	};
-
-	const initCheckEmailForm = (event: React.MouseEvent<HTMLButtonElement> | React.FormEvent<HTMLFormElement>) => {
-		event.preventDefault();
+	const onSubmit = (data: ForgotPasswordFormData) => {
 		setIsIncorrectError(false);
-		setIsEmptyError(false);
-		if (username && email) {
-			forgotPass({ username, email });
-		} else {
-			setIsEmptyError(true);
-		}
+		forgotPass(data);
 	};
 
 	return (
@@ -57,18 +48,27 @@ const ForgotPassword: React.FC = () => {
 							<p className='f5 white'>Username or email is incorrect.</p>
 						</div>
 					)}
-					{isEmptyError && (
-						<div className='mt3 center h-10 w-75 ba bw1 br3 bg-red'>
-							<p className='f5 white'>Please fill all the fields.</p>
-						</div>
-					)}
-					<form className='measure center pa3 black-80' onSubmit={initCheckEmailForm}>
+					<form className='measure center pa3 black-80' onSubmit={handleSubmit(onSubmit)}>
 						<fieldset id='change_password_signin' className='ba b--transparent ph0 mh0'>
 							<div className='mt3'>
-								<input className='pa2 input-reset ba br4 bg-transparent w-75 center db' placeholder='Username' type='text' maxLength={20} onChange={handleUsernameOnchange} />
+								<input
+									{...register('username')}
+									className={`pa2 input-reset ba br4 bg-transparent w-75 center db ${errors.username ? 'b--red' : ''}`}
+									placeholder='Username'
+									type='text'
+									maxLength={20}
+								/>
+								{errors.username && <p className='f7 red mt1'>{errors.username.message}</p>}
 							</div>
 							<div className='mv3'>
-								<input className='b pa2 input-reset ba br4 bg-transparent w-75 center db' placeholder='Email' type='email' maxLength={100} onChange={handleEmailOnchange} />
+								<input
+									{...register('email')}
+									className={`b pa2 input-reset ba br4 bg-transparent w-75 center db ${errors.email ? 'b--red' : ''}`}
+									placeholder='Email'
+									type='email'
+									maxLength={100}
+								/>
+								{errors.email && <p className='f7 red mt1'>{errors.email.message}</p>}
 							</div>
 						</fieldset>
 						<div className='lh-copy mt3'>
@@ -86,3 +86,4 @@ const ForgotPassword: React.FC = () => {
 };
 
 export default ForgotPassword;
+

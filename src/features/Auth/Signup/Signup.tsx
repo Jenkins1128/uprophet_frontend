@@ -5,21 +5,33 @@ import { useRouter } from 'next/navigation';
 import { useCurrentUser } from '@/store/useCurrentUser';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { signupRequest, signinRequest } from '@/api/auth';
-import type { SignupCredentials, SigninCredentials } from '@/types';
+import { useForm, type SubmitHandler } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { signupSchema, type SignupFormData } from '@/validation/auth';
+
 
 const Signup: React.FC = () => {
 	const { isSuccess: isUserSuccess, data: currentUser } = useCurrentUser();
 	const router = useRouter();
 	const queryClient = useQueryClient();
 
-	const [name, setName] = useState('');
-	const [username, setUsername] = useState('');
-	const [email, setEmail] = useState('');
-	const [password, setPassword] = useState('');
-	const [terms, setTerms] = useState(false);
 	const [isExistsError, setIsExistsError] = useState(false);
-	const [isTermsError, setIsTermsError] = useState(false);
-	const [isEmptyError, setIsEmptyError] = useState(false);
+
+	const {
+		register,
+		handleSubmit,
+		formState: { errors, isSubmitting }
+	} = useForm<SignupFormData>({
+		resolver: zodResolver(signupSchema),
+		defaultValues: {
+			name: '',
+			username: '',
+			email: '',
+			password: '',
+			terms: false
+		}
+	});
+
 
 	useEffect(() => {
 		if (isUserSuccess && currentUser) {
@@ -28,62 +40,28 @@ const Signup: React.FC = () => {
 	}, [isUserSuccess, currentUser, router]);
 
 	const { mutate: login } = useMutation({
-		mutationFn: (credentials: SigninCredentials) => signinRequest(credentials),
+		mutationFn: (credentials: { username: string; password: string }) => signinRequest(credentials),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['currentUser'] });
 			router.push('/');
 		}
 	});
 
-	const { mutate: register } = useMutation({
-		mutationFn: (credentials: SignupCredentials) => signupRequest(credentials),
-		onSuccess: () => {
-			login({ username, password });
+	const { mutate: registerUser } = useMutation({
+		mutationFn: (data: SignupFormData) => signupRequest(data),
+		onSuccess: (_, variables) => {
+			login({ username: variables.username, password: variables.password });
 		},
 		onError: () => {
 			setIsExistsError(true);
 		}
 	});
 
-	const onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		const { value } = event.target;
-		setName(value);
-	};
-
-	const onUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		const { value } = event.target;
-		setUsername(value);
-	};
-
-	const onEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		const { value } = event.target;
-		setEmail(value);
-	};
-
-	const onPasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		const { value } = event.target;
-		setPassword(value);
-	};
-
-	const onTermsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		setTerms(event.target.checked);
-	};
-
-	const signup = (event: React.FormEvent<HTMLButtonElement | HTMLFormElement>) => {
-		event.preventDefault();
+	const onSubmit: SubmitHandler<SignupFormData> = (data) => {
 		setIsExistsError(false);
-		setIsTermsError(false);
-		setIsEmptyError(false);
-		if (username && name && password && email) {
-			if (terms) {
-				register({ name, username, password, email });
-			} else {
-				setIsTermsError(true);
-			}
-		} else {
-			setIsEmptyError(true);
-		}
+		registerUser(data);
 	};
+
 
 	return (
 		<section className='pt6 tc'>
@@ -94,43 +72,66 @@ const Signup: React.FC = () => {
 						<p className='f5 white'>Username already exists.</p>
 					</div>
 				)}
-				{isTermsError && (
-					<div className='mt3 center h-10 w-75 ba bw1 br3 bg-red'>
-						<p className='f5 white'>Please accept terms.</p>
-					</div>
-				)}
-				{isEmptyError && (
-					<div className='mt3 center h-10 w-75 ba bw1 br3 bg-red'>
-						<p className='f5 white'>Please fill all the fields.</p>
-					</div>
-				)}
-				<form className='measure center pa3 black-80' onSubmit={signup}>
+				<form className='measure center pa3 black-80' onSubmit={handleSubmit(onSubmit)}>
 					<fieldset id='sign_up' className='ba b--transparent ph0 mh0'>
 						<div className='mt3'>
-							<input className='pa2 input-reset ba br4 bg-transparent w-75 center db' placeholder='Name' type='text' maxLength={20} onChange={onNameChange} />
+							<input
+								{...register('name')}
+								className={`pa2 input-reset ba br4 bg-transparent w-75 center db ${errors.name ? 'b--red' : ''}`}
+								placeholder='Name'
+								type='text'
+							/>
+							{errors.name && <p className='f7 red mt1'>{errors.name.message}</p>}
 						</div>
 						<div className='mt3'>
-							<input className='pa2 input-reset ba br4 bg-transparent w-75 center db' placeholder='Username' type='text' maxLength={20} onChange={onUsernameChange} />
+							<input
+								{...register('username')}
+								className={`pa2 input-reset ba br4 bg-transparent w-75 center db ${errors.username ? 'b--red' : ''}`}
+								placeholder='Username'
+								type='text'
+							/>
+							{errors.username && <p className='f7 red mt1'>{errors.username.message}</p>}
 						</div>
 						<div className='mt3'>
-							<input className='pa2 input-reset ba br4 bg-transparent w-75 center db' placeholder='Email' type='email' maxLength={100} onChange={onEmailChange} />
+							<input
+								{...register('email')}
+								className={`pa2 input-reset ba br4 bg-transparent w-75 center db ${errors.email ? 'b--red' : ''}`}
+								placeholder='Email'
+								type='email'
+							/>
+							{errors.email && <p className='f7 red mt1'>{errors.email.message}</p>}
 						</div>
 						<div className='mv3'>
-							<input className='b pa2 input-reset ba br4 bg-transparent w-75 center db' placeholder='Password' type='password' maxLength={128} onChange={onPasswordChange} />
+							<input
+								{...register('password')}
+								className={`b pa2 input-reset ba br4 bg-transparent w-75 center db ${errors.password ? 'b--red' : ''}`}
+								placeholder='Password'
+								type='password'
+							/>
+							{errors.password && <p className='f7 red mt1'>{errors.password.message}</p>}
 						</div>
 						<div className='mv4'>
-							<input className='b pa2 ba br4 bg-transparent center db pointer' type='checkbox' onChange={onTermsChange} />
+							<input
+								{...register('terms')}
+								className='b pa2 ba br4 bg-transparent center db pointer'
+								type='checkbox'
+							/>
 							<div className='mt2'>
 								<p className='f7 mb1'>I READ & UNDERSTAND the </p>
 								<Link href='/terms' className='no-underline f7 b light-green hover-black grow pointer'>
 									Terms of Uprophet.
 								</Link>
+								{errors.terms && <p className='f7 red mt1'>{errors.terms.message}</p>}
 							</div>
 						</div>
 					</fieldset>
 					<div className='lh-copy mt3'>
-						<button className='b ph3 pv2 input-reset ba br4 b--black bg-light-green grow pointer f6 dib' type='submit'>
-							Sign up
+						<button
+							className='b ph3 pv2 input-reset ba br4 b--black bg-light-green grow pointer f6 dib'
+							type='submit'
+							disabled={isSubmitting}
+						>
+							{isSubmitting ? 'Signing up...' : 'Sign up'}
 						</button>
 					</div>
 				</form>
@@ -140,3 +141,4 @@ const Signup: React.FC = () => {
 }
 
 export default Signup;
+
