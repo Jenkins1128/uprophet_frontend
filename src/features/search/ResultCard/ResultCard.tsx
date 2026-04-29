@@ -1,6 +1,6 @@
 import React from 'react';
-import FavoriteButton from '../../profile/FavoriteButton/FavoriteButton';
-import Userphoto from '../../profile/Userphoto/Userphoto';
+import FavoriteButton from '../../Profile/FavoriteButton/FavoriteButton';
+import Userphoto from '../../Profile/Userphoto/Userphoto';
 import Link from 'next/link';
 
 interface ResultCardProps {

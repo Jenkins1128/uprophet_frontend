@@ -17,7 +17,7 @@ const fetchSearchResults = async (search: string) => {
 	return data;
 };
 
-const Searchresults: React.FC = () => {
+const SearchResults: React.FC = () => {
 	const params = useParams();
 	const searchtext = params?.searchtext as string;
 	const { isLoading: isUserLoading, isSuccess: isUserSuccess } = useCurrentUser();
@@ -44,4 +44,4 @@ const Searchresults: React.FC = () => {
 	);
 };
 
-export default Searchresults;
+export default SearchResults;

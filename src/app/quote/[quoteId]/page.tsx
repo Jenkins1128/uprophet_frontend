@@ -1,5 +1,5 @@
 'use client';
-import QuoteComments from '../../../features/quotes/QuoteComments/QuoteComments';
+import QuoteComments from '../../../features/Quotes/QuoteComments/QuoteComments';
 
 export default function Page() {
   return <QuoteComments />;

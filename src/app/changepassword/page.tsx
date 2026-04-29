@@ -1,5 +1,5 @@
 'use client';
-import ChangePassword from '../../features/auth/ChangePassword/ChangePassword';
+import ChangePassword from '../../features/Auth/ChangePassword/ChangePassword';
 
 export default function Page() {
   return <ChangePassword />;

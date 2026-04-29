@@ -1,6 +1,6 @@
 'use client';
-import Searchresults from '../../features/search/Searchresults';
+import SearchResults from '../../features/Search/SearchResults';
 
 export default function Page() {
-  return <Searchresults />;
+  return <SearchResults />;
 }

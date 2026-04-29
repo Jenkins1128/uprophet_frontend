@@ -3,7 +3,7 @@ import React from 'react';
 import Swal from 'sweetalert2';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import QuotePost from '../../quotes/QuotePost/QuotePost';
+import QuotePost from '../../Quotes/QuotePost/QuotePost';
 import Userphoto from '../Userphoto/Userphoto';
 import PleaseSignin from '../../../components/ui/PleaseSignin/PleaseSignin';
 import Loading from '../../../components/ui/Loading/Loading';

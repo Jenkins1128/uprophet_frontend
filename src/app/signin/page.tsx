@@ -1,5 +1,5 @@
 'use client';
-import Signin from '../../features/auth/Signin/Signin';
+import Signin from '../../features/Auth/Signin/Signin';
 
 export default function Page() {
   return <Signin />;

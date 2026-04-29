@@ -1,6 +1,6 @@
 "use client";
 import React from 'react';
-import Userphoto from '../../../profile/Userphoto/Userphoto';
+import Userphoto from '../../../Profile/Userphoto/Userphoto';
 import ReactTimeAgo from 'react-time-ago';
 import Link from 'next/link';
 

@@ -1,8 +1,8 @@
 "use client";
 import React, { useState } from 'react';
-import Topquotes from '../Topquotes/Topquotes';
+import TopQuotes from '../TopQuotes/TopQuotes';
 import QuotePost from '../QuotePost/QuotePost';
-import QuotePoster from './QuotePoster/QuotePoster';
+import QuotePoster from '../Home/QuotePoster/QuotePoster';
 import Loading from '../../../components/ui/Loading/Loading';
 import { useCurrentUser } from '../../../store/useCurrentUser';
 import { url } from '../../../domain';
@@ -69,7 +69,7 @@ const Home: React.FC = () => {
 
 	if (isUserLoading) return <Loading />;
 
-	if (!isUserSuccess) return <Topquotes />;
+	if (!isUserSuccess) return <TopQuotes />;
 
 	if (isQuotesLoading) return <Loading />;
 

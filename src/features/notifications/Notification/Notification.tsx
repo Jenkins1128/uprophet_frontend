@@ -1,7 +1,7 @@
 import React from 'react';
 import forward from '../../../images/forward.png';
 import Link from 'next/link';
-import Userphoto from '../../profile/Userphoto/Userphoto';
+import Userphoto from '../../Profile/Userphoto/Userphoto';
 import ReactTimeAgo from 'react-time-ago';
 
 interface NotificationProps {

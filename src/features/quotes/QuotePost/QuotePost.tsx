@@ -1,7 +1,7 @@
 "use client";
 import React from 'react';
 import LikeButton from '../LikeButton/LikeButton';
-import Userphoto from '../../profile/Userphoto/Userphoto';
+import Userphoto from '../../Profile/Userphoto/Userphoto';
 import Link from 'next/link';
 import ReactTimeAgo from 'react-time-ago';
 import Swal from 'sweetalert2';

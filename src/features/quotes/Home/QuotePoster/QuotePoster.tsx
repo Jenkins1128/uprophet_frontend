@@ -16,7 +16,7 @@ const QuotePoster: React.FC<QuotePosterProps> = ({ postQuote, onQuoteChange, onT
 					</div>
 					<div className='mt3 flex items-center justify-center'>
 						<strong className='f2 mr2 moon-gray'>"</strong>
-						<input className='pa2 input-reset ba br4 bw1 bg-transparent b--moon-gray w-75' placeholder='Enter a quote. Marks set! :)' type='text' onChange={onQuoteChange} />
+						<input className='pa2 input-reset ba br4 bw1 bg-transparent b--moon-gray w-75' placeholder='Enter a quote. Quotation marks are set!' type='text' onChange={onQuoteChange} />
 						<strong className='f2 ml2 moon-gray'>"</strong>
 					</div>
 				</fieldset>

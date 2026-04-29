@@ -1,5 +1,5 @@
 'use client';
-import Notifications from '../../features/notifications/Notifications';
+import Notifications from '../../features/Notifications/Notifications';
 
 export default function Page() {
   return <Notifications />;

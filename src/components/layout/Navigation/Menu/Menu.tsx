@@ -6,7 +6,7 @@ import Bell from '../../../../images/bell.png';
 import Compass from '../../../../images/compass.png';
 import Home from '../../../../images/home.png';
 import Logout from '../../../../images/logout.png';
-import Userphoto from '../../../../features/profile/Userphoto/Userphoto';
+import Userphoto from '../../../../features/Profile/Userphoto/Userphoto';
 
 interface MenuProps {
 	NotiDot: React.ComponentType;

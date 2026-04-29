@@ -2,7 +2,7 @@ import React from 'react';
 import QuoteCard from './QuoteCard';
 import { UsersQuotes } from './UserQuotes';
 
-const Topquotes: React.FC = () => {
+const TopQuotes: React.FC = () => {
 	return (
 		<section className='mt6 mh2'>
 			<h1 className='moon-gray f3 tc'>Express yourself freely</h1>
@@ -15,4 +15,4 @@ const Topquotes: React.FC = () => {
 	);
 };
 
-export default Topquotes;
+export default TopQuotes;

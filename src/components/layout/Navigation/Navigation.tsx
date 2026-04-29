@@ -8,7 +8,7 @@ import Compass from '../../../images/compass.png';
 import Home from '../../../images/home.png';
 import Logout from '../../../images/logout.png';
 import Menu from './Menu/Menu';
-import Userphoto from '../../../features/profile/Userphoto/Userphoto';
+import Userphoto from '../../../features/Profile/Userphoto/Userphoto';
 import { url } from '../../../domain';
 import { useCurrentUser } from '../../../store/useCurrentUser';
 import NotiDot from '../../ui/NotiDot/NotiDot';
