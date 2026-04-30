@@ -83,8 +83,8 @@ const QuotePost: React.FC<QuotePostProps> = ({ username, title, quote, quoteId, 
 					)}
 				</div>
 				<div className='text-xs text-gray-400 font-semibold'>
-					{date && !isNaN(new Date(date).getTime()) ? (
-						<ReactTimeAgo date={new Date(date)} locale='en' timeStyle='mini-minute-now' />
+					{date && !isNaN(new Date(typeof date === 'string' ? date.replace(' ', 'T') + 'Z' : date).getTime()) ? (
+						<ReactTimeAgo date={new Date(typeof date === 'string' ? date.replace(' ', 'T') + 'Z' : date)} locale='en' timeStyle='mini-minute-now' />
 					) : (
 						<span>Just now</span>
 					)}
