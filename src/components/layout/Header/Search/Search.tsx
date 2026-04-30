@@ -22,7 +22,7 @@ const Search: React.FC = () => {
 	};
 
 	return (
-		<div className='mr-2 w-full max-w-[200px]'>
+		<div className='mr-2 w-[180px] min-w-[120px] shrink-0'>
 			<form onSubmit={submitSearch}>
 				<Input 
 					className='rounded-full border-2 border-white bg-transparent text-white placeholder:text-white/70 focus-visible:ring-white h-9' 

@@ -49,9 +49,8 @@ const Profile: React.FC = () => {
 
 	return (
 		<section className='pt-24 pb-8 px-2'>
-			{/* Header row: username + edit/favorite */}
-			<div className='flex items-center justify-between px-4 mb-4'>
-				<h1 className='text-uprophet-mint font-bold text-xl'>{username}</h1>
+			{/* Edit / Favorite action — top right only */}
+			<div className='flex justify-end px-4 mb-4'>
 				{userInfo?.currentUser === username ? (
 					<Link
 						href='/account/edit'
@@ -64,13 +63,15 @@ const Profile: React.FC = () => {
 				)}
 			</div>
 
-			{/* Profile card: avatar + stats + bio */}
-			<div className='bg-white rounded-2xl px-6 py-6 mx-3 lg:mx-24 md:mx-16 shadow-[0_4px_20px_rgba(0,0,0,0.08)] border border-gray-100 mb-6'>
+			{/* Profile card: avatar | username + stats + bio */}
+			<div className='bg-white rounded-2xl px-6 py-6 mx-3 lg:mx-24 md:mx-16 shadow-[0_4px_20px_rgba(0,0,0,0.08)] border border-gray-100 mb-24'>
 				<div className='flex items-start gap-6'>
 					<Userphoto size='profile' username={username as string} />
-					<div className='flex flex-col gap-3'>
-						{/* Stats */}
-						<div className='flex gap-6 mt-2'>
+					<div className='flex flex-col gap-2'>
+						{/* Username above stats */}
+						<h1 className='text-uprophet-mint font-bold text-xl m-0 leading-tight'>{username}</h1>
+						{/* Stats row */}
+						<div className='flex gap-6'>
 							<span className='text-gray-500 font-bold text-sm'>{profileQuotes.length} quotes</span>
 							<Link href={userInfo ? `/${username}/favoriters` : '#'} className='no-underline text-gray-500 font-bold text-sm hover:text-uprophet-mint transition-colors'>
 								{userInfo?.favoriters} favoriters
@@ -81,15 +82,14 @@ const Profile: React.FC = () => {
 						</div>
 						{/* Bio */}
 						{userInfo?.bio && (
-							<p className='text-gray-600 text-sm leading-relaxed max-w-sm'>{userInfo.bio}</p>
+							<p className='text-gray-600 text-sm leading-relaxed max-w-sm mt-1'>{userInfo.bio}</p>
 						)}
 					</div>
 				</div>
 			</div>
 
-			{/* Quotes section */}
+			{/* Quote posts — no header, cleaner look */}
 			<div>
-				<h2 className='text-uprophet-mint font-bold text-lg px-4 mb-2'>Quotes</h2>
 				{profileQuotes.map((quote: Quote) => (
 					<QuotePost
 						key={quote.id}

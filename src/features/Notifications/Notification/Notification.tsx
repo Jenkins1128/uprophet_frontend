@@ -1,5 +1,4 @@
 import React from 'react';
-import forward from '../../../images/forward.png';
 import Link from 'next/link';
 import Userphoto from '../../Profile/Userphoto/Userphoto';
 import ReactTimeAgo from 'react-time-ago';
@@ -11,34 +10,34 @@ interface NotificationProps {
 	date: string | Date;
 }
 
+import { ArrowRight } from 'lucide-react';
+
 const Notification: React.FC<NotificationProps> = ({ username, notice, quotesId, date }) => {
 	return (
-		<article className='flex justify-between w-100 bb b--black-05 pb2 mt2'>
-			<div className='flex items-center'>
-				<div className='dtc w3 v-mid'>
-					<Link href={`/${username}`}>
-						<Userphoto username={username} />
-					</Link>
-				</div>
-				<div className='dtc v-mid pl3'>
-					<h1 className='f7 f5-ns fw6 lh-title light-green mv0'>{notice}</h1>
-					<div>
+		<article className='flex justify-between items-center w-full border-b border-gray-100 py-3 px-2'>
+			<div className='flex items-center gap-3'>
+				<Link href={`/${username}`} className='shrink-0'>
+					<Userphoto username={username} />
+				</Link>
+				<div>
+					<p className='text-sm font-semibold text-uprophet-mint leading-tight mb-0.5'>{notice}</p>
+					<span className='text-xs text-gray-400'>
 						{date && !isNaN(new Date(date).getTime()) ? (
 							<ReactTimeAgo date={new Date(date)} locale='en' timeStyle='mini-minute-now' />
 						) : (
 							<span>Just now</span>
 						)}
-					</div>
+					</span>
 				</div>
 			</div>
-			<div className='self-center'>
+			<div className='shrink-0'>
 				{!quotesId ? (
-					<Link href={`/${username}`}>
-						<img src={forward.src || forward} alt='forward' className='w2  h2 bg-light-green br-100' />
+					<Link href={`/${username}`} className='flex items-center justify-center w-9 h-9 rounded-full bg-uprophet-mint hover:bg-uprophet-mint/80 transition-colors'>
+						<ArrowRight className='w-4 h-4 text-gray-700' />
 					</Link>
 				) : (
-					<Link href={`/quote/${quotesId}`}>
-						<img src={forward.src || forward} alt='forward' className='w2  h2 bg-light-green br-100' />
+					<Link href={`/quote/${quotesId}`} className='flex items-center justify-center w-9 h-9 rounded-full bg-uprophet-mint hover:bg-uprophet-mint/80 transition-colors'>
+						<ArrowRight className='w-4 h-4 text-gray-700' />
 					</Link>
 				)}
 			</div>

@@ -25,9 +25,11 @@ const SearchResults: React.FC = () => {
 	if (isSearchLoading) return <Loading />;
 
 	return (
-		<section className='mt6 mh2 f7'>
-			<h1 className='flex ml4 moon-gray'>Search Results for &quot;{searchtext || ''}&quot;</h1>
-			<div className='mt5'>
+		<section className='pt-24 pb-8 px-2'>
+			<h1 className='text-gray-400 font-semibold text-sm ml-4 mb-6'>
+				Search Results for &quot;{searchtext || ''}&quot;
+			</h1>
+			<div className='mx-3 lg:mx-24 md:mx-16'>
 				{results.map((result: SearchResult) => {
 					return <ResultCard key={result.id} currentUser={result.currentUser} username={result.user_name} didFavorite={result.didFavorite} />;
 				})}
