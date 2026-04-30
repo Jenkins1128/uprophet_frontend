@@ -1,4 +1,3 @@
-import 'tachyons/css/tachyons.min.css';
 import '../index.css';
 import Header from '../components/layout/Header/Header';
 

@@ -1,6 +1,7 @@
 "use client";
 import React from 'react';
 import { useRouter } from 'next/navigation';
+import { Button } from '@/components/ui/button';
 
 const PleaseSignin: React.FC = () => {
 	const router = useRouter();
@@ -9,11 +10,15 @@ const PleaseSignin: React.FC = () => {
 	};
 
 	return (
-		<section className='mt6'>
-			<h1 className='f3 light-green'>Session expired. Please sign in.</h1>
-			<button className='b ph3 pv2 input-reset ba br4 b--black bg-light-green grow pointer f6 dib' type='submit' onClick={pleaseSignin}>
+		<section className='pt-24 text-center'>
+			<h1 className='text-uprophet-mint text-2xl font-semibold mb-6'>Session expired. Please sign in.</h1>
+			<Button
+				type='button'
+				onClick={pleaseSignin}
+				className='bg-uprophet-mint hover:bg-uprophet-mint/80 text-gray-800 font-bold border border-gray-300 rounded-full px-8 transition-all hover:scale-105'
+			>
 				Sign in
-			</button>
+			</Button>
 		</section>
 	);
 };

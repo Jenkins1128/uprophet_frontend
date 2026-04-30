@@ -9,19 +9,20 @@ const Loading: React.FC<LoadingProps> = ({ isPhoto, size }) => {
 	const getSize = () => {
 		switch (size) {
 			case 'header':
-				return 'h2 w2';
+				return 'h-8 w-8';
 			case 'profile':
-				return 'h4 w4';
+				return 'h-20 w-20';
 			default:
-				return 'h3 w3';
+				return 'h-12 w-12';
 		}
 	};
+
 	return !isPhoto ? (
-		<div className='flex justify-center mt6'>
+		<div className='flex justify-center pt-24'>
 			<div className={`loader ${getSize()}`}></div>
 		</div>
 	) : (
-		<div className={`loader ${getSize()} top-0 `}></div>
+		<div className={`loader ${getSize()} top-0`}></div>
 	);
 };
 
