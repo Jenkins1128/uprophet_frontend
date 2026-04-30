@@ -10,7 +10,7 @@ By focusing on minimalism and impactful text, Uprophet provides a streamlined sp
 
 *   **Quote Creation:** Share your original thoughts or favorite sayings with a global or friend-based network.
 *   **Social Connectivity:** Engage with a community of users through quote-sharing interactions.
-*   **Responsive UI:** Built with a utility-first CSS approach combined with modern React patterns for a fluid experience across all devices.
+*   **Responsive UI:** Built with Tailwind CSS utility classes and shadcn/ui components for a polished, consistent experience across all devices.
 
 ---
 
@@ -25,8 +25,9 @@ This project leverages a modern, type-safe frontend architecture to ensure scala
 | **Language** | [TypeScript](https://www.typescriptlang.org/) |
 | **State Management** | [Zustand](https://github.com/pmndrs/zustand) |
 | **Data Fetching** | [TanStack Query (v5)](https://tanstack.com/query/latest), [Axios](https://axios-http.com/) |
-| **Styling** | [Tachyons](https://tachyons.io/), Vanilla CSS |
-| **UI Components** | [SweetAlert2](https://sweetalert2.github.io/) |
+| **Styling** | [Tailwind CSS v3](https://tailwindcss.com/), [shadcn/ui](https://ui.shadcn.com/) |
+| **UI Components** | [shadcn/ui](https://ui.shadcn.com/) (Radix UI primitives), [Lucide React](https://lucide.dev/), [SweetAlert2](https://sweetalert2.github.io/) |
+| **Form Validation** | [React Hook Form](https://react-hook-form.com/), [Zod](https://zod.dev/) |
 
 ---
 
