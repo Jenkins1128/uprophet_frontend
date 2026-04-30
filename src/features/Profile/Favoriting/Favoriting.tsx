@@ -25,9 +25,9 @@ const Favoriting: React.FC = () => {
 	if (isFavoritingLoading) return <Loading />;
 
 	return (
-		<section className='mt6 mh2 f7'>
-			<h1 className='flex ml4 moon-gray'>{username}&apos;s Favoriting</h1>
-			<div className='mt5'>
+		<section className='pt-24 pb-8 px-2'>
+			<h1 className='text-gray-400 font-semibold text-lg ml-4 mb-4'>{username}&apos;s Favoriting</h1>
+			<div className='mx-3 lg:mx-24 md:mx-16'>
 				{favoriting.map((result: FavoriteRelation) => {
 					return <FavoritingCard key={result.to_user} currentUser={result.currentUser} username={result.to_user} didFavorite={result.didFavorite} />;
 				})}

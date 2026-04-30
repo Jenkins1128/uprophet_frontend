@@ -2,6 +2,8 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
+import { Input } from "@/components/ui/input";
+
 const Search: React.FC = () => {
 	const [searchtext, setSearchText] = useState<string>('');
 	const router = useRouter();
@@ -20,9 +22,15 @@ const Search: React.FC = () => {
 	};
 
 	return (
-		<div className='mr2'>
+		<div className='mr-2 w-[180px] min-w-[120px] shrink-0'>
 			<form onSubmit={submitSearch}>
-				<input className='pa2 input-reset ba br4 bw1 bg-transparent b--white w-100 ' placeholder='Search' onChange={onSearchChange} type='text' maxLength={20} />
+				<Input 
+					className='rounded-full border-2 border-white bg-transparent text-white placeholder:text-white/70 focus-visible:ring-white h-9' 
+					placeholder='Search' 
+					onChange={onSearchChange} 
+					type='text' 
+					maxLength={20} 
+				/>
 			</form>
 		</div>
 	);

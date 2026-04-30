@@ -11,20 +11,18 @@ interface ResultCardProps {
 
 const ResultCard: React.FC<ResultCardProps> = ({ currentUser, username, didFavorite }) => {
 	return (
-		<article className='flex justify-between dt w-100 bb b--black-05 pb2 mt2'>
-			<div className='flex items-center'>
-				<div className='dtc w3 v-mid'>
-					<Link href={`/${username}`}>
-						<Userphoto username={username} />
-					</Link>
-				</div>
-				<div className='dtc v-mid pl3'>
-					<Link href={`/${username}`} className='no-underline'>
-						<h1 className='f6 f5-ns fw6 lh-title light-green mv0'>{username}</h1>
-					</Link>
-				</div>
+		<article className='flex justify-between items-center w-full border-b border-gray-100 py-3 px-2'>
+			<div className='flex items-center gap-3'>
+				<Link href={`/${username}`} className='shrink-0'>
+					<Userphoto username={username} />
+				</Link>
+				<Link href={`/${username}`} className='no-underline'>
+					<h2 className='text-base font-semibold text-uprophet-mint hover:text-green-700 transition-colors m-0 leading-tight'>
+						{username}
+					</h2>
+				</Link>
 			</div>
-			<div className='self-center'>{currentUser !== username && <FavoriteButton username={username} didFavorite={didFavorite} />}</div>
+			<div>{currentUser !== username && <FavoriteButton username={username} didFavorite={didFavorite} />}</div>
 		</article>
 	);
 };

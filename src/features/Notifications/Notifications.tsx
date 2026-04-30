@@ -22,9 +22,9 @@ const Notifications: React.FC = () => {
 	if (isNotificationsLoading) return <Loading />;
 
 	return (
-		<section className='mt6 mh2 f7'>
-			<h1 className='flex ml4 moon-gray'>Notifications</h1>
-			<div className='mt5'>
+		<section className='pt-24 pb-8 px-2'>
+			<h1 className='text-gray-400 font-semibold text-sm ml-4 mb-6'>Notifications</h1>
+			<div className='mx-3 lg:mx-24 md:mx-16'>
 				{notifications.map((notification: NotificationItem) => {
 					return (
 						<Notification

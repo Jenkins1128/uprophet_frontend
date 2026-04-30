@@ -8,6 +8,15 @@ import Home from '../../../../images/home.png';
 import Logout from '../../../../images/logout.png';
 import Userphoto from '../../../../features/Profile/Userphoto/Userphoto';
 
+import {
+	Sheet,
+	SheetContent,
+	SheetHeader,
+	SheetTitle,
+	SheetTrigger,
+} from "@/components/ui/sheet";
+import { Menu as MenuIcon } from "lucide-react";
+
 interface MenuProps {
 	NotiDot: React.ComponentType;
 	isSignedIn: boolean;
@@ -18,7 +27,6 @@ interface MenuProps {
 const Menu: React.FC<MenuProps> = ({ NotiDot, isSignedIn, logout, currentUser }) => {
 	const [isOpen, setIsOpen] = React.useState(false);
 
-	const toggleNav = () => setIsOpen(!isOpen);
 	const closeNav = () => setIsOpen(false);
 
 	const signout = () => {
@@ -27,81 +35,68 @@ const Menu: React.FC<MenuProps> = ({ NotiDot, isSignedIn, logout, currentUser })
 	};
 
 	return (
-		<>
-			<div 
-				className='sidenav' 
-				style={{ width: isOpen ? '100%' : '0' }}
-			>
-				<button className='closebtn mt1 mr2 pr0 bg-transparent bn' onClick={closeNav}>
-					&times;
+		<Sheet open={isOpen} onOpenChange={setIsOpen}>
+			<SheetTrigger asChild>
+				<button className='p-2 bg-transparent border-none cursor-pointer hover:text-white transition-colors'>
+					<MenuIcon className="w-8 h-8" />
 				</button>
+			</SheetTrigger>
+			<SheetContent side="right" className="bg-uprophet-mint border-l-2 border-white/20 w-full sm:w-[300px]">
+				<SheetHeader>
+					<SheetTitle className="sr-only">Navigation Menu</SheetTitle>
+					<Link href='/' onClick={closeNav} className='flex justify-center mb-8'>
+						<img title='Home' className='rounded-full border-4 border-white h-24 w-24 object-contain bg-white/20 shadow-lg' src={Logo.src || Logo} alt='Logo' />
+					</Link>
+				</SheetHeader>
 				
-				<div className='flex flex-column mt4'>
+				<div className='flex flex-col space-y-4 mt-4'>
 					{isSignedIn ? (
 						<>
-							<Link href='/' onClick={closeNav} className='f6 grow b'>
-								<img title='Home' className='br-100 ba bw2 ma2 b--white h3 w3 pointer' src={Logo.src || Logo} alt='Logo' />
+							<Link href='/' onClick={closeNav} className='text-xl font-bold flex items-center p-4 hover:bg-white/10 rounded-lg transition-colors'>
+								<img title='Home' className='w-8 h-8 mr-4' alt='Home' src={Home.src || Home} />
+								Home
 							</Link>
-							<Link href='/' onClick={closeNav} className='f6 grow b'>
-								<div className='flex items-center'>
-									<img title='Home' className='w2 h2' alt='Home' src={Home.src || Home} />
-									&nbsp;{'Home'}
+							<Link href='/notifications' onClick={closeNav} className='text-xl font-bold flex items-center p-4 hover:bg-white/10 rounded-lg transition-colors'>
+								<div className='relative mr-4'>
+									<img title='Notifications' className='w-8 h-8' alt='Notifications' src={Bell.src || Bell} />
+									<NotiDot />
 								</div>
+								Notifications
 							</Link>
-							<Link href='/notifications' onClick={closeNav} className='f6 grow b'>
-								<div className='flex items-center'>
-									<div className='relative'>
-										<img title='Notifications' className='w2 h2' alt='Notifications' src={Bell.src || Bell} />
-										<NotiDot />
-									</div>
-									&nbsp;{'Notifications'}
-								</div>
+							<Link href='/explore' onClick={closeNav} className='text-xl font-bold flex items-center p-4 hover:bg-white/10 rounded-lg transition-colors'>
+								<img title='Explore' className='w-8 h-8 mr-4' alt='Compass' src={Compass.src || Compass} />
+								Explore
 							</Link>
-							<Link href='/explore' onClick={closeNav} className='f6 grow b'>
-								<div className='flex items-center'>
-									<img title='Explore' className='w2 h2' alt='Compass' src={Compass.src || Compass} />
-									&nbsp;{'Explore'}
-								</div>
-							</Link>
-							<Link href={`/${currentUser}`} onClick={closeNav} className='f6 grow b '>
-								<div className='flex items-center'>
+							<Link href={`/${currentUser}`} onClick={closeNav} className='text-xl font-bold flex items-center p-4 hover:bg-white/10 rounded-lg transition-colors'>
+								<div className="mr-4">
 									<Userphoto size='header' username={currentUser} />
-									&nbsp;{'Profile'}
 								</div>
+								Profile
 							</Link>
-							<button onClick={signout} className='f6 grow b bn bg-transparent pointer'>
-								<div className='flex items-center'>
-									<img title='Logout' className='w2 h2' alt='Logout' src={Logout.src || Logout} />
-									&nbsp;{'Logout'}
-								</div>
+							<button onClick={signout} className='text-xl font-bold flex items-center p-4 hover:bg-white/10 rounded-lg transition-colors bg-transparent border-none w-full text-left cursor-pointer'>
+								<img title='Logout' className='w-8 h-8 mr-4' alt='Logout' src={Logout.src || Logout} />
+								Logout
 							</button>
 						</>
 					) : (
 						<>
-							<Link href='/' onClick={closeNav} className='f6 grow b'>
-								<img title='Home' className='br-100 ba bw2 ma2 b--white h3 w3 pointer' src={Logo.src || Logo} alt='Logo' />
-							</Link>
-							<Link href='/about' onClick={closeNav} className='f6 grow b'>
+							<Link href='/about' onClick={closeNav} className='text-xl font-bold p-4 hover:bg-white/10 rounded-lg transition-colors'>
 								About
 							</Link>
-							<Link href='/signin' onClick={closeNav} className='f6 grow b'>
+							<Link href='/signin' onClick={closeNav} className='text-xl font-bold p-4 hover:bg-white/10 rounded-lg transition-colors'>
 								Sign in
 							</Link>
-							<Link href='/signup' onClick={closeNav} className='f6 grow b'>
+							<Link href='/signup' onClick={closeNav} className='text-xl font-bold p-4 hover:bg-white/10 rounded-lg transition-colors'>
 								Sign up
 							</Link>
-							<a onClick={closeNav} className='f6 grow b' rel='noopener noreferrer' href='https://youtu.be/Z7YR0zwMtTk?list=TLGGTOFWbVS80XMxODA1MjAyMQ' target='_blank'>
+							<a onClick={closeNav} className='text-xl font-bold p-4 hover:bg-white/10 rounded-lg transition-colors' rel='noopener noreferrer' href='https://youtu.be/Z7YR0zwMtTk?list=TLGGTOFWbVS80XMxODA1MjAyMQ' target='_blank'>
 								Video
 							</a>
 						</>
 					)}
 				</div>
-			</div>
-
-			<button className='menuIconSize mr2 pr0 pointer bn bg-transparent hover-white' onClick={toggleNav}>
-				&#9776;
-			</button>
-		</>
+			</SheetContent>
+		</Sheet>
 	);
 };
 

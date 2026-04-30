@@ -4,25 +4,35 @@ import { useRouter } from 'next/navigation';
 import ChangePasswordForm from './ChangePasswordForm/ChangePasswordForm';
 import { useMutation } from '@tanstack/react-query';
 import { changePasswordSignInRequest, changePasswordRequest } from '@/api/auth';
-import type { ChangePasswordCredentials, NewPasswordPayload } from '@/types';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import {
+	changePasswordStep1Schema,
+	changePasswordStep2Schema,
+	type ChangePasswordStep1FormData,
+	type ChangePasswordStep2FormData
+} from '@/validation/auth';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 
 const ChangePassword: React.FC = () => {
 	const router = useRouter();
-
 	const [username, setUsername] = useState<string>('');
-	const [password, setPassword] = useState<string>('');
-	const [newPassword, setNewPassword] = useState<string>('');
-	const [verifyPassword, setVerifyPassword] = useState<string>('');
 	const [changePasswordForm, setChangePasswordForm] = useState<boolean>(false);
-
 	const [isIncorrectError, setIsIncorrectError] = useState<boolean>(false);
-	const [isIncorrectVerifyError, setIsIncorrectVerifyError] = useState<boolean>(false);
-	const [isEmptyError1, setIsEmptyError1] = useState<boolean>(false);
-	const [isEmptyError2, setIsEmptyError2] = useState<boolean>(false);
+
+	const step1Form = useForm<ChangePasswordStep1FormData>({
+		resolver: zodResolver(changePasswordStep1Schema)
+	});
+
+	const step2Form = useForm<ChangePasswordStep2FormData>({
+		resolver: zodResolver(changePasswordStep2Schema)
+	});
 
 	const { mutate: signIn } = useMutation({
-		mutationFn: (credentials: ChangePasswordCredentials) => changePasswordSignInRequest(credentials),
-		onSuccess: () => {
+		mutationFn: (credentials: ChangePasswordStep1FormData) => changePasswordSignInRequest(credentials),
+		onSuccess: (_, variables) => {
+			setUsername(variables.username);
 			setChangePasswordForm(true);
 		},
 		onError: () => {
@@ -31,96 +41,70 @@ const ChangePassword: React.FC = () => {
 	});
 
 	const { mutate: changePass } = useMutation({
-		mutationFn: (payload: NewPasswordPayload) => changePasswordRequest(payload),
+		mutationFn: (payload: { username: string; newPassword: string }) => changePasswordRequest(payload),
 		onSuccess: () => {
 			router.push('/signin');
 		}
 	});
 
-	const handleUsernameOnchange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		const { value } = event.target;
-		setUsername(value);
-	};
-
-	const handlePasswordOnchange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		const { value } = event.target;
-		setPassword(value);
-	};
-
-	const handleNewPasswordOnchange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		const { value } = event.target;
-		setNewPassword(value);
-	};
-
-	const handleVerifyPasswordOnchange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		const { value } = event.target;
-		setVerifyPassword(value);
-	};
-
-	const initChangePasswordForm = (event: React.MouseEvent<HTMLButtonElement> | React.FormEvent<HTMLFormElement>) => {
-		event.preventDefault();
+	const onStep1Submit = (data: ChangePasswordStep1FormData) => {
 		setIsIncorrectError(false);
-		setIsEmptyError1(false);
-		if (username && password) {
-			signIn({ username, password });
-		} else {
-			setIsEmptyError1(true);
-		}
+		signIn(data);
 	};
 
-	const changePassword = (event: React.MouseEvent<HTMLButtonElement>) => {
-		event.preventDefault();
-		setIsIncorrectVerifyError(false);
-		setIsEmptyError2(false);
-		if (newPassword && verifyPassword) {
-			if (newPassword === verifyPassword) {
-				changePass({ username, newPassword });
-			} else {
-				setIsIncorrectVerifyError(true);
-			}
-		} else {
-			setIsEmptyError2(true);
-		}
+	const onStep2Submit = (data: ChangePasswordStep2FormData) => {
+		changePass({ username, newPassword: data.newPassword });
 	};
 
 	return (
-		<section className='pt6 tc'>
-			<h1 className='moon-gray f2 mb3'>Change Password?</h1>
+		<section className='pt-24 text-center'>
+			<h1 className='text-gray-400 text-3xl font-normal mb-6'>Change Password?</h1>
 			{!changePasswordForm ? (
-				<div className='br2 ba pa5-l pa4-m pa3-ns black-80 dark-gray b--black-10 br4 w-75 mw6 shadow-5 center'>
+				<article className='bg-white rounded-2xl px-10 py-8 w-3/4 max-w-lg mx-auto shadow-[0_4px_20px_rgba(0,0,0,0.08)] border border-gray-100'>
 					{isIncorrectError && (
-						<div className='mt3 center h-10 w-75 ba bw1 br3 bg-red'>
-							<p className='f5 white'>Username or password is incorrect.</p>
+						<div className='mb-4 px-4 py-3 bg-red-50 border border-red-200 rounded-lg'>
+							<p className='text-sm text-red-600 font-medium'>Username or password is incorrect.</p>
 						</div>
 					)}
-					{isEmptyError1 && (
-						<div className='mt3 center h-10 w-75 ba bw1 br3 bg-red'>
-							<p className='f5 white'>Please fill all the fields.</p>
-						</div>
-					)}
-					<form className='measure center pa3 black-80' onSubmit={initChangePasswordForm}>
-						<fieldset id='change_password_signin' className='ba b--transparent ph0 mh0'>
-							<div className='mt3'>
-								<input className='pa2 input-reset ba br4 bg-transparent w-75 center db' placeholder='Username' type='text' maxLength={20} onChange={handleUsernameOnchange} />
+					<form className='flex flex-col gap-4' onSubmit={step1Form.handleSubmit(onStep1Submit)}>
+						<fieldset id='change_password_signin' className='flex flex-col gap-3 border-none p-0 m-0'>
+							<div>
+								<Input
+									{...step1Form.register('username')}
+									className={`rounded-full border-gray-300 bg-transparent w-3/4 mx-auto block ${step1Form.formState.errors.username ? 'border-red-500 focus-visible:ring-red-500' : ''}`}
+									placeholder='Username'
+									type='text'
+									maxLength={20}
+								/>
+								{step1Form.formState.errors.username && <p className='text-xs text-red-500 mt-1'>{step1Form.formState.errors.username.message}</p>}
 							</div>
-							<div className='mv3'>
-								<input className='b pa2 input-reset ba br4 bg-transparent w-75 center db' placeholder='Password' type='password' maxLength={128} onChange={handlePasswordOnchange} />
+							<div>
+								<Input
+									{...step1Form.register('password')}
+									className={`rounded-full border-gray-300 bg-transparent w-3/4 mx-auto block ${step1Form.formState.errors.password ? 'border-red-500 focus-visible:ring-red-500' : ''}`}
+									placeholder='Password'
+									type='password'
+									maxLength={128}
+								/>
+								{step1Form.formState.errors.password && <p className='text-xs text-red-500 mt-1'>{step1Form.formState.errors.password.message}</p>}
 							</div>
 						</fieldset>
-						<div className='lh-copy mt3'>
-							<button className='b ph3 pv2 input-reset ba br4 b--black bg-light-green grow pointer f6 dib' type='submit'>
+						<div className='mt-2'>
+							<Button
+								type='submit'
+								className='bg-uprophet-mint hover:bg-uprophet-mint/80 text-gray-800 font-bold border border-gray-300 rounded-full px-8 transition-all hover:scale-105'
+							>
 								Sign In
-							</button>
+							</Button>
 						</div>
 					</form>
-				</div>
+				</article>
 			) : (
 				<ChangePasswordForm
-					handleNewPasswordOnchange={handleNewPasswordOnchange}
-					handleVerifyPasswordOnchange={handleVerifyPasswordOnchange}
-					isIncorrectVerifyError={isIncorrectVerifyError}
-					isEmptyError2={isEmptyError2}
-					changePassword={changePassword}
+					register={step2Form.register}
+					errors={step2Form.formState.errors}
+					handleSubmit={step2Form.handleSubmit}
+					onSubmit={onStep2Submit}
 				/>
 			)}
 		</section>

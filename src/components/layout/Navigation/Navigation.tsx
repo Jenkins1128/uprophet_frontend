@@ -64,41 +64,41 @@ const Navigation: React.FC<NavigationProps> = ({ hasNotifications, currentUser, 
 				<Menu NotiDot={NotiDot} isSignedIn={isSignedIn} logout={logout} currentUser={currentUser} />
 			) : (
 				isSignedIn ? (
-					<>
-						<Link href='/' className='f6 grow no-underline b b--none ba bw1 ph3 mh3 dib black hover-white'>
-							<img title='Home' className='w2 h2' alt='Home' src={Home.src || Home} />
+					<div className="flex items-center space-x-4">
+						<Link href='/' className='text-sm font-bold no-underline transition-transform hover:scale-105 px-4'>
+							<img title='Home' className='w-8 h-8' alt='Home' src={Home.src || Home} />
 						</Link>
-						<Link href='/notifications' className='f6 grow no-underline b b--none ba bw1 ph3 mh3 dib black hover-white'>
+						<Link href='/notifications' className='text-sm font-bold no-underline transition-transform hover:scale-105 px-4'>
 							<div className='relative'>
-								<img title='Notifications' className='w2 h2' alt='Notifications' src={Bell.src || Bell} />
+								<img title='Notifications' className='w-8 h-8' alt='Notifications' src={Bell.src || Bell} />
 								<NotiDot />
 							</div>
 						</Link>
-						<Link href='/explore' className='f6 grow b--none ph3 mh3 pt1 mb2 dib bg-transparent '>
-							<img title='Explore' className='w2 h2' alt='Compass' src={Compass.src || Compass} />
+						<Link href='/explore' className='text-sm font-bold transition-transform hover:scale-105 px-4'>
+							<img title='Explore' className='w-8 h-8' alt='Compass' src={Compass.src || Compass} />
 						</Link>
-						<Link href={`/${currentUser}`} className='f6 grow no-underline mh3 mb2 dib'>
+						<Link href={`/${currentUser}`} className='transition-transform hover:scale-105 px-4'>
 							<Userphoto size='header' username={currentUser} />
 						</Link>
-						<button onClick={logout} className='f6 grow b--none ph3 mh3 pt1 mb2 dib bg-transparent pointer'>
-							<img title='Logout' className='w2 h2' alt='Logout' src={Logout.src || Logout} />
+						<button onClick={logout} className='bg-transparent border-none cursor-pointer transition-transform hover:scale-105 px-4'>
+							<img title='Logout' className='w-8 h-8' alt='Logout' src={Logout.src || Logout} />
 						</button>
-					</>
+					</div>
 				) : (
-					<>
-						<Link href='/about' className='f6 grow no-underline b b--none ba bw1 ph3 mh3 dib black hover-white'>
+					<div className="flex items-center space-x-4">
+						<Link href='/about' className='text-sm font-bold no-underline text-black hover:text-white transition-colors px-4'>
 							About
 						</Link>
-						<Link href='/signin' className='f6 grow no-underline b b--none ba bw1 ph3 mh3 dib black hover-white'>
+						<Link href='/signin' className='text-sm font-bold no-underline text-black hover:text-white transition-colors px-4'>
 							Sign in
 						</Link>
-						<Link href='/signup' className='f6 grow no-underline b b--none ba bw1 ph3 mh3 dib black hover-white'>
+						<Link href='/signup' className='text-sm font-bold no-underline text-black hover:text-white transition-colors px-4'>
 							Sign up
 						</Link>
-						<a className='f6 grow no-underline b--none b ba bw1 ph3 mh3 dib black hover-white' rel='noopener noreferrer' href='https://youtu.be/Z7YR0zwMtTk?list=TLGGTOFWbVS80XMxODA1MjAyMQ' target='_blank'>
+						<a className='text-sm font-bold no-underline text-black hover:text-white transition-colors px-4' rel='noopener noreferrer' href='https://youtu.be/Z7YR0zwMtTk?list=TLGGTOFWbVS80XMxODA1MjAyMQ' target='_blank'>
 							Video
 						</a>
-					</>
+					</div>
 				)
 			)}
 		</nav>

@@ -8,6 +8,7 @@ import Loading from '@/components/ui/Loading/Loading';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { fetchExploreQuotes } from '@/api/quotes';
 import type { Quote } from '@/types';
+import { RefreshCw } from 'lucide-react';
 
 const Explore: React.FC = () => {
 	const { isLoading: isUserLoading, isSuccess: isUserSuccess } = useCurrentUser();
@@ -16,7 +17,7 @@ const Explore: React.FC = () => {
 	const { data: exploreQuotes = [], isLoading: isExploreLoading } = useQuery({
 		queryKey: ['exploreQuotes'],
 		queryFn: fetchExploreQuotes,
-		enabled: isUserSuccess, // Only fetch if user is logged in
+		enabled: isUserSuccess,
 	});
 
 	const refresh = () => {
@@ -28,19 +29,37 @@ const Explore: React.FC = () => {
 			{isUserLoading ? (
 				<Loading />
 			) : isUserSuccess ? (
-				<section className='mt6 mh2 f7'>
-					<h1 className='moon-gray f4 ml4 mb3'>Explore</h1>
-					<div className='flex justify-center mb4'>
-						<button className='bg-transparent b--none pointer grow' onClick={refresh}>
-							<img alt='refresh' className='h1 w1' src={refreshIcon.src || refreshIcon} />
+				<section className='pt-24 pb-8 px-2'>
+					<div className='flex items-center justify-between ml-4 mr-4 mb-6'>
+						<h1 className='text-gray-400 font-semibold text-sm'>Explore</h1>
+						<button
+							className='bg-transparent border-none cursor-pointer text-uprophet-mint hover:text-green-600 transition-all hover:scale-110 p-2 rounded-full'
+							onClick={refresh}
+							title='Refresh'
+						>
+							<RefreshCw className='h-5 w-5' />
 						</button>
 					</div>
-					<div className='mt5'>
-						{exploreQuotes.map((quote: Quote) => {
-							return (
-								<QuotePost key={quote.id} quoteId={quote.id} username={quote.userName} title={quote.title} quote={`"${quote.quote}"`} likeCount={quote.likeCount} didLike={quote.didLike} date={quote.datePosted} hasComments={true} canDelete={false} deleteQuote={() => {}} />
-							);
-						})}
+					<div>
+						{isExploreLoading ? (
+							<Loading />
+						) : (
+							exploreQuotes.map((quote: Quote) => (
+								<QuotePost
+									key={quote.id}
+									quoteId={quote.id}
+									username={quote.userName}
+									title={quote.title}
+									quote={`"${quote.quote}"`}
+									likeCount={quote.likeCount}
+									didLike={quote.didLike}
+									date={quote.datePosted}
+									hasComments={true}
+									canDelete={false}
+									deleteQuote={() => {}}
+								/>
+							))
+						)}
 					</div>
 				</section>
 			) : (

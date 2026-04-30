@@ -5,17 +5,26 @@ import Loading from '@/components/ui/Loading/Loading';
 import CheckEmailForm from './CheckEmailForm/CheckEmailForm';
 import { useMutation } from '@tanstack/react-query';
 import { forgotPasswordRequest } from '@/api/auth';
-import type { ForgotPasswordPayload } from '@/types';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { forgotPasswordSchema, type ForgotPasswordFormData } from '@/validation/auth';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 
 const ForgotPassword: React.FC = () => {
-	const [username, setUsername] = useState<string>('');
-	const [email, setEmail] = useState<string>('');
 	const [checkEmailForm, setCheckEmailForm] = useState<boolean>(false);
 	const [isIncorrectError, setIsIncorrectError] = useState<boolean>(false);
-	const [isEmptyError, setIsEmptyError] = useState<boolean>(false);
+
+	const {
+		register,
+		handleSubmit,
+		formState: { errors }
+	} = useForm<ForgotPasswordFormData>({
+		resolver: zodResolver(forgotPasswordSchema)
+	});
 
 	const { mutate: forgotPass, isPending: isLoading } = useMutation({
-		mutationFn: (payload: ForgotPasswordPayload) => forgotPasswordRequest(payload),
+		mutationFn: (payload: ForgotPasswordFormData) => forgotPasswordRequest(payload),
 		onSuccess: () => {
 			setCheckEmailForm(true);
 		},
@@ -24,57 +33,53 @@ const ForgotPassword: React.FC = () => {
 		}
 	});
 
-	const handleUsernameOnchange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		const { value } = event.target;
-		setUsername(value);
-	};
-
-	const handleEmailOnchange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		const { value } = event.target;
-		setEmail(value);
-	};
-
-	const initCheckEmailForm = (event: React.MouseEvent<HTMLButtonElement> | React.FormEvent<HTMLFormElement>) => {
-		event.preventDefault();
+	const onSubmit = (data: ForgotPasswordFormData) => {
 		setIsIncorrectError(false);
-		setIsEmptyError(false);
-		if (username && email) {
-			forgotPass({ username, email });
-		} else {
-			setIsEmptyError(true);
-		}
+		forgotPass(data);
 	};
 
 	return (
-		<section className='pt6 tc'>
-			<h1 className='moon-gray f2 mb3'>Forgot Password?</h1>
+		<section className='pt-24 text-center'>
+			<h1 className='text-gray-400 text-3xl font-normal mb-6'>Forgot Password?</h1>
 			{isLoading ? (
 				<Loading />
 			) : !checkEmailForm ? (
-				<article className=' br2 ba pa5-l pa4-m pa3-ns black-80 dark-gray b--black-10 br4 w-75 mw6 shadow-5 center'>
+				<article className='bg-white rounded-2xl px-10 py-8 w-3/4 max-w-lg mx-auto shadow-[0_4px_20px_rgba(0,0,0,0.08)] border border-gray-100'>
 					{isIncorrectError && (
-						<div className='mt3 center h-10 w-75 ba bw1 br3 bg-red'>
-							<p className='f5 white'>Username or email is incorrect.</p>
+						<div className='mb-4 px-4 py-3 bg-red-50 border border-red-200 rounded-lg'>
+							<p className='text-sm text-red-600 font-medium'>Username or email is incorrect.</p>
 						</div>
 					)}
-					{isEmptyError && (
-						<div className='mt3 center h-10 w-75 ba bw1 br3 bg-red'>
-							<p className='f5 white'>Please fill all the fields.</p>
-						</div>
-					)}
-					<form className='measure center pa3 black-80' onSubmit={initCheckEmailForm}>
-						<fieldset id='change_password_signin' className='ba b--transparent ph0 mh0'>
-							<div className='mt3'>
-								<input className='pa2 input-reset ba br4 bg-transparent w-75 center db' placeholder='Username' type='text' maxLength={20} onChange={handleUsernameOnchange} />
+					<form className='flex flex-col gap-4' onSubmit={handleSubmit(onSubmit)}>
+						<fieldset id='forgot_password' className='flex flex-col gap-3 border-none p-0 m-0'>
+							<div>
+								<Input
+									{...register('username')}
+									className={`rounded-full border-gray-300 bg-transparent w-3/4 mx-auto block ${errors.username ? 'border-red-500 focus-visible:ring-red-500' : ''}`}
+									placeholder='Username'
+									type='text'
+									maxLength={20}
+								/>
+								{errors.username && <p className='text-xs text-red-500 mt-1'>{errors.username.message}</p>}
 							</div>
-							<div className='mv3'>
-								<input className='b pa2 input-reset ba br4 bg-transparent w-75 center db' placeholder='Email' type='email' maxLength={100} onChange={handleEmailOnchange} />
+							<div>
+								<Input
+									{...register('email')}
+									className={`rounded-full border-gray-300 bg-transparent w-3/4 mx-auto block ${errors.email ? 'border-red-500 focus-visible:ring-red-500' : ''}`}
+									placeholder='Email'
+									type='email'
+									maxLength={100}
+								/>
+								{errors.email && <p className='text-xs text-red-500 mt-1'>{errors.email.message}</p>}
 							</div>
 						</fieldset>
-						<div className='lh-copy mt3'>
-							<button className='b ph3 pv2 input-reset ba br4 b--black bg-light-green grow pointer f6 dib' type='submit'>
+						<div className='mt-2'>
+							<Button
+								type='submit'
+								className='bg-uprophet-mint hover:bg-uprophet-mint/80 text-gray-800 font-bold border border-gray-300 rounded-full px-8 transition-all hover:scale-105'
+							>
 								Submit
-							</button>
+							</Button>
 						</div>
 					</form>
 				</article>
