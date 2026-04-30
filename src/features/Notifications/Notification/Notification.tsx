@@ -22,11 +22,11 @@ const Notification: React.FC<NotificationProps> = ({ username, notice, quotesId,
 				<div>
 					<p className='text-sm font-semibold text-uprophet-mint leading-tight mb-0.5'>{notice}</p>
 					<span className='text-xs text-gray-400'>
-						{date && !isNaN(new Date(date).getTime()) ? (
-							<ReactTimeAgo date={new Date(date)} locale='en' timeStyle='mini-minute-now' />
-						) : (
-							<span>Just now</span>
-						)}
+					{date && !isNaN(new Date(typeof date === 'string' ? date.replace(' ', 'T') + 'Z' : date).getTime()) ? (
+						<ReactTimeAgo date={new Date(typeof date === 'string' ? date.replace(' ', 'T') + 'Z' : date)} locale='en' timeStyle='mini-minute-now' />
+					) : (
+						<span>Just now</span>
+					)}
 					</span>
 				</div>
 			</div>
