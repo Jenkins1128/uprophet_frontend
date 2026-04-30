@@ -1,6 +1,8 @@
 import React from 'react';
 import { UseFormRegister, FieldErrors, UseFormHandleSubmit } from 'react-hook-form';
 import { AddCommentFormData } from '@/validation/quotes';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 
 interface CommentPosterProps {
 	register: UseFormRegister<AddCommentFormData>;
@@ -12,28 +14,28 @@ interface CommentPosterProps {
 
 const CommentPoster: React.FC<CommentPosterProps> = ({ register, errors, handleSubmit, onSubmit, isSubmitting }) => {
 	return (
-		<article className='bg-near-white pa4 br4 w-75 mw6 shadow-5 center tc'>
-			<form className='ph1 black-80' onSubmit={handleSubmit(onSubmit)}>
-				<fieldset id='comment_poster' className='flex flex-column ba b--transparent ph0 mh0'>
-					<div className='mt3'>
-						<input
+		<article className='bg-white rounded-2xl px-6 py-5 mx-3 my-3 lg:mx-24 md:mx-16 shadow-[0_4px_20px_rgba(0,0,0,0.08)] border border-gray-100 text-center'>
+			<form onSubmit={handleSubmit(onSubmit)}>
+				<fieldset id='comment_poster' className='flex flex-col border-none p-0 m-0'>
+					<div className='mt-2'>
+						<Input
 							{...register('comment')}
-							className={`pa2 input-reset ba br4 bw1 bg-transparent b--moon-gray w-75 center db ${errors.comment ? 'b--red' : ''}`}
+							className={`rounded-full border-gray-300 bg-transparent w-3/4 mx-auto block ${errors.comment ? 'border-red-500 focus-visible:ring-red-500' : ''}`}
 							placeholder='Add a comment'
 							type='text'
 							maxLength={255}
 						/>
-						{errors.comment && <p className='f7 red mt1'>{errors.comment.message}</p>}
+						{errors.comment && <p className='text-xs text-red-500 mt-1'>{errors.comment.message}</p>}
 					</div>
 				</fieldset>
-				<div className='lh-copy mt3'>
-					<button
-						className='b ph4 pv2 input-reset ba bw1 br4 b--black bg-light-green grow pointer f6 dib'
+				<div className='mt-4'>
+					<Button
 						type='submit'
 						disabled={isSubmitting}
+						className='bg-uprophet-mint hover:bg-uprophet-mint/80 text-gray-800 font-bold border border-gray-300 rounded-full px-8 transition-all hover:scale-105'
 					>
 						{isSubmitting ? 'Posting...' : 'Post'}
-					</button>
+					</Button>
 				</div>
 			</form>
 		</article>
@@ -41,4 +43,3 @@ const CommentPoster: React.FC<CommentPosterProps> = ({ register, errors, handleS
 };
 
 export default CommentPoster;
-

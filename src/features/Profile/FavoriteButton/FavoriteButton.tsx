@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { url } from '../../../domain';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { Button } from '@/components/ui/button';
 import axios from 'axios';
 
 interface FavoriteButtonProps {
@@ -51,24 +52,26 @@ const FavoriteButton: React.FC<FavoriteButtonProps> = ({ username, didFavorite }
 		}
 	});
 
-	const favorite = () => {
-		performFavorite(username);
-	};
-
-	const unfavorite = () => {
-		performUnfavorite(username);
-	};
-
 	return (
 		<div>
 			{!getDidFavorite ? (
-				<button className='f6 button-reset bg-white ba b--black-10 grow pointer pv1 black-60' onClick={favorite}>
+				<Button
+					variant='outline'
+					size='sm'
+					className='rounded-full border-gray-300 text-gray-600 hover:bg-uprophet-mint hover:text-gray-800 hover:border-uprophet-mint transition-all'
+					onClick={() => performFavorite(username)}
+				>
 					Favorite
-				</button>
+				</Button>
 			) : (
-				<button className='f6 button-reset bg-white ba b--black-10 grow pointer pv1 black-60' onClick={unfavorite}>
-					UnFavorite
-				</button>
+				<Button
+					variant='outline'
+					size='sm'
+					className='rounded-full border-gray-300 text-gray-600 hover:bg-red-50 hover:text-red-500 hover:border-red-300 transition-all'
+					onClick={() => performUnfavorite(username)}
+				>
+					Unfavorite
+				</Button>
 			)}
 		</div>
 	);

@@ -1,8 +1,8 @@
 "use client";
 import React from 'react';
 import { url } from '../../../domain';
-import Loading from '../../../components/ui/Loading/Loading';
 import defaultProfilePic from '../../../images/defaultProfilePic.png';
+import Loading from '../../../components/ui/Loading/Loading';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 
@@ -32,17 +32,23 @@ const Userphoto: React.FC<UserphotoProps> = ({ size, username }) => {
 	const getSize = () => {
 		switch (size) {
 			case 'header':
-				return 'h2 w2';
+				return 'h-8 w-8';
 			case 'profile':
-				return 'h4 w4';
+				return 'h-20 w-20';
 			default:
-				return 'h3 w3';
+				return 'h-12 w-12';
 		}
 	};
 
 	const base64Img = data.photo || '';
 
-	return isLoading ? <Loading isPhoto={true} size={size} /> : <img className={`br-100 ba bw1 b--white bg-white ${getSize()}`} src={base64Img ? `data:image;base64,${base64Img}` : defaultProfilePic.src || defaultProfilePic} alt='UserPhoto' />;
+	return isLoading
+		? <Loading isPhoto={true} size={size} />
+		: <img
+			className={`rounded-full border-2 border-white bg-white object-cover ${getSize()}`}
+			src={base64Img ? `data:image;base64,${base64Img}` : defaultProfilePic.src || defaultProfilePic}
+			alt='UserPhoto'
+		/>;
 };
 
 export default Userphoto;

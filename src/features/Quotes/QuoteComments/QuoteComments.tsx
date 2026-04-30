@@ -65,7 +65,7 @@ const QuoteComments: React.FC = () => {
 	if (isQuoteLoading || isCommentsLoading) return <Loading />;
 
 	return (
-		<section className='mt6 mh2 f7'>
+		<section className='pt-24 pb-8 px-2'>
 			{quotePost?.id && (
 				<QuotePost
 					quoteId={quotePost.id}
@@ -87,7 +87,7 @@ const QuoteComments: React.FC = () => {
 				onSubmit={onSubmit}
 				isSubmitting={isSubmitting}
 			/>
-			<div className='mt5'>
+			<div className='mt-4'>
 				{latestComments.map((commentData: Comment) => {
 					return <QuoteComment key={commentData.id} comment={commentData.comment} commenter={commentData.commenter} date={commentData.datePosted} />;
 				})}

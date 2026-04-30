@@ -12,28 +12,31 @@ interface QuoteCommentProps {
 
 const QuoteComment: React.FC<QuoteCommentProps> = ({ commenter, comment, date }) => {
 	return (
-		<article className='bg-near-white br4 pa3 pa4-ns ma3 mh6-l mh4-m shadow-5'>
-			<div className='flex items-start'>
-				<Link href={`/${commenter}`}>
+		<article className='bg-white rounded-2xl px-6 py-5 mx-3 my-3 lg:mx-24 md:mx-16 shadow-[0_4px_20px_rgba(0,0,0,0.08)] border border-gray-100'>
+			{/* Header */}
+			<div className='flex items-center gap-2'>
+				<Link href={`/${commenter}`} className='shrink-0'>
 					<Userphoto username={commenter} />
 				</Link>
-				<Link href={`/${commenter}`} className='no-underline ml2'>
-					<p className='black-50 b f7 f6-ns mv1'>{commenter}</p>
+				<Link href={`/${commenter}`} className='no-underline'>
+					<p className='text-gray-500 font-bold text-sm m-0'>{commenter}</p>
 				</Link>
 			</div>
-			
-			<div className='tc pv3'>
-				<p className='f6 f5-ns light-green b'>{comment}</p>
+
+			{/* Comment body */}
+			<div className='text-center py-4'>
+				<p className='text-base font-bold text-uprophet-mint'>{comment}</p>
 			</div>
 
-			<div className='flex justify-end mt3 ph2'>
-				<div className='f7 moon-gray b'>
+			{/* Timestamp */}
+			<div className='flex justify-end'>
+				<span className='text-xs text-gray-400 font-semibold'>
 					{date && !isNaN(new Date(date).getTime()) ? (
 						<ReactTimeAgo date={new Date(date)} locale='en' timeStyle='mini-minute-now' />
 					) : (
 						<span>Just now</span>
 					)}
-				</div>
+				</span>
 			</div>
 		</article>
 	);
