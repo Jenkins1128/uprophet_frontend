@@ -8,7 +8,7 @@ const Header: React.FC = () => {
 	const { data: currentUser = '' } = useCurrentUser();
 
 	return (
-		<header className='flex justify-between z-1 fixed top-0 w-100 bb bw1 b--light-green bg-light-green'>
+		<header className='flex justify-between items-center z-10 fixed top-0 w-full border-b-2 border-uprophet-light-green bg-uprophet-light-green px-4 h-16'>
 			<Logo isSignedIn={currentUser !== ''} />
 			<Navigation currentUser={currentUser as string} isSignedIn={currentUser !== ''} />
 		</header>

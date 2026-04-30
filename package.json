@@ -5,13 +5,18 @@
 	"private": true,
 	"dependencies": {
 		"@hookform/resolvers": "^5.2.2",
+		"@radix-ui/react-dialog": "^1.1.15",
+		"@radix-ui/react-slot": "^1.2.4",
 		"@tanstack/react-query": "^5.61.0",
 		"@types/jest": "^29.5.12",
 		"@types/node": "^20.12.12",
 		"@types/react": "^19.0.0",
 		"@types/react-dom": "^19.0.0",
 		"axios": "^1.7.0",
+		"class-variance-authority": "^0.7.1",
+		"clsx": "^2.1.1",
 		"javascript-time-ago": "^2.6.4",
+		"lucide-react": "^1.14.0",
 		"next": "^15.0.3",
 		"react": "^19.0.0",
 		"react-cookie": "^7.2.2",
@@ -21,6 +26,8 @@
 		"react-time-ago": "^7.3.3",
 		"sweetalert2": "^11.11.0",
 		"tachyons": "^4.12.0",
+		"tailwind-merge": "^3.5.0",
+		"tailwindcss-animate": "^1.0.7",
 		"typescript": "^5.4.5",
 		"zod": "^4.3.6",
 		"zustand": "^5.0.1"
@@ -43,7 +50,10 @@
 		]
 	},
 	"devDependencies": {
+		"autoprefixer": "^10.5.0",
 		"eslint": "^9.14.0",
-		"eslint-config-next": "15.0.3"
+		"eslint-config-next": "15.0.3",
+		"postcss": "^8.5.12",
+		"tailwindcss": "^3.4.17"
 	}
 }
