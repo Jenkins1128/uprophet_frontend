@@ -4,9 +4,9 @@ import { UsersQuotes } from './UserQuotes';
 
 const TopQuotes: React.FC = () => {
 	return (
-		<section className='mt6 mh2'>
-			<h1 className='moon-gray f3 tc'>Express yourself freely</h1>
-			<div className='flex-wrap overflow-y-scroll'>
+		<section className='pt-24 pb-8 px-2'>
+			<h1 className='text-gray-400 font-normal text-2xl text-center mb-6'>Express yourself freely</h1>
+			<div className='overflow-y-auto'>
 				{UsersQuotes.map((user, i) => {
 					return <QuoteCard key={i} userName={user.userName} quote={user.quote} />;
 				})}

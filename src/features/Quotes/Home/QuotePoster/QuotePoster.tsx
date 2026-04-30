@@ -1,6 +1,8 @@
 import React from 'react';
 import { UseFormRegister, FieldErrors, UseFormHandleSubmit } from 'react-hook-form';
 import { CreateQuoteFormData } from '@/validation/quotes';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 
 interface QuotePosterProps {
 	register: UseFormRegister<CreateQuoteFormData>;
@@ -12,41 +14,46 @@ interface QuotePosterProps {
 
 const QuotePoster: React.FC<QuotePosterProps> = ({ register, errors, handleSubmit, onSubmit, isSubmitting }) => {
 	return (
-		<article className='bg-near-white pa4 br4 w-75 mw6 shadow-5 center tc'>
-			<form className='ph1 black-80' onSubmit={handleSubmit(onSubmit)}>
-				<fieldset id='post_quote' className='flex flex-column ba b--transparent ph0 mh0'>
-					<div className='mt2'>
-						<input
+		<article className='bg-white rounded-2xl px-8 py-6 w-3/4 max-w-xl mx-auto text-center shadow-[0_4px_20px_rgba(0,0,0,0.08)] border border-gray-100'>
+			<form onSubmit={handleSubmit(onSubmit)}>
+				<fieldset id='post_quote' className='flex flex-col border-none p-0 m-0'>
+					{/* Title input */}
+					<div className='mt-2'>
+						<Input
 							{...register('title')}
-							className={`pa2 input-reset ba br4 bw1 bg-transparent b--moon-gray w-75 center db ${errors.title ? 'b--red' : ''}`}
+							className={`rounded-full border-gray-300 bg-transparent mx-auto w-3/4 text-center ${errors.title ? 'border-red-500 focus-visible:ring-red-500' : ''}`}
 							placeholder='Title'
 							type='text'
 							maxLength={20}
 						/>
-						{errors.title && <p className='f7 red mt1'>{errors.title.message}</p>}
+						{errors.title && <p className='text-xs text-red-500 mt-1'>{errors.title.message}</p>}
 					</div>
-					<div className='mt3 flex items-center justify-center'>
-						<strong className='f2 mr2 moon-gray'>&quot;</strong>
-						<div className='w-75'>
-							<input
+
+					{/* Quote input with decorative quotation marks */}
+					<div className='mt-4 flex items-center justify-center gap-2'>
+						<strong className='text-3xl text-gray-300 leading-none select-none'>&ldquo;</strong>
+						<div className='w-3/4'>
+							<Input
 								{...register('quote')}
-								className={`pa2 input-reset ba br4 bw1 bg-transparent b--moon-gray w-100 ${errors.quote ? 'b--red' : ''}`}
+								className={`rounded-full border-gray-300 bg-transparent text-center ${errors.quote ? 'border-red-500 focus-visible:ring-red-500' : ''}`}
 								placeholder='Enter a quote. Quotation marks are set!'
 								type='text'
 							/>
-							{errors.quote && <p className='f7 red mt1'>{errors.quote.message}</p>}
+							{errors.quote && <p className='text-xs text-red-500 mt-1'>{errors.quote.message}</p>}
 						</div>
-						<strong className='f2 ml2 moon-gray'>&quot;</strong>
+						<strong className='text-3xl text-gray-300 leading-none select-none'>&rdquo;</strong>
 					</div>
 				</fieldset>
-				<div className='lh-copy mt3'>
-					<button
-						className='b ph4 pv2 input-reset ba bw1 br4 b--black bg-light-green grow pointer f6 dib'
+
+				{/* Submit */}
+				<div className='mt-5'>
+					<Button
 						type='submit'
 						disabled={isSubmitting}
+						className='bg-uprophet-mint hover:bg-uprophet-mint/80 text-gray-800 font-bold border border-gray-300 rounded-full px-8 transition-all hover:scale-105'
 					>
 						{isSubmitting ? 'Posting...' : 'Post'}
-					</button>
+					</Button>
 				</div>
 			</form>
 		</article>
@@ -54,4 +61,3 @@ const QuotePoster: React.FC<QuotePosterProps> = ({ register, errors, handleSubmi
 };
 
 export default QuotePoster;
-

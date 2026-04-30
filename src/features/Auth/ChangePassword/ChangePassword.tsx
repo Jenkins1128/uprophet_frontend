@@ -12,6 +12,8 @@ import {
 	type ChangePasswordStep1FormData,
 	type ChangePasswordStep2FormData
 } from '@/validation/auth';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 
 const ChangePassword: React.FC = () => {
 	const router = useRouter();
@@ -55,45 +57,48 @@ const ChangePassword: React.FC = () => {
 	};
 
 	return (
-		<section className='pt6 tc'>
-			<h1 className='moon-gray f2 mb3'>Change Password?</h1>
+		<section className='pt-24 text-center'>
+			<h1 className='text-gray-400 text-3xl font-normal mb-6'>Change Password?</h1>
 			{!changePasswordForm ? (
-				<div className='br2 ba pa5-l pa4-m pa3-ns black-80 dark-gray b--black-10 br4 w-75 mw6 shadow-5 center'>
+				<article className='bg-white rounded-2xl px-10 py-8 w-3/4 max-w-lg mx-auto shadow-[0_4px_20px_rgba(0,0,0,0.08)] border border-gray-100'>
 					{isIncorrectError && (
-						<div className='mt3 center h-10 w-75 ba bw1 br3 bg-red'>
-							<p className='f5 white'>Username or password is incorrect.</p>
+						<div className='mb-4 px-4 py-3 bg-red-50 border border-red-200 rounded-lg'>
+							<p className='text-sm text-red-600 font-medium'>Username or password is incorrect.</p>
 						</div>
 					)}
-					<form className='measure center pa3 black-80' onSubmit={step1Form.handleSubmit(onStep1Submit)}>
-						<fieldset id='change_password_signin' className='ba b--transparent ph0 mh0'>
-							<div className='mt3'>
-								<input
+					<form className='flex flex-col gap-4' onSubmit={step1Form.handleSubmit(onStep1Submit)}>
+						<fieldset id='change_password_signin' className='flex flex-col gap-3 border-none p-0 m-0'>
+							<div>
+								<Input
 									{...step1Form.register('username')}
-									className={`pa2 input-reset ba br4 bg-transparent w-75 center db ${step1Form.formState.errors.username ? 'b--red' : ''}`}
+									className={`rounded-full border-gray-300 bg-transparent w-3/4 mx-auto block ${step1Form.formState.errors.username ? 'border-red-500 focus-visible:ring-red-500' : ''}`}
 									placeholder='Username'
 									type='text'
 									maxLength={20}
 								/>
-								{step1Form.formState.errors.username && <p className='f7 red mt1'>{step1Form.formState.errors.username.message}</p>}
+								{step1Form.formState.errors.username && <p className='text-xs text-red-500 mt-1'>{step1Form.formState.errors.username.message}</p>}
 							</div>
-							<div className='mv3'>
-								<input
+							<div>
+								<Input
 									{...step1Form.register('password')}
-									className={`b pa2 input-reset ba br4 bg-transparent w-75 center db ${step1Form.formState.errors.password ? 'b--red' : ''}`}
+									className={`rounded-full border-gray-300 bg-transparent w-3/4 mx-auto block ${step1Form.formState.errors.password ? 'border-red-500 focus-visible:ring-red-500' : ''}`}
 									placeholder='Password'
 									type='password'
 									maxLength={128}
 								/>
-								{step1Form.formState.errors.password && <p className='f7 red mt1'>{step1Form.formState.errors.password.message}</p>}
+								{step1Form.formState.errors.password && <p className='text-xs text-red-500 mt-1'>{step1Form.formState.errors.password.message}</p>}
 							</div>
 						</fieldset>
-						<div className='lh-copy mt3'>
-							<button className='b ph3 pv2 input-reset ba br4 b--black bg-light-green grow pointer f6 dib' type='submit'>
+						<div className='mt-2'>
+							<Button
+								type='submit'
+								className='bg-uprophet-mint hover:bg-uprophet-mint/80 text-gray-800 font-bold border border-gray-300 rounded-full px-8 transition-all hover:scale-105'
+							>
 								Sign In
-							</button>
+							</Button>
 						</div>
 					</form>
-				</div>
+				</article>
 			) : (
 				<ChangePasswordForm
 					register={step2Form.register}
@@ -107,4 +112,3 @@ const ChangePassword: React.FC = () => {
 };
 
 export default ChangePassword;
-

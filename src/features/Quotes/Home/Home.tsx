@@ -41,7 +41,6 @@ const Home: React.FC = () => {
 			reset();
 			queryClient.setQueryData(['latestQuotes'], (oldData: Quote[] | undefined) => {
 				if (!oldData) return [newQuote];
-				// remove if user already had a quote (business logic from old slice)
 				const filtered = oldData.filter((q) => q.userName !== newQuote.userName);
 				return [newQuote, ...filtered];
 			});
@@ -59,8 +58,8 @@ const Home: React.FC = () => {
 	if (isQuotesLoading) return <Loading />;
 
 	return (
-		<section className='mt6 mh2 f7'>
-			<h1 className='flex ml4 moon-gray'>Home</h1>
+		<section className='pt-24 pb-8 px-2'>
+			<h1 className='text-gray-400 font-semibold text-sm ml-4 mb-6'>Home</h1>
 			<QuotePoster
 				register={register}
 				errors={errors}
@@ -68,28 +67,25 @@ const Home: React.FC = () => {
 				onSubmit={onSubmit}
 				isSubmitting={isSubmitting}
 			/>
-			<div className='mt5'>
-				{latestQuotes.map((quote: Quote) => {
-					return (
-						<QuotePost
-							key={quote.id}
-							quoteId={quote.id}
-							username={quote.userName}
-							title={quote.title}
-							quote={`"${quote.quote}"`}
-							likeCount={quote.likeCount}
-							didLike={quote.didLike}
-							date={quote.datePosted}
-							hasComments={true}
-							canDelete={false}
-							deleteQuote={() => {}}
-						/>
-					);
-				})}
+			<div className='mt-8'>
+				{latestQuotes.map((quote: Quote) => (
+					<QuotePost
+						key={quote.id}
+						quoteId={quote.id}
+						username={quote.userName}
+						title={quote.title}
+						quote={`"${quote.quote}"`}
+						likeCount={quote.likeCount}
+						didLike={quote.didLike}
+						date={quote.datePosted}
+						hasComments={true}
+						canDelete={false}
+						deleteQuote={() => {}}
+					/>
+				))}
 			</div>
 		</section>
 	);
 }
 
 export default Home;
-

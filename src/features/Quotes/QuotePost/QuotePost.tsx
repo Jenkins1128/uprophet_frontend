@@ -39,36 +39,50 @@ const QuotePost: React.FC<QuotePostProps> = ({ username, title, quote, quoteId, 
 	};
 
 	return (
-		<article id={String(quoteId)} className='bg-near-white br4 pa3 pa4-ns ma3 mh6-l mh4-m shadow-5'>
-			<div className='flex items-start'>
-				<Link href={`/${username}`}>
+		<article
+			id={String(quoteId)}
+			className='bg-white rounded-2xl px-6 py-5 mx-3 my-3 lg:mx-24 md:mx-16 shadow-[0_4px_20px_rgba(0,0,0,0.08)] border border-gray-100'
+		>
+			{/* Header: avatar + username + optional delete */}
+			<div className='flex items-center'>
+				<Link href={`/${username}`} className='shrink-0'>
 					<Userphoto username={username} />
 				</Link>
-				<Link href={`/${username}`} className='no-underline ml2'>
-					<p className='black-50 b f7 f6-ns mv1'>{username}</p>
+				<Link href={`/${username}`} className='no-underline ml-2'>
+					<p className='text-gray-500 font-bold text-sm leading-none mt-0 mb-0'>{username}</p>
 				</Link>
 				{canDelete && (
-					<button onClick={deleteMaybe} className='bg-transparent b--none red b f5 pointer ml-auto'>
-						X
+					<button
+						onClick={deleteMaybe}
+						className='ml-auto bg-transparent border-none text-red-500 font-bold text-lg cursor-pointer hover:text-red-700 transition-colors'
+					>
+						&times;
 					</button>
 				)}
 			</div>
-			
-			<div className='tc pv3'>
-				<p className='f6 f5-ns b underline light-green mb2'>{title}</p>
-				<p className='f6 f5-ns light-green b i lh-copy'>{quote}</p>
+
+			{/* Quote body */}
+			<div className='text-center py-5 px-2'>
+				{title && (
+					<p className='text-sm font-bold underline text-uprophet-mint mb-2 tracking-wide'>{title}</p>
+				)}
+				<p className='text-base font-bold italic leading-relaxed text-uprophet-mint'>{quote}</p>
 			</div>
 
-			<div className='flex justify-between items-center mt4 ph2'>
-				<div className='flex items-center'>
+			{/* Footer: likes + comments + timestamp */}
+			<div className='flex justify-between items-center mt-2 px-1'>
+				<div className='flex items-center gap-4'>
 					<LikeButton quoteId={quoteId} likeCount={likeCount} didLike={didLike} />
 					{hasComments && (
-						<Link href={`/quote/${quoteId}`} className='ml4 no-underline f7 f6-ns b light-green grow'>
+						<Link
+							href={`/quote/${quoteId}`}
+							className='no-underline text-xs font-bold text-uprophet-mint hover:text-green-600 transition-colors'
+						>
 							Comments
 						</Link>
 					)}
 				</div>
-				<div className='f7 moon-gray b'>
+				<div className='text-xs text-gray-400 font-semibold'>
 					{date && !isNaN(new Date(date).getTime()) ? (
 						<ReactTimeAgo date={new Date(date)} locale='en' timeStyle='mini-minute-now' />
 					) : (

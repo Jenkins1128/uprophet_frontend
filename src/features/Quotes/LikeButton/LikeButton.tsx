@@ -71,15 +71,15 @@ const LikeButton: React.FC<LikeButtonProps> = ({ quoteId, likeCount, didLike }) 
 	};
 
 	return (
-		<div className='flex items-center pv1'>
-			<p className='f6 f5-ns moon-gray b'>{getLikeCount.current ? getLikeCount.current : 0}</p>
+		<div className='flex items-center py-1'>
+			<p className='text-sm font-bold text-gray-400'>{getLikeCount.current ? getLikeCount.current : 0}</p>
 			{getDidLike ? (
-				<button className='grow pointer b--none bg-transparent ph2' onClick={unlike}>
-					<img className='h1 w1 h2-ns w2-ns v-mid' alt='unlike' src={Like.src || Like} />
+				<button className='cursor-pointer border-none bg-transparent px-2 transition-transform hover:scale-110' onClick={unlike}>
+					<img className='h-5 w-5 align-middle' alt='unlike' src={Like.src || Like} />
 				</button>
 			) : (
-				<button className='grow pointer b--none bg-transparent ph2' onClick={like}>
-					<img className='h1 w1 h2-ns w2-ns v-mid' alt='like' src={UnLike.src || UnLike} />
+				<button className='cursor-pointer border-none bg-transparent px-2 transition-transform hover:scale-110' onClick={like}>
+					<img className='h-5 w-5 align-middle' alt='like' src={UnLike.src || UnLike} />
 				</button>
 			)}
 		</div>

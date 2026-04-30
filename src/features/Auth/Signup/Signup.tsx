@@ -8,7 +8,8 @@ import { signupRequest, signinRequest } from '@/api/auth';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { signupSchema, type SignupFormData } from '@/validation/auth';
-
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 
 const Signup: React.FC = () => {
 	const { isSuccess: isUserSuccess, data: currentUser } = useCurrentUser();
@@ -31,7 +32,6 @@ const Signup: React.FC = () => {
 			terms: false
 		}
 	});
-
 
 	useEffect(() => {
 		if (isUserSuccess && currentUser) {
@@ -62,77 +62,76 @@ const Signup: React.FC = () => {
 		registerUser(data);
 	};
 
-
 	return (
-		<section className='pt6 tc'>
-			<h1 className='moon-gray f3'>Join Uprophet today!</h1>
-			<article className='br2 pa5-l pa4-m pa3-ns ba dark-gray b--black-10 br4 mv4 w-75 mw6 shadow-5 center'>
+		<section className='pt-24 text-center'>
+			<h1 className='text-gray-400 text-2xl font-normal mb-6'>Join Uprophet today!</h1>
+			<article className='bg-white rounded-2xl px-10 py-8 w-3/4 max-w-lg mx-auto shadow-[0_4px_20px_rgba(0,0,0,0.08)] border border-gray-100 mb-8'>
 				{isExistsError && (
-					<div className='mt3 center h-10 w-75 ba bw1 br3 bg-red'>
-						<p className='f5 white'>Username already exists.</p>
+					<div className='mb-4 px-4 py-3 bg-red-50 border border-red-200 rounded-lg'>
+						<p className='text-sm text-red-600 font-medium'>Username already exists.</p>
 					</div>
 				)}
-				<form className='measure center pa3 black-80' onSubmit={handleSubmit(onSubmit)}>
-					<fieldset id='sign_up' className='ba b--transparent ph0 mh0'>
-						<div className='mt3'>
-							<input
+				<form className='flex flex-col gap-4' onSubmit={handleSubmit(onSubmit)}>
+					<fieldset id='sign_up' className='flex flex-col gap-3 border-none p-0 m-0'>
+						<div>
+							<Input
 								{...register('name')}
-								className={`pa2 input-reset ba br4 bg-transparent w-75 center db ${errors.name ? 'b--red' : ''}`}
+								className={`rounded-full border-gray-300 bg-transparent w-3/4 mx-auto block ${errors.name ? 'border-red-500 focus-visible:ring-red-500' : ''}`}
 								placeholder='Name'
 								type='text'
 							/>
-							{errors.name && <p className='f7 red mt1'>{errors.name.message}</p>}
+							{errors.name && <p className='text-xs text-red-500 mt-1'>{errors.name.message}</p>}
 						</div>
-						<div className='mt3'>
-							<input
+						<div>
+							<Input
 								{...register('username')}
-								className={`pa2 input-reset ba br4 bg-transparent w-75 center db ${errors.username ? 'b--red' : ''}`}
+								className={`rounded-full border-gray-300 bg-transparent w-3/4 mx-auto block ${errors.username ? 'border-red-500 focus-visible:ring-red-500' : ''}`}
 								placeholder='Username'
 								type='text'
 							/>
-							{errors.username && <p className='f7 red mt1'>{errors.username.message}</p>}
+							{errors.username && <p className='text-xs text-red-500 mt-1'>{errors.username.message}</p>}
 						</div>
-						<div className='mt3'>
-							<input
+						<div>
+							<Input
 								{...register('email')}
-								className={`pa2 input-reset ba br4 bg-transparent w-75 center db ${errors.email ? 'b--red' : ''}`}
+								className={`rounded-full border-gray-300 bg-transparent w-3/4 mx-auto block ${errors.email ? 'border-red-500 focus-visible:ring-red-500' : ''}`}
 								placeholder='Email'
 								type='email'
 							/>
-							{errors.email && <p className='f7 red mt1'>{errors.email.message}</p>}
+							{errors.email && <p className='text-xs text-red-500 mt-1'>{errors.email.message}</p>}
 						</div>
-						<div className='mv3'>
-							<input
+						<div>
+							<Input
 								{...register('password')}
-								className={`b pa2 input-reset ba br4 bg-transparent w-75 center db ${errors.password ? 'b--red' : ''}`}
+								className={`rounded-full border-gray-300 bg-transparent w-3/4 mx-auto block ${errors.password ? 'border-red-500 focus-visible:ring-red-500' : ''}`}
 								placeholder='Password'
 								type='password'
 							/>
-							{errors.password && <p className='f7 red mt1'>{errors.password.message}</p>}
+							{errors.password && <p className='text-xs text-red-500 mt-1'>{errors.password.message}</p>}
 						</div>
-						<div className='mv4'>
+						<div className='mt-2'>
 							<input
 								{...register('terms')}
-								className='b pa2 ba br4 bg-transparent center db pointer'
+								className='cursor-pointer accent-uprophet-mint'
 								type='checkbox'
 							/>
-							<div className='mt2'>
-								<p className='f7 mb1'>I READ & UNDERSTAND the </p>
-								<Link href='/terms' className='no-underline f7 b light-green hover-black grow pointer'>
+							<div className='mt-2'>
+								<p className='text-xs text-gray-600 mb-1'>I READ &amp; UNDERSTAND the</p>
+								<Link href='/terms' className='no-underline font-bold text-uprophet-mint hover:text-green-700 text-xs transition-colors'>
 									Terms of Uprophet.
 								</Link>
-								{errors.terms && <p className='f7 red mt1'>{errors.terms.message}</p>}
+								{errors.terms && <p className='text-xs text-red-500 mt-1'>{errors.terms.message}</p>}
 							</div>
 						</div>
 					</fieldset>
-					<div className='lh-copy mt3'>
-						<button
-							className='b ph3 pv2 input-reset ba br4 b--black bg-light-green grow pointer f6 dib'
+					<div className='mt-2'>
+						<Button
 							type='submit'
 							disabled={isSubmitting}
+							className='bg-uprophet-mint hover:bg-uprophet-mint/80 text-gray-800 font-bold border border-gray-300 rounded-full px-8 transition-all hover:scale-105'
 						>
 							{isSubmitting ? 'Signing up...' : 'Sign up'}
-						</button>
+						</Button>
 					</div>
 				</form>
 			</article>
@@ -141,4 +140,3 @@ const Signup: React.FC = () => {
 }
 
 export default Signup;
-
