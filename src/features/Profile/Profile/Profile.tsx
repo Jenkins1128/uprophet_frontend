@@ -101,7 +101,7 @@ const Profile: React.FC = () => {
 						didLike={quote.didLike}
 						date={quote.datePosted}
 						hasComments={true}
-						canDelete={quote.userName === currentUser?.username}
+						canDelete={quote.userName === userInfo?.currentUser}
 						deleteQuote={deleteQuote}
 					/>
 				))}
