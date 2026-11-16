@@ -9,6 +9,7 @@ import axios from 'axios';
 interface UserphotoProps {
 	size?: string;
 	username: string;
+	previewSrc?: string | null;
 }
 
 const fetchUserPhoto = async (username: string) => {
@@ -19,7 +20,7 @@ const fetchUserPhoto = async (username: string) => {
 	return data;
 };
 
-const Userphoto: React.FC<UserphotoProps> = ({ size, username }) => {
+const Userphoto: React.FC<UserphotoProps> = ({ size, username, previewSrc }) => {
 	const { data = {}, isLoading } = useQuery({
 		queryKey: ['userPhoto', username],
 		queryFn: () => fetchUserPhoto(username),
@@ -41,14 +42,21 @@ const Userphoto: React.FC<UserphotoProps> = ({ size, username }) => {
 	};
 
 	const base64Img = data.photo || '';
+	const src = previewSrc
+		? previewSrc
+		: base64Img
+			? `data:image;base64,${base64Img}`
+			: defaultProfilePic.src || defaultProfilePic;
 
-	return isLoading
-		? <Loading isPhoto={true} size={size} />
-		: <img
+	if (isLoading && !previewSrc) return <Loading isPhoto={true} size={size} />;
+
+	return (
+		<img
 			className={`rounded-full border-2 border-white bg-white object-cover ${getSize()}`}
-			src={base64Img ? `data:image;base64,${base64Img}` : defaultProfilePic.src || defaultProfilePic}
+			src={src}
 			alt='UserPhoto'
-		/>;
+		/>
+	);
 };
 
 export default Userphoto;

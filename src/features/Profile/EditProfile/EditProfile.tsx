@@ -1,5 +1,5 @@
 "use client";
-import React from 'react';
+import React, { useState } from 'react';
 import Userphoto from '../Userphoto/Userphoto';
 import PleaseSignin from '@/components/ui/PleaseSignin/PleaseSignin';
 import Loading from '@/components/ui/Loading/Loading';
@@ -23,6 +23,7 @@ const EditProfile: React.FC = () => {
 	const photoForm = useForm<PhotoFormData>({
 		resolver: zodResolver(photoSchema),
 	});
+	const [photoPreview, setPhotoPreview] = useState<string | null>(null);
 
 	const { data: userInfo, isLoading: isUserInfoLoading } = useQuery({
 		queryKey: ['currentUserInfo'],
@@ -33,6 +34,14 @@ const EditProfile: React.FC = () => {
 	const { mutate: updatePhoto } = useMutation({
 		mutationFn: savePhotoRequest,
 		onSuccess: () => {
+			const image = photoForm.getValues('image');
+			if (userInfo?.currentUser && image) {
+				queryClient.setQueryData(['userPhoto', userInfo.currentUser], (current: { photo?: string } | undefined) => ({
+					...(current ?? {}),
+					photo: image,
+				}));
+			}
+			setPhotoPreview(null);
 			Swal.fire('Saved!', 'Your photo has been updated.', 'success');
 			photoForm.reset();
 			queryClient.invalidateQueries({ queryKey: ['currentUserInfo'] });
@@ -66,8 +75,9 @@ const EditProfile: React.FC = () => {
 			reader.onload = function (e: ProgressEvent<FileReader>) {
 				const result = e.target?.result as string;
 				const getImage = result.split(',')[1];
-				photoForm.setValue('name', name);
-				photoForm.setValue('image', getImage);
+				photoForm.setValue('name', name, { shouldValidate: true });
+				photoForm.setValue('image', getImage, { shouldValidate: true });
+				setPhotoPreview(result);
 			};
 			reader.readAsDataURL(file);
 		}
@@ -85,7 +95,11 @@ const EditProfile: React.FC = () => {
 			<div className='bg-white rounded-2xl px-6 py-8 mx-3 lg:mx-24 md:mx-16 shadow-[0_4px_20px_rgba(0,0,0,0.08)] border border-gray-100 mb-6'>
 				<form onSubmit={photoForm.handleSubmit(onPhotoSubmit)}>
 					<figure className='flex flex-col items-center gap-4 m-0'>
-						<Userphoto size='profile' username={userInfo?.currentUser || ''} />
+						<Userphoto
+							size='profile'
+							username={userInfo?.currentUser || ''}
+							previewSrc={photoPreview}
+						/>
 						<figcaption className='text-center'>
 							<label className='cursor-pointer'>
 								<span className='text-sm font-bold text-uprophet-mint hover:text-green-700 transition-colors'>
