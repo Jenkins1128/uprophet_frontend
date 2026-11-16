@@ -20,7 +20,13 @@ const NotiDot: React.FC = () => {
     refetchInterval: 10000, // Refetch every 10 seconds instead of every second for better performance
   });
 
-  return (notificationCount && notificationCount > 0) ? <img alt='notidot' className='absolute left-1 h1 w1' src={RedDot.src || RedDot} /> : null;
+  return (notificationCount && notificationCount > 0) ? (
+    <img
+      alt='notidot'
+      className='pointer-events-none absolute left-0 top-0 z-10 h-2 w-2'
+      src={RedDot.src || RedDot}
+    />
+  ) : null;
 };
 
 export default NotiDot;
